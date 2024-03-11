@@ -1,5 +1,21 @@
 <!DOCTYPE html>
 
+    <?php
+    // -------------------------- Connexion à la base de données -------------------------- //
+    session_start();
+    $serveur = "localhost"; // Adresse du serveur MySQL (généralement localhost)
+    $utilisateur = "root"; // Nom d'utilisateur MySQL
+    $motdepasse = ""; // Mot de passe MySQL
+    $basededonnees = "rettiwt"; // Nom de la base de données
+
+    $connexion = mysqli_connect($serveur, $utilisateur, $motdepasse, $basededonnees);
+
+    // Vérifie la connextion
+    if (!$connexion) {
+        die("La connexion à la base de données a échoué : " . mysqli_connect_error());
+    }
+    ?>
+
 <html>
 
 <head>
@@ -8,20 +24,40 @@
 
 <body>
     <h1>Welcome to the home page</h1>
+
+    <div>Post a message : <br>
+    <form method="POST" action="">
+        <label for="text">Titre :</label>
+        <input type="text" name="title"  required><br>
+
+        <label for="text">Texte :</label>
+        <input type="text" name="text" required><br>
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+
     <p>Click <a href="logout.php">here</a> to logout.</p>
 
         <?php
-        // -------------------------- Connexion à la base de données -------------------------- //
-        $serveur = "localhost"; // Adresse du serveur MySQL (généralement localhost)
-        $utilisateur = "root"; // Nom d'utilisateur MySQL
-        $motdepasse = ""; // Mot de passe MySQL
-        $basededonnees = "rettiwt"; // Nom de la base de données
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (!isset($_SESSION['username'])) {
+                $_SESSION['error'] = "You need to be logged in to post a message.";
+                header('Location: login.php');
+            }
 
-        $connexion = mysqli_connect($serveur, $utilisateur, $motdepasse, $basededonnees);
+            $author = $_SESSION['username'];
+            $title = htmlspecialchars($_POST['title']);
+            $text = htmlspecialchars($_POST['text']);
 
-        // Vérifie la connextion
-        if (!$connexion) {
-            die("La connexion à la base de données a échoué : " . mysqli_connect_error());
+            // Crée la requête SQL
+            $sql = "INSERT INTO post (title, text) VALUES ('$title', '$text')";
+
+            // Exécute la requête
+            if (mysqli_query($connexion, $sql)) {
+                echo "New record created successfully";
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($connexion);
+            }
         }
 
         // Crée la requête SQL
