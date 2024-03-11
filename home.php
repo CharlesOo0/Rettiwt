@@ -42,21 +42,34 @@
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!isset($_SESSION['username'])) {
                 $_SESSION['error'] = "You need to be logged in to post a message.";
-                header('Location: login.php');
+                header('Location: logout.php');
             }
 
             $author = $_SESSION['username'];
             $title = htmlspecialchars($_POST['title']);
             $text = htmlspecialchars($_POST['text']);
 
+            $sql = "Select * from profil where username='$author'";
+
+            $result = mysqli_query($connexion, $sql);
+
+            if ($result->num_rows != 1) {
+                $_SESSION['error'] = "You need to be logged in to post a message.";
+                header('Location: logout.php');
+            } 
+
+            $result = mysqli_fetch_assoc($result);
+            $id = $result['id'];
+
+
             // Crée la requête SQL
-            $sql = "INSERT INTO post (title, text) VALUES ('$title', '$text')";
+            $sql = "INSERT INTO post (author, title, text) VALUES ('$id', '$title', '$text')";
 
             // Exécute la requête
             if (mysqli_query($connexion, $sql)) {
-                echo "New record created successfully";
+                echo "<p> New record created successfully </p>";
             } else {
-                echo "Error: " . $sql . "<br>" . mysqli_error($connexion);
+                echo "<p> Error: " . $sql . "<br>" . mysqli_error($connexion) . "</p>";
             }
         }
 
@@ -70,9 +83,13 @@
         if (mysqli_num_rows($result) > 0) {
             // Affiche les données de chaque ligne
             while ($row = mysqli_fetch_assoc($result)) {
+
+                $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
+                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                
                 echo "<p>";
                 echo "ID: " . $row["id"] . "<br>";
-                echo "Author: " . $row["author"] . "<br>";
+                echo "Author: " . $profil['username'] . "<br>";
                 echo "Title: " . $row["title"] . "<br>";
                 echo "Text: " . $row["text"] . "<br>";
                 echo "Date: " . $row["date"] . "<br><br>";
