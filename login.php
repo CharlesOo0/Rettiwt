@@ -11,6 +11,9 @@
     <?php
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") { // Rajoute un event listener a la page pour attendre un POST request
+
+
+
         $name = $email = "";
         $name = htmlspecialchars($_POST['username']);
         $password = htmlspecialchars($_POST['password']);
@@ -29,14 +32,15 @@
             die("La connexion à la base de données a échoué : " . mysqli_connect_error());
         }
 
-        // SQL query to select data
+        // Crée la requête SQL
         $sql = "SELECT * FROM profil WHERE username='$name' AND password='$password'";
 
-        // Execute the query
+        // Exécute la requête
         $result = mysqli_query($connexion, $sql);
 
         if ($result->num_rows == 1) {
             echo "<p> Login succesful redirecting ... </p>";
+            $_SESSION['username'] = $name;
             header("Location: http://localhost/WE4A_projet/home.php");
         } else {
             echo "<p> Wrong password or email </p>";
@@ -44,15 +48,11 @@
 
     }
 
-
-
-
-
     ?>
 
-    <h1>Login page :</h1>
+    <h1>Se connecter :</h1>
 
-    <form method="POST" action="http://localhost/WE4A_projet/login_register.php">
+    <form method="POST" action="http://localhost/WE4A_projet/login.php">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br><br>
 
@@ -60,7 +60,9 @@
         <input type="password" id="password" name="password" required><br><br>
 
         <input type="submit" value="Login">
-    </form>
+    </form> <br><br>
+    <a href="http://localhost/WE4A_projet/register.php">Vous n'avez pas de compte ?</a>
+
 </body>
 
 </html>
