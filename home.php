@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>Home</title>
+    <title>Rettiwt</title>
 </head>
 
 <body>
