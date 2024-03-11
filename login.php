@@ -10,9 +10,9 @@
 
     <?php
 
+    session_start();
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") { // Rajoute un event listener a la page pour attendre un POST request
-
-
 
         $name = $email = "";
         $name = htmlspecialchars($_POST['username']);
@@ -46,6 +46,11 @@
             echo "<p> Wrong password or email </p>";
         }
 
+    }
+
+    if (isset($_SESSION['error'])) {
+        echo "<p>" . $_SESSION['error'] . "</p>";
+        unset($_SESSION['error']);
     }
 
     ?>

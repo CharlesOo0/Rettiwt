@@ -10,6 +10,8 @@
 
     <?php
 
+    session_start();
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") { // Rajoute un event listener a la page pour attendre un POST request
 
         $name = $email = "";
