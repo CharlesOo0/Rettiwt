@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 
+    <?php
+    // -------------------------- Vérifie tout ce qui est nécessaire -------------------------- //
+    require 'sql.php'; // Inclut le fichier 'sql.php
+
+    $connexion = connexion(); // Se connecte a la base de données
+    ?>
+
 <html>
 
 <head>
@@ -10,8 +17,6 @@
 
     <?php
 
-    session_start();
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") { // Rajoute un event listener a la page pour attendre un POST request
 
         $name = $email = "";
@@ -19,41 +24,39 @@
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
 
-
-        // -------------------------- Connexion à la base de données -------------------------- //
-        $serveur = "localhost"; // Adresse du serveur MySQL (généralement localhost)
-        $utilisateur = "root"; // Nom d'utilisateur MySQL
-        $motdepasse = ""; // Mot de passe MySQL
-        $basededonnees = "rettiwt"; // Nom de la base de données
-
-        $connexion = mysqli_connect($serveur, $utilisateur, $motdepasse, $basededonnees);
-
-        // Vérifie la connextion
-        if (!$connexion) {
-            die("La connexion à la base de données a échoué : " . mysqli_connect_error());
-        }
-
         // Crée la requête SQL
         $sql = "INSERT INTO profil (username, email, password) VALUES ('$name', '$email', '$password')";
 
         // Exécute la requête
-        $result = mysqli_query($connexion, $sql);
+        try {
+            $result = mysqli_query($connexion, $sql);
+        } catch (Exception $e) {
+            $_SESSION['error'] = "Erreur lors de la création du compte : " . mysqli_error($connexion);
+            header('Location: register.php');
+            exit();
+        }
+        
 
         if ($result) {
             echo "<p> Account creation successful ... </p>";
             $_SESSION['username'] = $name;
-            header("Location: http://localhost/WE4A_projet/home.php");
+            header("Location: home.php");
         } else {
             echo "<p> Error while trying to create ... </p>";
         }
 
     }
 
+    if (isset($_SESSION['error'])) {
+        echo "<p>" . $_SESSION['error'] . "</p>";
+        unset($_SESSION['error']);
+    }
+
     ?>
 
     <h1>Crée un compte :</h1>
 
-    <form method="POST" action="http://localhost/WE4A_projet/register.php">
+    <form method="POST" action="register.php">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br><br>
 
@@ -65,7 +68,7 @@
 
         <input type="submit" value="Login">
     </form> <br><br>
-    <a href="http://localhost/WE4A_projet/login.php">Vous avez déjà un compte ?</a>
+    <a href="login.php">Vous avez déjà un compte ?</a>
 
 </body>
 
