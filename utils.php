@@ -153,14 +153,14 @@ function isFollowing($connexion, $username, $followed) {
 
     try { // Essaie de récupérer les followers
         $result = mysqli_query($connexion, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            return true;
+        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+            return true; // Si oui, l'utilisateur follow déjà
         }
     } catch (Exception $e) { // Si ça échoue, affiche une erreur
         echo "<p> Erreur lors de la vérification du follow : " . mysqli_error($connexion) . "</p>";
     }
 
-    return false;
+    return false; // Si la requête n'a pas retourné de lignes, l'utilisateur ne follow pas
 }
 
 /**
@@ -173,25 +173,25 @@ function isFollowing($connexion, $username, $followed) {
  */
 function handleLike($connexion, $username) {
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['post_id'])) {
-        $id = $_POST['post_id'];
-        $sql = "INSERT INTO likes (post_id, user_id) VALUES ('$id', (SELECT id FROM profil WHERE username = '$username'))";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['post_id'])) { // Si on post sur cette page alors on veux liker un post
+        $id = $_POST['post_id']; // Récupère l'id du post 
+        $sql = "INSERT INTO likes (post_id, user_id) VALUES ('$id', (SELECT id FROM profil WHERE username = '$username'))"; // Crée la requête SQL pour ajouter un like
 
-        try {
-            mysqli_query($connexion, $sql);
+        try { // Essaie d'ajouter un like
+            mysqli_query($connexion, $sql); 
             echo "<p> Like ajouté ! </p>";
-        } catch (Exception $e) {
-            $error = mysqli_error($connexion);
-            if (strpos($error, 'Duplicate entry') !== false) {
-                $sql = "DELETE FROM likes WHERE post_id='$id' AND user_id=(SELECT id FROM profil WHERE username = '$username')";
-                try {
-                    mysqli_query($connexion, $sql);
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+            $error = mysqli_error($connexion); // Récupère l'erreur
+            if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
+                $sql = "DELETE FROM likes WHERE post_id='$id' AND user_id=(SELECT id FROM profil WHERE username = '$username')"; // Crée la requête SQL pour retirer le like
+                try { // Essaie de retirer le like
+                    mysqli_query($connexion, $sql);  
                     echo "<p> Like retiré ! </p>";
-                } catch (Exception $e) {
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
                     echo "<p> Erreur lors de la suppression du like : " . mysqli_error($connexion) . "</p>";
                 }
-            }else {
-                echo "<p> Erreur lors de l'ajout du like : " . mysqli_error($connexion) . "</p>";
+            }else { // Si l'erreur n'est pas un doublon 
+                echo "<p> Erreur lors de l'ajout du like : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
             }
         }
 
@@ -207,25 +207,27 @@ function handleLike($connexion, $username) {
  * @return void
  */
 function handleFollow($connexion, $username) {
-    if (isset($_GET['follow'])) {
-        $followed = $_GET['follow'];
+    if (isset($_GET['follow'])) { // Si on a un GET request avec un follow
+        $followed = $_GET['follow']; // Récupère le nom d'utilisateur à follow
+        // Crée la requête SQL pour ajouter ou retirer un follow
         $sql = "INSERT INTO followers (follower_id, following_id) VALUES ((SELECT id FROM profil WHERE username = '$username'), (SELECT id FROM profil WHERE username = '$followed'))";
 
-        try {
+        try { // Essaie d'ajouter un follow
             mysqli_query($connexion, $sql);
             echo "<p> Follow ajouté ! </p>";
-        } catch (Exception $e) {
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
             $error = mysqli_error($connexion);
-            if (strpos($error, 'Duplicate entry') !== false) {
+            if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
+                // Crée la requête SQL pour retirer le follow
                 $sql = "DELETE FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
-                try {
+                try { // Essaie de retirer le follow
                     mysqli_query($connexion, $sql);
                     echo "<p> Follow retiré ! </p>";
-                } catch (Exception $e) {
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
                     echo "<p> Erreur lors de la suppression du follow : " . mysqli_error($connexion) . "</p>";
                 }
-            }else {
-                echo "<p> Erreur lors de l'ajout du follow : " . mysqli_error($connexion) . "</p>";
+            }else { // Si l'erreur n'est pas un doublon
+                echo "<p> Erreur lors de l'ajout du follow : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
             }
         }
     }

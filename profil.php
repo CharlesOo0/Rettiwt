@@ -13,7 +13,7 @@
 
 <html>
 <head>
-    <title>User Profile</title>
+    <title>Rettiwt</title>
 </head>
 <body>
 
