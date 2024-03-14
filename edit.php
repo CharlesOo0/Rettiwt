@@ -16,6 +16,10 @@
     <title>Rettiwt</title>
 </head>
 <body>
+    
+    <a href="home.php">Home</a> <br>
+    <a href="profil.php">Profil</a>
+
     <h1>Edit Profile</h1>
 
 
@@ -116,11 +120,20 @@
 
         }
 
+        if (empty($setClauses)) { // Si il n'y a pas eu de modification
+            $modify = false;
+        }
+
 
         $currentUser = $_SESSION['username'];
-        $sql = "UPDATE profil SET " . implode(', ', $setClauses). "WHERE username = '$currentUser'";
+        $sql = "UPDATE profil SET " . implode(', ', $setClauses). " WHERE username = '$currentUser'";
 
-        if ($modify) { // Si il n'y a pas eu d'erreur lors de la modification du profil
+        if ($modify == true) { // Si il n'y a pas eu d'erreur lors de la modification du profil
+            if (in_array('username', $setClauses)) {
+                echo "<p>Vous avez changé de pseudo, vous allez être déconnecté</p>";
+                $_SESSION['username'] = $username;
+            }
+
             try {
                 mysqli_query($connexion, $sql);
                 echo "<p>Profil modifié avec succès</p>";
