@@ -27,35 +27,38 @@
         <?php
         // -------------------------- Affiche les informations de l'utilisateur -------------------------- //
 
-        $currentUser = $_SESSION['username'];
-        $sql = "SELECT * FROM profil WHERE username = '$currentUser'";
+        $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
+        $sql = "SELECT * FROM profil WHERE username = '$currentUser'"; // Crée la requête SQL qui récupère les informations de l'utilisateur connecté
 
-        try {
+        try { // Exécute la requête
             $result = mysqli_query($connexion, $sql);
             $row = mysqli_fetch_assoc($result);
 
-            if (!empty($row)) {
-                if (isset($row['avatar']) && $row['avatar'] != null) {
-                    $picture = base64_encode($row['avatar']);
+            if (!empty($row)) { // Si le fetch a retourné quelque chose
+                if (isset($row['avatar']) && $row['avatar'] != null) { // Si l'utilisateur a un avatar
+                    $picture = base64_encode($row['avatar']); // Récupère l'avatar de l'utilisateur
+                    // Affiche l'avatar de l'utilisateur en 3 tailles différentes
                     echo "<p>Avatar actuel : <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='64' height='64'>
                     <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='128' height='128'>
                     <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='256' height='256'>
                     </p>";
-                }else {
+                }else { // Sinon (si l'utilisateur n'a pas d'avatar)
+                    // Affiche l'avatar par défaut en 3 tailles différentes
                     echo "<p>Avatar actuel : <img src='img/default_pfp.png' alt='avatar' width='64' height='64'>
                     <img src='img/default_pfp.png' alt='avatar' width='128' height='128'>
                     <img src='img/default_pfp.png' alt='avatar' width='256' height='256'>
                     </p>";
                 }
+
+                // Affiche les informations de l'utilisateur
                 echo "<p>Pseudo : " . $row['username'] . "</p>";
                 echo "<p>Email : " . $row['email'] . "</p>";
                 echo "<p>Bio : " . $row['bio'] . "</p>";
 
-            } else {
-                // Code to handle when the fetch returned nothing
-                echo "The fetch returned nothing";
+            } else { // Sinon (si le fetch n'a rien retourné)
+                echo "<p> Erreur profil non trouvé </p>";
             }
-        } catch (Exception $e) {
+        } catch (Exception $e) { // Si il y a une erreur lors de la récupération du profil
             echo "<p>Erreur lors de la récupération du profil : " . mysqli_error($connexion) . "</p>";
         }
         ?>
@@ -67,8 +70,8 @@
         if ($_SERVER['REQUEST_METHOD'] === 'POST' &&  (isset($_POST['username']) || isset($_POST['email']) || (isset($_POST['password']) && isset($_POST['confirm_password'])) || isset($_POST['bio']) || isset($_FILES['avatar']))) {
 
             $setClauses = []; // Initialise un tableau pour les clauses SET
-            $modify = true;
-            $passwordModified = false;
+            $modify = true; // Initialise une variable pour savoir si il y a eu une modification
+            $passwordModified = false; // Initialise une variable pour savoir si le mot de passe a été modifié
 
             if (isset($_POST['username']) && $_POST['username'] != "") { // Si l'utilisateur veux modifier son pseudo
                 $username = htmlspecialchars($_POST['username']); // Récupère le nouveau pseudo
@@ -150,30 +153,37 @@
             }
 
 
-            $currentUser = $_SESSION['username'];
-            $sql = "UPDATE profil SET " . implode(', ', $setClauses). " WHERE username = '$currentUser'";
+            $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
+            $sql = "UPDATE profil SET " . implode(', ', $setClauses). " WHERE username = '$currentUser'"; // Crée la requête SQL pour modifier le profil de l'utilisateur connecté
 
             if ($modify == true) { // Si il n'y a pas eu d'erreur lors de la modification du profil
-                try {
+
+                try { // Exécute la requête
                     mysqli_query($connexion, $sql);
                     if ($passwordModified) {
                         $modifyiedUsername = null;
                         foreach ($setClauses as $clause) {
                             if (strpos($clause, 'username') !== false) {
-                                // Extract the username value from the clause
+                                // Récupère le nouveau pseudo
                                 $parts = explode(" = ", $clause);
                                 $modifyiedUsername = trim($parts[1], "'");
                                 break;
                             }
-                        } // Add the missing closing brace for the foreach loop here
-                        $_SESSION['username'] = $modifyiedUsername;
-                        echo("<meta http-equiv='refresh' content='0'>"); //Refresh by HTTP 'meta'
+                        }
+
+                        $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
+
+                        echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
+                        // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
 
                     }
-                    $_SESSION['modifyied'] = true;
-                } catch (Exception $e) {
+
+                    $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
+
+                } catch (Exception $e) { // Si il y a une erreur lors de la modification du profil
                     echo "<p>Erreur lors de la modification du profil : " . mysqli_error($connexion) . "</p>";
                 }
+
             }  
         }
 
@@ -182,8 +192,8 @@
         <h1>Modifier votre profil :</h1>
 
         <?php
-            if (isset($_SESSION['modifyied']) && !isset($modify)) {
-                echo "<p>Profil modifié avec succès</p>";
+            if (isset($_SESSION['modifyied']) && !isset($modify)) { // Si le profil a été modifié
+                echo "<p>Profil modifié avec succès</p>"; // Affiche un message de confirmation
                 unset($_SESSION['modifyied']);
             }
         ?>
