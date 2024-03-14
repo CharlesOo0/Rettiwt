@@ -37,9 +37,9 @@
             if (!empty($row)) {
                 if (isset($row['avatar']) && $row['avatar'] != null) {
                     $picture = base64_encode($row['avatar']);
-                    echo "<p>Avatar actuel : <img src='data:image/jpg;base64," . $picture . "' alt='avatar' width='64' height='64'>
-                    <img src='data:image/jpg;base64," . $picture . "' alt='avatar' width='128' height='128'>
-                    <img src='data:image/jpg;base64," . $picture . "' alt='avatar' width='256' height='256'>
+                    echo "<p>Avatar actuel : <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='64' height='64'>
+                    <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='128' height='128'>
+                    <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='256' height='256'>
                     </p>";
                 }else {
                     echo "<p>Avatar actuel : <img src='img/default_pfp.png' alt='avatar' width='64' height='64'>
@@ -131,17 +131,18 @@
             }
 
             if (isset($_FILES['avatar']) && $_FILES['avatar']['tmp_name'] != "") { // Si l'utilisateur veux modifier son avatar
-                $avatar = file_get_contents($_FILES['avatar']['tmp_name']); // Read the file data
+                $avatar = file_get_contents($_FILES['avatar']['tmp_name']); // Lit le fichier de l'avatar
 
-                $imageData = base64_encode($avatar);
+                $imageData = mysqli_real_escape_string($connexion, $avatar);
 
-                if (strlen($imageData) > 65535) { // Vérifie si l'avatar ne dépasse pas 65535 caractères
-                    echo "<p>L'avatar ne peut pas dépasser 64Kb </p>";
+                // Vérifie si la taille de l'image ne dépasse pas 64KB
+                $maxBlobSize = 65535; // Taille maximale d'un BLOB en bytes (64KB)
+                if (strlen($imageData) > $maxBlobSize) {
+                    echo "<p>La taille de l'image ne peux pas dépasser 64 Kb.</p>";
                     $modify = false;
+                } else {
+                    $setClauses[] = "avatar = '$imageData'";
                 }
-
-                $setClauses[] = "avatar = '$imageData'";
-
             }
 
             if (empty($setClauses)) { // Si il n'y a pas eu de modification
@@ -176,14 +177,16 @@
             }  
         }
 
-        if (isset($_SESSION['modifyied']) && !isset($modify)) {
-            echo "<p>Profil modifié avec succès</p>";
-            unset($_SESSION['modifyied']);
-        }
-
         ?>
 
         <h1>Modifier votre profil :</h1>
+
+        <?php
+            if (isset($_SESSION['modifyied']) && !isset($modify)) {
+                echo "<p>Profil modifié avec succès</p>";
+                unset($_SESSION['modifyied']);
+            }
+        ?>
 
         <form method="POST" action="edit.php" enctype="multipart/form-data">
             <label for="username">Pseudo :</label>

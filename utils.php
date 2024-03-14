@@ -49,6 +49,11 @@ function displayProfil($connexion, $username) {
             $rowProfil = mysqli_fetch_assoc($resultProfil);
             $rowFollower = mysqli_fetch_assoc($resultFollower);
             echo "<p>";
+            if ($rowProfil['avatar'] != NULL) {
+                echo "Avatar: <img src='data:image/jpeg;base64," . base64_encode($rowProfil['avatar']) . "' alt='avatar' width='64' height='64'> <br>";
+            } else {
+                echo "Avatar: <img src='img/default_pfp.png' alt='avatar' width='64' height='64'> <br>";
+            }
             echo "Username: " . $rowProfil["username"] . "<br>";
             echo "Followers: " . $rowFollower["COUNT(follower_id)"] . "<br>";
             echo "Bio: " . $rowProfil["bio"] . "<br>";
@@ -107,8 +112,13 @@ function displayPost($connexion, $username) {
             try { // Essaie de récupérer le nom de l'auteur
                 $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
                 echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                echo "Author: " . $profil['username'] . "<br>"; // Affiche le nom de l'auteur
+                if ($profil['avatar'] != NULL) {
+                    echo "<img src='data:image/jpeg;base64," . base64_encode($profil['avatar']) . "' alt='avatar' width='32' height='32'>"; // Affiche l'avatar de l'auteur
+                } else {
+                    echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32'>"; // Affiche l'avatar par défaut
+                }
                 echo "</a>";
+                echo "Author: " . $profil['username'] . "<br>"; // Affiche le nom de l'auteur
             } catch (Exception $e) { // Si ça échoue, affiche une erreur
                 echo "Author: Error when trying to get the name. <br>";
             }
