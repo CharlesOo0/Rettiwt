@@ -11,6 +11,7 @@
 
 <head>
     <title>Rettiwt</title>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
 </head>
 
 <body>
@@ -35,35 +36,44 @@
             exit();
         }
 
+
         if ($result->num_rows == 1) {
-            echo "<p> Login succesful redirecting ... </p>";
+            echo "<div id='login-success'>";
+            echo "<p> Login réussi redirection en cour ... </p>";
+            echo "</div>";
             $_SESSION['username'] = $name;
             header("Location: home.php");
         } else {
-            echo "<p> Wrong username or password </p>";
+            echo "<div id='login-error'>";
+            echo "Mauvais pseudo ou mot de passe !";
+            echo "</div>";
         }
 
     }
 
     if (isset($_SESSION['error'])) {
-        echo "<p>" . $_SESSION['error'] . "</p>";
+        echo "<div id='login-error'>";
+        echo $_SESSION['error'];
+        echo "</div>";
         unset($_SESSION['error']);
     }
 
     ?>
 
-    <h1>Se connecter :</h1>
+    <div id="login-form-container">
+        <h1 id="login-form-title">Login</h1>
 
-    <form method="POST" action="login.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <form id="login-form" method="POST" action="login.php">
+            <label id="form-label-username" for="username">Pseudo :</label> <br>
+            <input id="form-input" type="text" id="username" name="username" placeholder="Entrer votre pseudo" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+            <label id="form-label-password" for="password">Mot de passe :</label> <br>
+            <input id="form-input" type="password" id="password" name="password" placeholder="Entrer votre mot de passe" required><br><br>
 
-        <input type="submit" value="Login">
-    </form> <br><br>
-    <a href="register.php">Vous n'avez pas de compte ?</a>
+            <input id="submit-button" type="submit" value="Login">
+        </form> <br><br>
+        <a id="redirection-lg" href="register.php">Vous n'avez pas de compte ?</a>
+    </div>
 
 </body>
 

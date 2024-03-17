@@ -11,6 +11,7 @@
 
 <head>
     <title>Rettiwt</title>
+    <link rel="stylesheet" type="text/css" href="css/register.css">
 </head>
 
 <body>
@@ -38,37 +39,47 @@
         
 
         if ($result) {
-            echo "<p> Account creation successful ... </p>";
+            echo "div id='login-success'>";
+            echo "Account creation successful ...";
+            echo "</div>";
             $_SESSION['username'] = $name;
             header("Location: home.php");
         } else {
-            echo "<p> Error while trying to create ... </p>";
+            echo "<div id='login-error'>";
+            echo "<p> Erreur en tentant de crée votre compte ... </p>";
+            echo "</div>";
         }
 
     }
 
     if (isset($_SESSION['error'])) {
-        echo "<p>" . $_SESSION['error'] . "</p>";
+        echo "<div id='login-error'>";
+        echo $_SESSION['error'];
+        echo "</div>";
         unset($_SESSION['error']);
     }
 
     ?>
 
-    <h1>Crée un compte :</h1>
+    <div id="register-form-container">
 
-    <form method="POST" action="register.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+    <h1 id="register-form-title">Register :</h1>
+    <form id="register-form" method="POST" action="register.php">
+        <label id="form-label-username" for="username">Pseudo :</label>
+        <input id="form-input" type="text" id="username" name="username" placeholder="Entrer votre pseudo"  required><br><br>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+        <label id="form-label-email" for="email">Email :</label>
+        <input id="form-input" type="email" id="email" name="email" placeholder="Entrer votre email" required><br><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <label id="form-label-password" for="password">Mot de passe:</label>
+        <input id="form-input" type="password" id="password" name="password" placeholder="Entrer votre mot de passe" required><br><br>
 
-        <input type="submit" value="Login">
+        <input id="submit-button" type="submit" value="Register">
     </form> <br><br>
-    <a href="login.php">Vous avez déjà un compte ?</a>
+
+    <a id="redirection-lg" href="login.php">Vous avez déjà un compte ?</a>
+
+    </div>
 
 </body>
 

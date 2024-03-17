@@ -1,0 +1,172 @@
+/* Réinitialiser les styles par défaut */
+* {
+    margin: 0; /* Supprime la marge par défaut */
+    padding: 0; /* Supprime le padding par défaut */
+    box-sizing: border-box;  /* Inclure la marge et le padding dans la taille */
+}
+
+@font-face { /* Ajoute une police custom */
+    font-family: 'Poppins'; /* Nom de la police */
+    src: url('../font/Poppins-Medium.ttf'); /* Chemin de la police */
+}
+
+
+body { /* Style du body */
+    font-family: 'Poppins'; /* Utilise la police custom pour toute la page */
+
+    display: flex; /* Utilise Flexbox pour centrer le contenu */
+    flex-direction: column; /* Permet de mettre nos éléments en colonnes */
+    justify-content: center; /* Centrer le contenu verticalement */
+    align-items: center; /* Centrer le contenu horizontalement */
+
+    min-height: 100vh; /* Hauteur complète de la fenêtre */
+    padding: 20px; /* Un peu de marge pour éviter que le formulaire ne touche les bords */
+
+    box-sizing: border-box; /* Inclure la marge dans la taille du body */
+
+    background: linear-gradient(to right, #26a0da, #1e3c72); /* Dégradé de couleur */
+}
+
+#login-form-container { /* Style du formulaire */
+    background-color: rgb(255, 255, 255); /* Couleur de fond blanche */
+    border-width: 1px; /* Largeur de la bordure */
+
+    width: 100%;  /* Largeur complète */
+    max-width: 400px; /* Largeur maximale du conteneur */
+    min-height: 450px; /* Hauteur minimale du conteneur */
+    margin: 0 auto; /* Centre horizontalement */
+
+    border-radius: 5px; /* Arrondit les coins */
+    font-size: 15px; /* Taille de police */
+}
+
+#login-form-title { /* Style du titre du formulaire */
+    margin-top: 4%; /* Marge en haut */
+
+    display: flex; /* Utilise Flexbox pour centrer le contenu */
+    justify-content: center; /* Centrer le contenu horizontalement */
+    align-items: center; /* Centrer le contenu verticalement */
+    flex-direction: column; /* Permet de mettre nos éléments en colonnes */
+}
+
+#login-form { /* Style du formulaire */
+    margin-top: auto; /* Marge en haut */
+    padding-top: 10%; /* Padding en haut */
+
+    text-align: center; /* Centre le texte */
+}
+
+#form-label-username { /* Style du label */
+    margin-top: auto; /* Marge en haut */
+    margin-right: 55%; /* Marge à droite */
+
+    text-align: left; /* Alignement à gauche */
+}
+
+#form-label-password { /* Style du label */
+    margin-top: auto; /* Marge en haut */
+    margin-right: 43%; /* Marge à droite */
+
+    text-align: left; /* Alignement à gauche */
+}
+
+#form-input { /* Style de l'input */
+    margin-top: auto; /* Marge en haut */
+    margin-right: 0%; /* Marge à droite */
+    padding-top: 1%; /* Padding en haut */
+    padding-bottom: 1%; /* Padding en bas */
+
+    width: 70%; /* Largeur de l'input */
+
+    text-align: left; /* Alignement à gauche */
+
+    border-top: none; /* Supprime la bordure du haut */
+    border-left: none; /* Supprime la bordure de gauche */
+    border-right: none; /* Supprime la bordure de droite */
+
+}
+
+#form-input:focus { /* Style de l'input lorsqu'il est focus */
+    outline: none; /* Supprime le contour par défaut */
+    border-color: #3494E6; /* Change la couleur de la bordure */
+}
+
+#submit-button { /* Style du bouton */
+    margin-top: auto; /* Marge en haut */
+    margin-top: 10%; /* Marge en haut */
+    padding-left: 30%; /* Padding à gauche */
+    padding-right: 30%; /* Padding à droite */
+    padding-top: 2%; /* Padding en haut */
+    padding-bottom: 2%; /* Padding en bas */
+
+    color: white; /* Couleur du texte */
+    background: linear-gradient(to right, #3494E6, #EC6EAD); /* Dégradé de couleur */
+    font-size: 15px; /* Taille de police */
+     
+    border-radius: 15px; /* Arrondit les coins */
+    border: none; /* Supprime la bordure */
+    transition: background 0.5s ease; /* Ajoutez cette ligne */
+}
+
+#submit-button:hover { /* Style du bouton lorsqu'il est hover */
+    background: black; /* Couleur plus claire */
+    color: linear-gradient(to right, #3494E6, #EC6EAD); /* Couleur du texte */
+    cursor: pointer; /* Ajoutez cette ligne */
+}
+
+#redirection-lg { /* Style du lien de redirection */
+    margin-top: auto; /* Marge en haut */
+
+    display: flex; /* Utilise Flexbox pour centrer le contenu */
+    justify-content: center; /* Centrer le contenu horizontalement */
+
+    color: #333; /* Couleur gris foncé */
+    font-size: 14px; /* Taille de police plus petite */
+    font-weight: normal; /* Poids de police normal */
+}
+
+#login-error { /* Style du message d'erreur */
+    padding-top: 0.5%;
+    margin: 0 auto; /* Centrer horizontalement */
+    margin-bottom: 2%;
+
+    background-color: rgb(245, 87, 87);
+    border: solid rgb(90, 44, 44);
+    border-width: 3px;
+
+    width: 100%; /* Largeur complète */
+    max-width: 400px; /* Augmentez cette valeur pour agrandir le conteneur */
+    min-height: 50px; /* Hauteur minimale du conteneur */
+
+    border-radius: 5px; /* Arrondit les coins */
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 15px;
+    color: white;
+}
+
+#login-success { /* Style du message de réussite */
+    padding-top: 0.5%;
+    margin: 0 auto; /* Centrer horizontalement */
+    margin-bottom: 2%;
+
+    background-color: rgb(122, 219, 66);
+    border: solid rgb(65, 119, 40);
+    border-width: 3px;
+
+    width: 100%; /* Largeur complète */
+    max-width: 400px; /* Augmentez cette valeur pour agrandir le conteneur */
+    min-height: 50px; /* Hauteur minimale du conteneur */
+
+    border-radius: 5px; /* Arrondit les coins */
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 15px;
+    color: white;
+}
