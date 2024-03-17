@@ -50,7 +50,7 @@ function displayProfil($connexion, $username) {
             $rowFollower = mysqli_fetch_assoc($resultFollower);
             echo "<p>";
             if ($rowProfil['avatar'] != NULL) {
-                echo "Avatar: <img src='data:image/jpeg;base64," . base64_encode($rowProfil['avatar']) . "' alt='avatar' width='64' height='64'> <br>";
+                echo "Avatar: <img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64'> <br>";
             } else {
                 echo "Avatar: <img src='img/default_pfp.png' alt='avatar' width='64' height='64'> <br>";
             }
@@ -113,7 +113,7 @@ function displayPost($connexion, $username) {
                 $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
                 echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                 if ($profil['avatar'] != NULL) {
-                    echo "<img src='data:image/jpeg;base64," . base64_encode($profil['avatar']) . "' alt='avatar' width='32' height='32'>"; // Affiche l'avatar de l'auteur
+                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32'>"; // Affiche l'avatar de l'auteur
                 } else {
                     echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32'>"; // Affiche l'avatar par défaut
                 }

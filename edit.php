@@ -29,6 +29,7 @@
 
         $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
         $sql = "SELECT * FROM profil WHERE username = '$currentUser'"; // Crée la requête SQL qui récupère les informations de l'utilisateur connecté
+        $picture = NULL; // Initialise une variable pour l'avatar de l'utilisateur a NULL
 
         try { // Exécute la requête
             $result = mysqli_query($connexion, $sql);
@@ -36,11 +37,11 @@
 
             if (!empty($row)) { // Si le fetch a retourné quelque chose
                 if (isset($row['avatar']) && $row['avatar'] != null) { // Si l'utilisateur a un avatar
-                    $picture = base64_encode($row['avatar']); // Récupère l'avatar de l'utilisateur
+                    $picture = $row['avatar']; // Récupère l'avatar de l'utilisateur
                     // Affiche l'avatar de l'utilisateur en 3 tailles différentes
-                    echo "<p>Avatar actuel : <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='64' height='64'>
-                    <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='128' height='128'>
-                    <img src='data:image/jpeg;base64," . $picture . "' alt='avatar' width='256' height='256'>
+                    echo "<p>Avatar actuel : <img src='img/" . $picture . "' alt='avatar' width='64' height='64'>
+                    <img src='img/" . $picture . "' alt='avatar' width='128' height='128'>
+                    <img src='img/" . $picture . "' alt='avatar' width='256' height='256'>
                     </p>";
                 }else { // Sinon (si l'utilisateur n'a pas d'avatar)
                     // Affiche l'avatar par défaut en 3 tailles différentes
@@ -134,18 +135,28 @@
             }
 
             if (isset($_FILES['avatar']) && $_FILES['avatar']['tmp_name'] != "") { // Si l'utilisateur veux modifier son avatar
-                $avatar = file_get_contents($_FILES['avatar']['tmp_name']); // Lit le fichier de l'avatar
 
-                $imageData = mysqli_real_escape_string($connexion, $avatar);
+                $avatar = $_FILES['avatar']['tmp_name']; // Récupère le fichier
 
-                // Vérifie si la taille de l'image ne dépasse pas 64KB
-                $maxBlobSize = 65535; // Taille maximale d'un BLOB en bytes (64KB)
-                if (strlen($imageData) > $maxBlobSize) {
-                    echo "<p>La taille de l'image ne peux pas dépasser 64 Kb.</p>";
-                    $modify = false;
+                if ($_FILES['avatar']['size'] > 64 * 1024) { // 64 KB = 64 * 1024 bytes
+                    echo "<p>L'avatar ne peut pas dépasser 64Kb </p>";
                 } else {
-                    $setClauses[] = "avatar = '$imageData'";
+                    $target_dir = "img/"; // Fichier dans lequel on enregistre nos images
+                    $identifiant_unique = uniqid('avatar_');
+
+                    // Récupère l'extension du fichier
+                     $file_extension = pathinfo($_FILES["avatar"]["name"], PATHINFO_EXTENSION);
+
+                    $target_file = $target_dir . $identifiant_unique . "." . $file_extension; // Crée le chemin du fichier
+
+                    if (!move_uploaded_file($avatar, $target_file)) { // Déplace le fichier dans le dossier img
+                        echo "<p> Il y a eu une erruer en téléchargant votre image. </p>";
+                    }else {
+                        $setClauses[] = "avatar = '" . $identifiant_unique . "." . $file_extension ."'";
+                    }
+
                 }
+
             }
 
             if (empty($setClauses)) { // Si il n'y a pas eu de modification
@@ -160,7 +171,8 @@
 
                 try { // Exécute la requête
                     mysqli_query($connexion, $sql);
-                    if ($passwordModified) {
+
+                    if ($passwordModified) { // Si le mot de passe a été modifié
                         $modifyiedUsername = null;
                         foreach ($setClauses as $clause) {
                             if (strpos($clause, 'username') !== false) {
@@ -172,11 +184,14 @@
                         }
 
                         $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
-
-                        echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
-                        // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
-
                     }
+
+                    if ($picture != NULL) { // Si l'utilisateur a un avatar
+                        unlink("img/" . $picture); // Supprime l'ancien avatar
+                    }
+
+                    echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
+                    // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
 
                     $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
 
