@@ -77,6 +77,13 @@ body { /* Style du body */
     text-align: left; /* Alignement à gauche */
 }
 
+#form-label-password-conf { /* Style du label */
+    margin-top: auto; /* Marge en haut */
+    margin-right: 18%; /* Marge à droite */
+
+    text-align: left; /* Alignement à gauche */
+}
+
 #form-input { /* Style de l'input */
     margin-top: auto; /* Marge en haut */
     margin-right: 0%; /* Marge à droite */

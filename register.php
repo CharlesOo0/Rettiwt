@@ -24,23 +24,76 @@
         $name = htmlspecialchars($_POST['username']);
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
+        $password_confirmation = htmlspecialchars($_POST['password_confirmation']);
 
-        // Crée la requête SQL
-        $sql = "INSERT INTO profil (username, email, password) VALUES ('$name', '$email', '$password')";
+        if (empty($name) || empty($email) || empty($password)) { // Vérifie si les champs sont vides
+            $_SESSION['error'] = "Tous les champs sont requis.";
+            header('Location: register.php');
+            exit();
+        }
+
+        if (strlen($name) > 60) { // Vérifie si le username est trop long
+            $_SESSION['error'] = "Le nom d'utilisateur est trop long 60 charactères maximum.";
+            header('Location: register.php');
+            exit();
+        }
+
+        if (strlen($email) > 256) { // Vérifie si l'email est trop long
+            $_SESSION['error'] = "L'email est trop long 256 charactères maximum.";
+            header('Location: register.php');
+            exit();
+        }
+
+        if ($password != $password_confirmation) { // Vérifie si les mots de passe correspondent
+            $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
+            header('Location: register.php');
+            exit();
+        }
+
+        if (strlen($password) > 256) { // Vérifie si le mot de passe est trop long
+            $_SESSION['error'] = "Le mot de passe est trop long 256 charactères maximum.";
+            header('Location: register.php');
+            exit();
+        }
+
+        if (strlen($password) < 8) { // Vérifie si le mot de passe est trop court
+            $_SESSION['error'] = "Le mot de passe est trop court 8 charactères minimum.";
+            header('Location: register.php');
+            exit();
+        }
+
+        // Prépare une requête SQL, empêche les injections SQL en utilisant des requêtes préparées
+        $stmt = $connexion->prepare("INSERT INTO profil (username, email, password) VALUES (?, ?, ?)");
+
+        // Lie les paramètres de la requête préparée aux variables
+        $stmt->bind_param("sss", $name, $email, $password);
 
         // Exécute la requête
         try {
-            $result = mysqli_query($connexion, $sql);
+            $result = $stmt->execute();
         } catch (Exception $e) {
-            $_SESSION['error'] = "Erreur lors de la création du compte : " . mysqli_error($connexion);
+            $error = mysqli_error($connexion); // Récupère l'erreur
+
+            if (strpos($error, 'Duplicate entry') !== false) { // Vérifie si l'erreur est un doublon
+
+                if (strpos($error, "for key 'username'") !== false) { // Vérifie si le doublon est un username
+                    $_SESSION['error'] = "Ce nom d'utilisateur est déjà pris."; // Stocke un message d'erreur
+                } else if (strpos($error, "for key 'email'") !== false) { // Vérifie si le doublon est un email
+                    $_SESSION['error'] = "Cet email est déjà pris."; // Stocke un message d'erreur
+                }
+
+            } else { // Si l'erreur n'est pas un doublon
+                $_SESSION['error'] = "Erreur lors de la création du compte";
+            }
+
             header('Location: register.php');
             exit();
         }
         
 
         if ($result) {
-            echo "div id='login-success'>";
-            echo "Account creation successful ...";
+            echo "<div id='login-success'>";
+            echo "Compte crée avec succés redirection en cour ...";
             echo "</div>";
             $_SESSION['username'] = $name;
             header("Location: home.php");
@@ -73,6 +126,9 @@
 
         <label id="form-label-password" for="password">Mot de passe:</label>
         <input id="form-input" type="password" id="password" name="password" placeholder="Entrer votre mot de passe" required><br><br>
+
+        <label id="form-label-password-conf" for="password">Confirmation mot de passe :</label>
+        <input id="form-input" type="password" id="password" name="password_confirmation" placeholder="Réentrez votre mot de passe" required><br><br>
 
         <input id="submit-button" type="submit" value="Register">
     </form> <br><br>
