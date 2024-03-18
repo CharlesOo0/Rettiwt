@@ -20,14 +20,14 @@ body { /* Style du body */
     align-items: center; /* Centrer le contenu horizontalement */
 
     min-height: 100vh; /* Hauteur complète de la fenêtre */
-    padding: 20px; /* Un peu de marge pour éviter que le formulaire ne touche les bords */
+    padding: 0; /* Un peu de marge pour éviter que le formulaire ne touche les bords */
 
     box-sizing: border-box; /* Inclure la marge dans la taille du body */
 
 }
 
 #profil {
-    width: 30%; /* Largeur du formulaire */
+    width: 40%; /* Largeur du formulaire */
     height: 100%; /* Hauteur du formulaire */
     display: flex;
     flex-direction: column;
@@ -39,7 +39,7 @@ body { /* Style du body */
 }
 
 #posts {
-    width: 70%; /* Largeur du formulaire */
+    width: 60%; /* Largeur du formulaire */
     height: 100%; /* Hauteur du formulaire */
     display: flex;
     flex-direction: column;
