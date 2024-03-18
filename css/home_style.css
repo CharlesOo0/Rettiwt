@@ -1,0 +1,104 @@
+/* Réinitialiser les styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../font/Poppins-Medium.ttf');
+}
+
+body {
+    font-family: 'Poppins';
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#profil-band {
+    width: 40%;
+    height: 100%;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 0;
+    padding-bottom: 100%;
+    border: solid 1px black;
+}
+
+#profil {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    overflow: auto;
+    min-width: 100%;
+}
+
+#profil-detail {
+    border: 1px solid blue;
+    width: 60%;
+    text-align: left;
+    padding: 0;
+}
+
+#avatar {
+    width: 40%;
+    height: 40%;
+}
+
+#avatar-username-follower {
+    display: flex;
+    flex-direction: row;
+    word-wrap: break-word;
+    overflow: auto;
+}
+
+#username-follower {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: right;
+    width: 60%;
+    border: 1px solid red;
+    overflow: hidden;
+}
+
+#bio {
+    padding-top: 5%;
+    border: 1px solid black;
+}
+
+#profil-link {
+    border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding: 5%;
+}
+
+#post-form {
+    border: 1px solid green;
+}
+
+#posts {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    border: solid 1px black;
+}

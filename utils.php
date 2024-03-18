@@ -48,16 +48,20 @@ function displayProfil($connexion, $username) {
             // Affiche les données de l'utilisateur
             $rowProfil = mysqli_fetch_assoc($resultProfil);
             $rowFollower = mysqli_fetch_assoc($resultFollower);
-            echo "<p>";
+
+            echo "<div id='avatar-username-follower'>";
             if ($rowProfil['avatar'] != NULL) {
-                echo "Avatar: <img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64'> <br>";
+                echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
             } else {
-                echo "Avatar: <img src='img/default_pfp.png' alt='avatar' width='64' height='64'> <br>";
+                echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
             }
-            echo "Username: " . $rowProfil["username"] . "<br>";
-            echo "Followers: " . $rowFollower["COUNT(follower_id)"] . "<br>";
-            echo "Bio: " . $rowProfil["bio"] . "<br>";
-            echo "</p>";
+            echo "<div id='username-follower'>";
+            echo "<p id='username'> @" . $rowProfil["username"] . "<p>";
+            echo "<p id='followers'>" . $rowFollower["COUNT(follower_id)"] . " Followers <p>";
+            echo "</div>";
+            echo "</div>";
+            echo "<p id='bio'> Biographie : <br>" . $rowProfil["bio"] . " <p>";
+
         }
 }
 
@@ -113,9 +117,9 @@ function displayPost($connexion, $username) {
                 $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
                 echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                 if ($profil['avatar'] != NULL) {
-                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32'>"; // Affiche l'avatar de l'auteur
+                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
                 } else {
-                    echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32'>"; // Affiche l'avatar par défaut
+                    echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                 }
                 echo "</a>";
                 echo "Author: " . $profil['username'] . "<br>"; // Affiche le nom de l'auteur

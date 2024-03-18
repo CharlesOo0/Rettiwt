@@ -15,12 +15,12 @@
 
 <head>
     <title>Rettiwt</title>
-    <link rel="stylesheet" type="text/css" href="css/home.css">
+    <link rel="stylesheet" type="text/css" href="css/home_style.css">
 </head>
 
 <body>
 
-        <?php
+    <?php
         // -------------------------- Crée un post -------------------------- //
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['title']) && isset($_POST['text'])){
             if (!isset($_SESSION['username'])) {
@@ -80,25 +80,33 @@
         echo "</div>";
         ?>
 
-    <div id="profil">
-        <?php
-        // -------------------------- Affiche le profil de l'utilisateur -------------------------- //
-        displayProfil($connexion, $_SESSION['username']);
-        ?>
+    <div id="profil-band">
 
-        <div>Post a message : <br>
+        <div id="profil">
+            <div id="profil-detail">
+                <?php
+                // -------------------------- Affiche le profil de l'utilisateur -------------------------- //
+                displayProfil($connexion, $_SESSION['username']);
+                ?>
+            </div>
+
+            <div id="profil-link">
+                <a href="profil.php">Profil</a> <br>
+                <img src="img/bell.png" alt="Notification" width="64" height="50"> <br>
+                <a href="logout.php">Déconnexion</a>
+            </div>
+        </div>
+
+        <div id="post-form">Post a message : <br>
         <form method="POST" action="">
-            <label for="text">Titre :</label>
+            <label for="text">Titre :</label> <br>
             <input type="text" name="title"  required><br>
 
-            <label for="text">Texte :</label>
+            <label for="text">Texte :</label> <br>
             <input type="text" name="text" required><br>
             <input type="submit" value="Post">
         </form>
         </div>
-
-        <a href="profil.php">Profil</a>
-        <p>Click <a href="logout.php">here</a> to logout.</p>
     </div>
 
 </body>
