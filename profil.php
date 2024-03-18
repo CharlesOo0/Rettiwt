@@ -43,12 +43,11 @@
         }else { // Sinon on affiche le profil de l'utilisateur connecté
 
             displayProfil($connexion, $_SESSION['username']);  // On affiche le profil de l'utilisateur connecté
-            echo "<a href='edit.php'>Modifier le profil</a>";
+            echo "<a href='edit.php'>Modifier le profil</a> <br>";
+            echo "<a href='stat.php?profil_detail=". urlencode($_SESSION['username']) ."'>Statistique</a>";
             displayPost($connexion, $_SESSION['username']); // On affiche les posts de l'utilisateur connecté
-
         }
     ?>
-
     <a href="home.php"> Fil rettiwt. </a>
 
 </body>
