@@ -1,0 +1,50 @@
+/* Réinitialiser les styles par défaut */
+* {
+    margin: 0; /* Supprime la marge par défaut */
+    padding: 0; /* Supprime le padding par défaut */
+    box-sizing: border-box;  /* Inclure la marge et le padding dans la taille */
+}
+
+@font-face { /* Ajoute une police custom */
+    font-family: 'Poppins'; /* Nom de la police */
+    src: url('../font/Poppins-Medium.ttf'); /* Chemin de la police */
+}
+
+
+body { /* Style du body */
+    font-family: 'Poppins'; /* Utilise la police custom pour toute la page */
+
+    display: flex; /* Utilise Flexbox pour centrer le contenu */
+    flex-direction: row; /* Permet de mettre nos éléments en colonnes */
+    justify-content: center; /* Centrer le contenu verticalement */
+    align-items: center; /* Centrer le contenu horizontalement */
+
+    min-height: 100vh; /* Hauteur complète de la fenêtre */
+    padding: 20px; /* Un peu de marge pour éviter que le formulaire ne touche les bords */
+
+    box-sizing: border-box; /* Inclure la marge dans la taille du body */
+
+}
+
+#profil {
+    width: 30%; /* Largeur du formulaire */
+    height: 100%; /* Hauteur du formulaire */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+
+    border: solid 1px black; /* Ajoute une bordure noire */
+}
+
+#posts {
+    width: 70%; /* Largeur du formulaire */
+    height: 100%; /* Hauteur du formulaire */
+    display: flex;
+    flex-direction: column;
+    
+    text-align: left;
+    border: solid 1px black; /* Ajoute une bordure noire */
+
+}

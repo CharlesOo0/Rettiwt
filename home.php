@@ -15,31 +15,10 @@
 
 <head>
     <title>Rettiwt</title>
+    <link rel="stylesheet" type="text/css" href="css/home.css">
 </head>
 
 <body>
-    <h1>Welcome to the home page</h1>
-
-    <a href="profil.php">Profil</a>
-
-
-    <?php
-    // -------------------------- Affiche le profil de l'utilisateur -------------------------- //
-    displayProfil($connexion, $_SESSION['username']);
-    ?>
-
-    <div>Post a message : <br>
-    <form method="POST" action="">
-        <label for="text">Titre :</label>
-        <input type="text" name="title"  required><br>
-
-        <label for="text">Texte :</label>
-        <input type="text" name="text" required><br>
-        <input type="submit" value="Post">
-    </form>
-    </div>
-
-    <p>Click <a href="logout.php">here</a> to logout.</p>
 
         <?php
         // -------------------------- Crée un post -------------------------- //
@@ -96,11 +75,31 @@
         }
 
         // -------------------------- Affiche les posts -------------------------- //
+        echo "<div id='posts'>";
         displayPost($connexion, NULL);
-
+        echo "</div>";
         ?>
 
+    <div id="profil">
+        <?php
+        // -------------------------- Affiche le profil de l'utilisateur -------------------------- //
+        displayProfil($connexion, $_SESSION['username']);
+        ?>
 
+        <div>Post a message : <br>
+        <form method="POST" action="">
+            <label for="text">Titre :</label>
+            <input type="text" name="title"  required><br>
+
+            <label for="text">Texte :</label>
+            <input type="text" name="text" required><br>
+            <input type="submit" value="Post">
+        </form>
+        </div>
+
+        <a href="profil.php">Profil</a>
+        <p>Click <a href="logout.php">here</a> to logout.</p>
+    </div>
 
 </body>
 
