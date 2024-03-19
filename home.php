@@ -15,10 +15,14 @@
 
 <head>
     <title>Rettiwt</title>
-    <link rel="stylesheet" type="text/css" href="css/home_style.css">
+    <link rel="stylesheet" type="text/css" href="css/home.css">
 </head>
 
 <body>
+
+    <div id="left-band">
+
+    </div>
 
     <?php
         // -------------------------- Crée un post -------------------------- //
@@ -75,37 +79,38 @@
         }
 
         // -------------------------- Affiche les posts -------------------------- //
-        echo "<div id='posts'>";
+        echo "<div id='post'>";
         displayPost($connexion, NULL);
         echo "</div>";
-        ?>
+    ?>
 
-    <div id="profil-band">
+    <div id="right-band">
 
         <div id="profil">
-            <div id="profil-detail">
+
                 <?php
                 // -------------------------- Affiche le profil de l'utilisateur -------------------------- //
                 displayProfil($connexion, $_SESSION['username']);
                 ?>
-            </div>
 
             <div id="profil-link">
                 <a href="profil.php">Profil</a> <br>
                 <img src="img/bell.png" alt="Notification" width="64" height="50"> <br>
                 <a href="logout.php">Déconnexion</a>
             </div>
+
         </div>
 
-        <div id="post-form">Post a message : <br>
-        <form method="POST" action="">
-            <label for="text">Titre :</label> <br>
-            <input type="text" name="title"  required><br>
+        <div id="post-form">
+            <h4 id="title">Post a message :</h4> <br>
+            <form method="POST" action="">
+                <label id="label-title" for="text">Titre :</label> <br>
+                <input class="input" type="text" name="title"  required><br>
 
-            <label for="text">Texte :</label> <br>
-            <input type="text" name="text" required><br>
-            <input type="submit" value="Post">
-        </form>
+                <label id="label-text" for="text">Texte :</label> <br>
+                <input class="input" type="text" name="text" required><br>
+                <input type="submit" value="Post">
+            </form>
         </div>
     </div>
 

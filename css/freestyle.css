@@ -1,0 +1,77 @@
+/* Réinitialiser les styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../font/Poppins-Medium.ttf');
+}
+
+body {
+    font-family: 'Poppins';
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#left-band {
+    width: 30%;
+    height: 100vh;
+    border: solid 1px red;
+    position: sticky;
+    top: 0;
+    
+}
+
+#post {
+    width: 40%;
+    height: 3000px;
+    border: solid 1px blue;
+}
+
+#right-band {
+    width: 30%;
+    height: 100vh;
+    border: solid 1px green;
+    position: sticky;
+    top: 0;
+}
+
+#profil {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    height: 30vh;
+}
+
+#profil-detail {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: row;
+    height: 20vh;
+}
+
+#avatar {
+    border: solid 1px black;
+    width: 40%;
+}
+
+#pseudo-follow {
+    border: solid 1px black;
+    width: 60%;
+}
+
+#bio {
+    border: solid 1px black;
+}
+
+#post-form {
+    border: solid 1px black;
+}
+

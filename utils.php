@@ -49,18 +49,29 @@ function displayProfil($connexion, $username) {
             $rowProfil = mysqli_fetch_assoc($resultProfil);
             $rowFollower = mysqli_fetch_assoc($resultFollower);
 
-            echo "<div id='avatar-username-follower'>";
-            if ($rowProfil['avatar'] != NULL) {
-                echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
-            } else {
-                echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
-            }
-            echo "<div id='username-follower'>";
-            echo "<p id='username'> @" . $rowProfil["username"] . "<p>";
-            echo "<p id='followers'>" . $rowFollower["COUNT(follower_id)"] . " Followers <p>";
+
+            echo "<div id='profil-detail'>";
+
+                echo "<div id='avatar'>";
+                    echo "<a href='profil.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
+                    if ($rowProfil['avatar'] != NULL) {
+                        echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
+                    } else {
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
+                    }
+                    echo "</a>";
+                echo "</div>";
+
+                echo "<div id='pseudo-follow'>";
+                    echo "<p> @" . $rowProfil["username"] . "<p>";
+                    echo "<p>" . $rowFollower["COUNT(follower_id)"] . " Followers <p>";
+                echo "</div>";
+
             echo "</div>";
+
+            echo "<div id='bio'>";
+                echo "<p> Biographie : <br>" . $rowProfil["bio"] . " <p>";
             echo "</div>";
-            echo "<p id='bio'> Biographie : <br>" . $rowProfil["bio"] . " <p>";
 
         }
 }
