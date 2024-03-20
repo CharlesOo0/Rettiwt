@@ -122,41 +122,53 @@ function displayPost($connexion, $username) {
         while ($row = mysqli_fetch_assoc($resultPost)) { // Pour chaque post
 
             echo "<p>";
-            // Récupère le nom de l'auteur
-            $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
-            try { // Essaie de récupérer le nom de l'auteur
-                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                if ($profil['avatar'] != NULL) {
-                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
-                } else {
-                    echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                // Récupère le nom de l'auteur
+                $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
+                try { // Essaie de récupérer le nom de l'auteur
+                    $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                    if ($profil['avatar'] != NULL) {
+                        echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                    } else {
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                    }
+                    echo "</a>";
+                    echo "@" . $profil['username'] . ", " . $row["date"] . "<br>"; // Affiche le nom de l'auteur
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Author: Error when trying to get the name. <br>";
                 }
-                echo "</a>";
-                echo "Author: " . $profil['username'] . "<br>"; // Affiche le nom de l'auteur
-            } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                echo "Author: Error when trying to get the name. <br>";
-            }
 
-            // Affiche les informations du post
-            echo "Title: " . $row["title"] . "<br>";
-            echo "Text: " . $row["text"] . "<br>";
-            echo "Date: " . $row["date"] . "<br>";
+                // Affiche les informations du post
+                echo "Title: " . $row["title"] . "<br>";
+                echo "Text: " . $row["text"] . "<br>";
 
-            // Récupère le nombre de likes
-            $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
-            try { // Essaie de récupérer le nombre de likes
-                $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                echo "Likes: " . $likes['COUNT(post_id)'] . "<br>"; // Affiche le nombre de likes
-            } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                echo "Likes: Error when trying to get the number of likes. <br>";
-            }
+                // Récupère le nombre de likes
+                $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
+                try { // Essaie de récupérer le nombre de likes
+                    $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Likes: Error when trying to get the number of likes. <br>";
+                }
 
-            // Affiche le bouton pour liker
-            echo    "<form method='post' action=''>";
-            echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
-            echo            "<input type='submit' value='Like'>";
-            echo    "</form>";
+                // Assuming $userId is the id of the current user and $postId is the id of the post
+                $sql = "SELECT * FROM likes WHERE post_id = " . $row["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
+                try {
+                    $result = mysqli_query($connexion, $sql);
+                } catch (Exception $e) {
+                    echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
+                }
+
+                // Affiche le bouton pour liker
+                echo    "<form method='post' action=''>";
+                echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
+
+                if (mysqli_num_rows($result) > 0) {
+                    echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                } else {
+                    echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                }
+                echo    "</form>";
+
             echo "</p> <br>";
         }
     } else {
@@ -204,14 +216,12 @@ function handleLike($connexion, $username) {
 
         try { // Essaie d'ajouter un like
             mysqli_query($connexion, $sql); 
-            echo "<p> Like ajouté ! </p>";
         } catch (Exception $e) { // Si ça échoue, affiche une erreur
             $error = mysqli_error($connexion); // Récupère l'erreur
             if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
                 $sql = "DELETE FROM likes WHERE post_id='$id' AND user_id=(SELECT id FROM profil WHERE username = '$username')"; // Crée la requête SQL pour retirer le like
                 try { // Essaie de retirer le like
                     mysqli_query($connexion, $sql);  
-                    echo "<p> Like retiré ! </p>";
                 } catch (Exception $e) { // Si ça échoue, affiche une erreur
                     echo "<p> Erreur lors de la suppression du like : " . mysqli_error($connexion) . "</p>";
                 }
@@ -239,7 +249,6 @@ function handleFollow($connexion, $username) {
 
         try { // Essaie d'ajouter un follow
             mysqli_query($connexion, $sql);
-            echo "<p> Follow ajouté ! </p>";
         } catch (Exception $e) { // Si ça échoue, affiche une erreur
             $error = mysqli_error($connexion);
             if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
@@ -247,7 +256,6 @@ function handleFollow($connexion, $username) {
                 $sql = "DELETE FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
                 try { // Essaie de retirer le follow
                     mysqli_query($connexion, $sql);
-                    echo "<p> Follow retiré ! </p>";
                 } catch (Exception $e) { // Si ça échoue, affiche une erreur
                     echo "<p> Erreur lors de la suppression du follow : " . mysqli_error($connexion) . "</p>";
                 }

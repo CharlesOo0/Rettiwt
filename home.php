@@ -15,6 +15,8 @@
 
 <head>
     <title>Rettiwt</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/utils.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/home.css">
     
@@ -92,7 +94,6 @@
 
                     try {
                         mysqli_query($connexion, $sql);
-                        echo "<p> Post crée ! </p>";
                     } catch (Exception $e) {
                         echo "<p> Error: " . $sql . "<br>" . mysqli_error($connexion) . "</p>";
                     }

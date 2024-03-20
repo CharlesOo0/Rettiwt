@@ -31,13 +31,17 @@
             $username = $_GET['profil_detail'];  // On récupère le username de l'autre utilisateur
             displayProfil($connexion, $username); // On affiche le profil de l'autre utilisateur
             if ($username == $_SESSION['username']) { // Si l'autre utilisateur est l'utilisateur connecté
-                echo "<a href='edit.php'>Modifier le profil</a>"; // On affiche un lien pour donner l'option de pouvoir modifier le profil
+                echo "<a href='edit.php'>Modifier le profil</a> <br>"; // On affiche un lien pour donner l'option de pouvoir modifier le profil
+                echo "<a href='stat.php?profil_detail=". urlencode($_SESSION['username']) ."'>Statistique</a> <br>";
+                echo "<a href='home.php'> Fil rettiwt. </a>";
             }else {
                 if (isFollowing($connexion, $_SESSION['username'], $username)){ // Si l'utilisateur connecté follow déjà l'autre utilisateur
                     echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Unfollow</a>"; // On affiche un lien pour donner l'option de pouvoir unfollow l'autre utilisateur
                 }else {// Sinon (si l'utilisateur connecté ne follow pas l'autre utilisateur) 
                     echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Follow</a>"; // On affiche un lien pour donner l'option de pouvoir follow l'autre utilisateur
                 }
+                echo "<br>";
+                echo "<a href='home.php'> Fil rettiwt. </a>";
             }
             displayPost($connexion, $username); // On affiche les posts de l'autre utilisateur
 
@@ -45,11 +49,12 @@
 
             displayProfil($connexion, $_SESSION['username']);  // On affiche le profil de l'utilisateur connecté
             echo "<a href='edit.php'>Modifier le profil</a> <br>";
-            echo "<a href='stat.php?profil_detail=". urlencode($_SESSION['username']) ."'>Statistique</a>";
+            echo "<a href='stat.php?profil_detail=". urlencode($_SESSION['username']) ."'>Statistique</a> <br>";
+            echo "<a href='home.php'> Fil rettiwt. </a>";
             displayPost($connexion, $_SESSION['username']); // On affiche les posts de l'utilisateur connecté
         }
+
     ?>
-    <a href="home.php"> Fil rettiwt. </a>
 
 </body>
 </html>

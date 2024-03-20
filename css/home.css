@@ -15,6 +15,12 @@ a {
     text-decoration: none; /* Removes underline */
 }
 
+html {
+
+    scroll-behavior: 'instant';
+  
+}
+
 body {
     font-family: 'Poppins';
     height: 100%;
@@ -59,8 +65,8 @@ body {
 }
 
 #profil-link-i {
-    margin-top: 75px;
-    margin-left: 20%;
+    margin-top: 30px;
+    margin-left: 25%;
     padding-left: 5%;
     padding-right: 5%;
     padding-top: 2%;
@@ -74,7 +80,7 @@ body {
 
 #right-band {
     height: 100vh;
-    border: solid 1px green;
+    border-left: solid 1px rgb(201, 201, 201);
     
     position: sticky;
     top: 0;
