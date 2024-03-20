@@ -10,15 +10,15 @@
 
     <div class="row">
 
-        <div id="left-band" class="col-md-3">
+        <div id="left-band" class="col-md-3 d-none d-md-block">
             Bandeau gauche
         </div>
         
-        <div id="post" class="col-md-5">
+        <div id="post" class="col-md-5 col-12">
             Les posts
         </div>
 
-        <div id="right-band" class="col-md-4">
+        <div id="right-band" class="col-md-4 d-none d-md-block">
 
             <div id="profil" class="container-fluid">
                 Profil
