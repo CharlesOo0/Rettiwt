@@ -10,151 +10,120 @@
     src: url('../font/Poppins-Medium.ttf');
 }
 
+a {
+    color: inherit; /* Changes the link color to the color of its parent */
+    text-decoration: none; /* Removes underline */
+}
+
 body {
     font-family: 'Poppins';
-    display: flex;
-    flex-direction: row;
     height: 100%;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-
 }
 
 #left-band {
-    width: 20%;
     height: 100vh;
-    border: solid 1px red;
+    border-right: solid 1px rgb(201, 201, 201);
     position: sticky;
     top: 0;
-    
 }
 
+#profil-link {
+    height: 100%;
+    width: 80%;
+    float: right;
+    
+    text-align: left;
+}
+
+.left-band-img {
+    display: inline-block;
+
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    border-radius: 30px;
+
+    color: black;
+    text-shadow: none; 
+}
+
+.left-band-img img {
+    width: 40px;
+    height: auto;
+}
+
+.left-band-img:hover {
+    background-color: rgb(180, 180, 180);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
+}
+
+#profil-link-i {
+    margin-top: 75px;
+    margin-left: 20%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+
 #post {
-    width: 50%;
     height: 3000px;
-    border: solid 1px blue;
-
-    transition: width 0.5s ease-in-out;
-
 }
 
 #right-band {
-    width: 30%;
     height: 100vh;
     border: solid 1px green;
+    
     position: sticky;
     top: 0;
-
-    transition: opacity 0.5s ease-in-out, width 0.5s ease-in-out;
-    opacity: 1;
 }
 
 #profil {
     border: solid 1px black;
-    height: 60%;
-    overflow: hidden;
+    height: 100%;
 }
 
 #profil-detail {
+    border: solid 1px blue;
+    text-align: center;
+}
+
+#avatar {
     border: solid 1px black;
-    display: flex;
-    flex-direction: row;
-    height: 40%;
+}
 
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
+#pseudo-follow {
+    border: solid 1px black;
 }
 
 #bio {
     border: solid 1px black;
-    display: flex;
-    flex-direction: column;
-    height: 20%;
-
-    overflow: hidden;
-}
-
-#profil-link {
-    border: solid 1px black;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 40%;
-
-    overflow: hidden;
 }
 
 #post-form {
-    padding: 0;
     border: solid 1px black;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 40%;
-
-    text-align: center;
-
-    overflow: hidden;
 }
 
-#title {
-    padding-top: 10%;
-    height: 20%;
-}
 
-#label-title {
-    padding-right: 71%;
-    font-weight: bold;
-}
-
-#label-text {
-    font-weight: bold;
-}
-
-.input {
-    
-    border: solid 1px black;
-
-}
-
-@media screen and (max-width: 600px),
-        screen and (max-height: 580px){
-    #right-band {
+@media screen and (max-width: 1340px){
+    .pl-span {
         display: none;
-    }
-    #profil {
-        display: none;
-    }
-    #profil-detail {
-        display: none;
-    }
-    #profil-link {
-        display: none;
-    }
-    #post-form {
-        display: none;
+        padding-left: 2%;
     }
 
-    #post {
-        width: 100%;
-    }
-}
+    #profil-link-i {
+        padding: 5%;
+        margin-right: 0;
 
-@media (min-device-width:320px) and (max-device-width:768px) {
-    #left-band {
-        display: none;
-    }
-
-    #post {
         width: 40%;
+        height: auto;
     }
 
-    #right-band {
-        width: 60%;
+    #profil-link {
+        float: none;
+        text-align: center;
+        width: 100%;
     }
 }

@@ -1,0 +1,160 @@
+/* Réinitialiser les styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../font/Poppins-Medium.ttf');
+}
+
+body {
+    font-family: 'Poppins';
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+}
+
+#left-band {
+    width: 20%;
+    height: 100vh;
+    border: solid 1px red;
+    position: sticky;
+    top: 0;
+    
+}
+
+#post {
+    width: 50%;
+    height: 3000px;
+    border: solid 1px blue;
+
+    transition: width 0.5s ease-in-out;
+
+}
+
+#right-band {
+    width: 30%;
+    height: 100vh;
+    border: solid 1px green;
+    position: sticky;
+    top: 0;
+
+    transition: opacity 0.5s ease-in-out, width 0.5s ease-in-out;
+    opacity: 1;
+}
+
+#profil {
+    border: solid 1px black;
+    height: 60%;
+    overflow: hidden;
+}
+
+#profil-detail {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: row;
+    height: 40%;
+
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+#bio {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    height: 20%;
+
+    overflow: hidden;
+}
+
+#profil-link {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+
+    overflow: hidden;
+}
+
+#post-form {
+    padding: 0;
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+
+    text-align: center;
+
+    overflow: hidden;
+}
+
+#title {
+    padding-top: 10%;
+    height: 20%;
+}
+
+#label-title {
+    padding-right: 71%;
+    font-weight: bold;
+}
+
+#label-text {
+    font-weight: bold;
+}
+
+.input {
+    
+    border: solid 1px black;
+
+}
+
+@media screen and (max-width: 600px),
+        screen and (max-height: 580px){
+    #right-band {
+        display: none;
+    }
+    #profil {
+        display: none;
+    }
+    #profil-detail {
+        display: none;
+    }
+    #profil-link {
+        display: none;
+    }
+    #post-form {
+        display: none;
+    }
+
+    #post {
+        width: 100%;
+    }
+}
+
+@media (min-device-width:320px) and (max-device-width:768px) {
+    #left-band {
+        display: none;
+    }
+
+    #post {
+        width: 40%;
+    }
+
+    #right-band {
+        width: 60%;
+    }
+}
