@@ -12,8 +12,6 @@
 
 body {
     font-family: 'Poppins';
-    display: flex;
-    flex-direction: row;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -21,7 +19,6 @@ body {
 }
 
 #left-band {
-    width: 30%;
     height: 100vh;
     border: solid 1px red;
     position: sticky;
@@ -30,13 +27,11 @@ body {
 }
 
 #post {
-    width: 40%;
     height: 3000px;
     border: solid 1px blue;
 }
 
 #right-band {
-    width: 30%;
     height: 100vh;
     border: solid 1px green;
     position: sticky;
@@ -45,26 +40,20 @@ body {
 
 #profil {
     border: solid 1px black;
-    display: flex;
-    flex-direction: column;
-    height: 30vh;
+    height: 100%;
 }
 
 #profil-detail {
-    border: solid 1px black;
-    display: flex;
-    flex-direction: row;
-    height: 20vh;
+    border: solid 1px blue;
+    height: 30%;
 }
 
 #avatar {
     border: solid 1px black;
-    width: 40%;
 }
 
 #pseudo-follow {
     border: solid 1px black;
-    width: 60%;
 }
 
 #bio {
@@ -73,5 +62,6 @@ body {
 
 #post-form {
     border: solid 1px black;
+    height: 40%;
 }
 
