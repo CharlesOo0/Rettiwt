@@ -58,7 +58,7 @@
 
             <?php
                 // -------------------------- Crée un post -------------------------- //
-                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['title']) && isset($_POST['text'])){
+                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text'])){
                     if (!isset($_SESSION['username'])) {
                         $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
                         header('Location: logout.php');
@@ -66,7 +66,6 @@
                     }
 
                     $author = $_SESSION['username'];
-                    $title = htmlspecialchars($_POST['title']);
                     $text = htmlspecialchars($_POST['text']);
 
                     $sql = "SELECT * FROM profil WHERE username='$author'"; // Vérifie si l'utilisateur existe
@@ -90,7 +89,7 @@
 
 
                     // Crée la requête SQL
-                    $sql = "INSERT INTO post (author, title, text) VALUES ('$id', '$title', '$text')";
+                    $sql = "INSERT INTO post (author, text) VALUES ('$id', '$text')";
 
                     try {
                         mysqli_query($connexion, $sql);

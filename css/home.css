@@ -98,12 +98,11 @@ body {
 }
 
 #post-text {
-    padding-top: 5%;
+    padding: 5%;
     text-align: left;
 }
 
 #like-comment {
-    padding-top: 5%;
     text-align: center;
     padding-bottom: 2%;
 }
