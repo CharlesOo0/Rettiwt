@@ -121,55 +121,85 @@ function displayPost($connexion, $username) {
         // Affiche les données de chaque ligne
         while ($row = mysqli_fetch_assoc($resultPost)) { // Pour chaque post
 
-            echo "<p>";
+            echo "<div class='post'>";
                 // Récupère le nom de l'auteur
                 $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
                 try { // Essaie de récupérer le nom de l'auteur
                     $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                    echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                    if ($profil['avatar'] != NULL) {
-                        echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
-                    } else {
-                        echo "<img src='img/default_pfp.png' alt='avatar' width='32' height='32' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                    }
-                    echo "</a>";
-                    echo "@" . $profil['username'] . ", " . $row["date"] . "<br>"; // Affiche le nom de l'auteur
                 } catch (Exception $e) { // Si ça échoue, affiche une erreur
                     echo "Author: Error when trying to get the name. <br>";
                 }
 
-                // Affiche les informations du post
-                echo "Title: " . $row["title"] . "<br>";
-                echo "Text: " . $row["text"] . "<br>";
+                echo "<div class='row'>";
 
-                // Récupère le nombre de likes
-                $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
-                try { // Essaie de récupérer le nombre de likes
-                    $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                    echo "Likes: Error when trying to get the number of likes. <br>";
-                }
+                        echo "<div class='col' id='post-avatar-username'>";
+                        echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                        if ($profil['avatar'] != NULL) {
+                            echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                        } else {
+                            echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                        }
+                        echo "</a>";
+                        
+                        echo "@" . $profil['username']; 
+                        echo "</div>";
+                        
+                        echo "<div class='col' id='post-date'>";
+                        echo $row["date"]; // Affiche le nom de l'auteur
+                        echo "</div>";
 
-                // Assuming $userId is the id of the current user and $postId is the id of the post
-                $sql = "SELECT * FROM likes WHERE post_id = " . $row["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
-                try {
-                    $result = mysqli_query($connexion, $sql);
-                } catch (Exception $e) {
-                    echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
-                }
+                echo "</div>";
 
-                // Affiche le bouton pour liker
-                echo    "<form method='post' action=''>";
-                echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
+                echo "<div class='container-fluid'>";
+                    // Affiche les informations du post
+                    echo "<div class='col' id='post-text'>" . $row["text"] . "</div>";
 
-                if (mysqli_num_rows($result) > 0) {
-                    echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
-                } else {
-                    echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
-                }
-                echo    "</form>";
+                    // Récupère le nombre de likes
+                    $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
+                    try { // Essaie de récupérer le nombre de likes
+                        $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Likes: Error when trying to get the number of likes. <br>";
+                    }
 
-            echo "</p> <br>";
+                    $sql = "SELECT * FROM likes WHERE post_id = " . $row["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
+                    try {
+                        $result = mysqli_query($connexion, $sql);
+                    } catch (Exception $e) {
+                        echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
+                    }
+
+                    // Affiche le bouton pour liker
+                    echo "<div class='row' id='like-comment'>";
+                        echo "<div class='col'></div>";
+
+                        echo    "<div class='col text-right'>";
+                        echo    "<form method='post' action=''>";
+                        echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
+
+                        if (mysqli_num_rows($result) > 0) {
+                            echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                        } else {
+                            echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                        }
+                        echo    "</form>";
+                        echo   "</div>";
+
+
+                        echo    "<div class='col text-left'>";
+                        echo    "<form method='post' action=''>";
+                        echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
+                        echo            "<input class='like-button' type='image' src='img/comment.png' width='20' height='20' value='Like'> X <br>";
+                        
+                        echo    "</form>";
+                        echo   "</div>";
+
+                        echo "<div class='col'></div>";
+                    echo "</div>";
+
+                echo "</div>";
+
+            echo "</div>";
         }
     } else {
         echo "Aucun résultat trouvé.";

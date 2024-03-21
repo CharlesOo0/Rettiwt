@@ -26,7 +26,7 @@
 
     <div class="container-fluid">
 
-        <div class="row">
+        <div class="row no-gutters">
 
             <div id="left-band" class="col-md-3 d-none d-md-block">
 
@@ -110,7 +110,7 @@
                 }
 
                 // -------------------------- Affiche les posts -------------------------- //
-                echo "<div id='post' class='col-md-5 col-12'>";
+                echo "<div id='posts' class='col-md-5 col-12'>";
                 displayPost($connexion, NULL);
                 echo "</div>";
             ?>
@@ -128,11 +128,7 @@
                         
                         <h4 id="title">Post a message :</h4> <br>
                         <form method="POST" action="">
-                            <label id="label-title" for="text">Titre :</label> <br>
-                            <input class="input" type="text" name="title"  required><br>
-
-                            <label id="label-text" for="text">Texte :</label> <br>
-                            <input class="input" type="text" name="text" required><br>
+                            <input class="input" type="text" name="text" placeholder="Bonjour tout le monde !" required><br>
                             <input type="submit" value="Post">
                         </form>
 

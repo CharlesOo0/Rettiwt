@@ -74,8 +74,38 @@ body {
 }
 
 
-#post {
-    height: 3000px;
+#posts {
+    padding: 0;
+    margin: 0;
+}
+
+.post {
+    margin: 0;
+    padding: 0;
+    border-bottom: solid 1px rgb(201, 201, 201);
+}
+
+#post-avatar-username {
+    padding-top: 2%;
+    margin-left: 2%;
+    text-align: left;
+}
+
+#post-date {
+    padding-top: 2%;
+    margin-right: 2%;
+    text-align: right;
+}
+
+#post-text {
+    padding-top: 5%;
+    text-align: left;
+}
+
+#like-comment {
+    padding-top: 5%;
+    text-align: center;
+    padding-bottom: 2%;
 }
 
 #right-band {
