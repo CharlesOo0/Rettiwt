@@ -1,0 +1,81 @@
+/* POST FORM POPUP */
+
+body.active {
+    overflow: hidden;
+}
+
+.post-form-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+
+    z-index: 1000;
+  }
+
+.post-form-container.active {
+    opacity: 1;
+    pointer-events: auto;
+    transition: .4s ease;
+}
+
+.post-form-container .post-form {
+    width: 40%;
+    height: 200px;
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    padding: 30px;
+    transform: scale(0);
+  }
+.post-form-container.active .post-form {
+    transform: scale(1);
+    transition: .4s ease;
+    transition-delay: .25s;
+}
+  
+.post-form-container button {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    border: none;
+    background: #ffffff;
+}
+
+.post-form-container form {
+    text-align: center;
+}
+
+.post-form-container form textarea {
+    border: none;
+    border-left: 1px solid rgb(201, 201, 201);
+    padding-left: 5px;
+    outline: none;
+    background: #ffffff;
+    width: 90%;
+    height: 100px;
+}
+
+.post-form-container form input[type="submit"] {
+    width: 20%;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    border-radius: 20px;
+    color: white;
+    border: none;
+
+    transition: background 0.3s ease-in-out; /* Add this line */
+    background: rgb(0, 140, 255);
+}
+
+
+.post-form-container form input[type="submit"]:hover {
+    background: black;
+}   

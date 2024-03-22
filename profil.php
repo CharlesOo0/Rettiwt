@@ -43,7 +43,7 @@
                 echo "<br>";
                 echo "<a href='home.php'> Fil rettiwt. </a>";
             }
-            displayPost($connexion, $username); // On affiche les posts de l'autre utilisateur
+            displayPost($connexion, $username, NULL); // On affiche les posts de l'autre utilisateur
 
         }else { // Sinon on affiche le profil de l'utilisateur connecté
 
@@ -51,7 +51,7 @@
             echo "<a href='edit.php'>Modifier le profil</a> <br>";
             echo "<a href='stat.php?profil_detail=". urlencode($_SESSION['username']) ."'>Statistique</a> <br>";
             echo "<a href='home.php'> Fil rettiwt. </a>";
-            displayPost($connexion, $_SESSION['username']); // On affiche les posts de l'utilisateur connecté
+            displayPost($connexion, $_SESSION['username'], NULL); // On affiche les posts de l'utilisateur connecté
         }
 
     ?>
