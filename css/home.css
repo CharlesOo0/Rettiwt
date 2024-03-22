@@ -143,6 +143,8 @@ body {
 
 #bio {
     text-align: left;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 #bio-text {
@@ -165,6 +167,23 @@ body {
     padding: 1%;
     margin: 2%;
 }
+
+#post-form input[type="submit"] {
+    width: 70%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 20px;
+    color: white;
+    border: none;
+
+    transition: background 0.3s ease-in-out; /* Add this line */
+    background: rgb(0, 140, 255);
+}
+
+#post-form input[type="submit"]:hover {
+    /* background: rgb(0, 120, 235); */
+    background: black;
+}   
 
 
 @media screen and (max-width: 1380px){
