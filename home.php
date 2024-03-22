@@ -119,8 +119,11 @@
 
                 }
 
-                // -------------------------- Ajoute un like -------------------------- //
+                // -------------------------- Ajoute/enleve un like -------------------------- //
                 handleLike($connexion, $_SESSION['username']);
+
+                // -------------------------- Ajoute/enleve un follow -------------------------- //
+                handleFollow($connexion, $_SESSION['username']);
 
                 // -------------------------- Gérer erreur en cas de post -------------------------- //
                 if (isset($_SESSION['error_post'])) {
@@ -133,12 +136,16 @@
                 // -------------------------- Affiche les posts -------------------------- //
                 echo "<div id='posts' class='col-md-5 col-12'>";
                 if (isset($_GET['displayFollower'])) {
-                    displayFollower($connexion, $_SESSION['username']);
+                    echo "<h4>Abonnés</h4>";
+                    displayFollow($connexion, $_SESSION['username'], 0);
                 } else if (isset($_GET['displayFollowing'])) {
-                    displayFollowing($connexion, $_SESSION['username']);
+                    echo "<h4>Suivis</h4>";
+                    displayFollow($connexion, $_SESSION['username'], 1);
                 }else if (isset($_GET['forYou'])) {
+                    echo "<h4>Pour vous</h4>";
                     displayPost($connexion, $_SESSION['username'], 1);
                 }else {
+                    echo "<h4>Actualités</h4>";
                     displayPost($connexion, NULL, NULL);
                 }
                 echo "</div>";
@@ -155,6 +162,7 @@
 
                     <div id="show-post-container" class="row">
                         <button id="show-post-button">Post</button>
+                        <label for="show-post-button">Parler au monde entier !</label>
                     </div>
 
                 </div>

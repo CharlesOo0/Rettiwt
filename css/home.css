@@ -15,6 +15,15 @@ a {
     text-decoration: none; /* Removes underline */
 }
 
+h4 {
+    text-align: center;
+    border-bottom: solid 1px rgb(201, 201, 201);
+    position: sticky;
+    top: 0;
+
+    background: white;
+}
+
 html {
 
     scroll-behavior: 'instant';
@@ -83,6 +92,14 @@ body {
     margin: 0;
     padding: 0;
     border-bottom: solid 1px rgb(201, 201, 201);
+}
+
+.follow {
+    margin: 0;
+    padding: 3%;
+    border-bottom: solid 1px rgb(201, 201, 201);
+
+    text-align: center;
 }
 
 #post-avatar-username {

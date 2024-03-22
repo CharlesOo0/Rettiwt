@@ -160,9 +160,9 @@ function displayPost($connexion, $username, $sub) {
                         } else {
                             echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                         }
-                        echo "</a>";
                         
                         echo "@" . $profil['username']; 
+                        echo "</a>";
                         echo "</div>";
                         
                         echo "<div class='col' id='post-date'>";
@@ -222,6 +222,73 @@ function displayPost($connexion, $username, $sub) {
 
                 echo "</div>";
 
+            echo "</div>";
+        }
+    } else {
+        echo "Aucun résultat trouvé.";
+    }
+}
+
+/**
+ * Fonction qui affiche les utilisateurs qui suivent
+ * 
+ * @param connexion La connexion à la base de données
+ * @param username Le nom d'utilisateur qui follow
+ * @param mode Le mode d'affichage 0 pour les followers et 1 pour les following
+ * 
+ * @return void
+ */
+function displayFollow($connexion, $username, $mode) {
+    // Crée la requête SQL pour récupérer les utilisateurs qui suivent
+
+    if ($mode == 0) {// Si on veut afficher les followers
+        $sql = "SELECT * FROM followers WHERE following_id=(SELECT id FROM profil WHERE username = '$username')";
+    }else { // Si on veut afficher les following
+        $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username')";
+    }
+
+    try { // Essaie de récupérer les utilisateurs qui suivent
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération des utilisateurs qui suivent : " . mysqli_error($connexion) . "</p>";
+    }
+
+    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+        // Affiche les données de chaque ligne
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque utilisateur qui suit
+            // Récupère le nom d'utilisateur qui suit
+            if ($mode == 0) { // Si on veut afficher les followers
+                $sql = "SELECT * FROM profil WHERE id=" . $row['follower_id'];
+            } else { // Si on veut afficher les following
+                $sql = "SELECT * FROM profil WHERE id=" . $row['following_id'];
+            }
+
+            try { // Essaie de récupérer le nom d'utilisateur qui suit
+                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+            } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                echo "Follower: Error when trying to get the name. <br>";
+            }
+
+            // Récupère le nombre de follower et following de l'utilisateur qui suit
+            $sql = "SELECT COUNT(follower_id) FROM followers WHERE following_id = (SELECT id FROM profil WHERE username = '" . $profil['username'] . "')";
+            try { // Essaie de récupérer le nombre de followers
+                $follower = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+            } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                echo "Follower: Error when trying to get the number of followers. <br>";
+            }
+
+            $sql = "SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '" . $profil['username'] . "')";
+            
+
+            echo "<div class='follow'>";
+                echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
+                if ($profil['avatar'] != NULL) {
+                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
+                } else {
+                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                }
+                echo "@" . $profil['username']; // Affiche le nom d'utilisateur qui suit
+                echo "</a>";
             echo "</div>";
         }
     } else {
@@ -317,97 +384,6 @@ function handleFollow($connexion, $username) {
                 echo "<p> Erreur lors de l'ajout du follow : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
             }
         }
-    }
-}
-
-/**
- * Fonction qui affiche les utilisateurs suivis
- * 
- * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui follow
- * 
- * @return void
- */
-function displayFollowing($connexion, $username) {
-    // Crée la requête SQL pour récupérer les utilisateurs suivis
-    $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username')";
-
-    try { // Essaie de récupérer les utilisateurs suivis
-        $result = mysqli_query($connexion, $sql);
-    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la récupération des utilisateurs suivis : " . mysqli_error($connexion) . "</p>";
-    }
-
-    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-        // Affiche les données de chaque ligne
-        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque utilisateur suivi
-            // Récupère le nom d'utilisateur suivi
-            $sql = "SELECT * FROM profil WHERE id=" . $row['following_id'];
-            try { // Essaie de récupérer le nom d'utilisateur suivi
-                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-            } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                echo "Following: Error when trying to get the name. <br>";
-            }
-
-            echo "<div class='following'>";
-                echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur suivi
-                if ($profil['avatar'] != NULL) {
-                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur suivi
-                } else {
-                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                }
-                echo "</a>";
-                echo "@" . $profil['username']; // Affiche le nom d'utilisateur suivi
-            echo "</div>";
-        }
-    } else {
-        echo "Aucun résultat trouvé.";
-    }
-
-}
-
-/**
- * Fonction qui affiche les utilisateurs qui suivent
- * 
- * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui follow
- * 
- * @return void
- */
-function displayFollower($connexion, $username) {
-    // Crée la requête SQL pour récupérer les utilisateurs qui suivent
-    $sql = "SELECT * FROM followers WHERE following_id=(SELECT id FROM profil WHERE username = '$username')";
-
-    try { // Essaie de récupérer les utilisateurs qui suivent
-        $result = mysqli_query($connexion, $sql);
-    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la récupération des utilisateurs qui suivent : " . mysqli_error($connexion) . "</p>";
-    }
-
-    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-        // Affiche les données de chaque ligne
-        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque utilisateur qui suit
-            // Récupère le nom d'utilisateur qui suit
-            $sql = "SELECT * FROM profil WHERE id=" . $row['follower_id'];
-            try { // Essaie de récupérer le nom d'utilisateur qui suit
-                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-            } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                echo "Follower: Error when trying to get the name. <br>";
-            }
-
-            echo "<div class='follower'>";
-                echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
-                if ($profil['avatar'] != NULL) {
-                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
-                } else {
-                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                }
-                echo "</a>";
-                echo "@" . $profil['username']; // Affiche le nom d'utilisateur qui suit
-            echo "</div>";
-        }
-    } else {
-        echo "Aucun résultat trouvé.";
     }
 }
 
