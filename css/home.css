@@ -116,33 +116,58 @@ body {
 }
 
 #profil {
-    border: solid 1px black;
     height: 100%;
 }
 
 #profil-detail {
-    border: solid 1px blue;
     text-align: center;
+    padding: 5%;
 }
 
 #avatar {
-    border: solid 1px black;
+    margin: 5%;
+}
+
+#avatar img {
+    width: 128px;
+    height: auto;
 }
 
 #pseudo-follow {
-    border: solid 1px black;
+    margin: 5%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
 }
 
 #bio {
-    border: solid 1px black;
+    text-align: left;
+}
+
+#bio-text {
+    border: 1px solid rgb(201, 201, 201);
+    padding: 3%;
+    border-radius: 10px;
+}
+
+#bio-text-title {
+    margin-bottom: 2%;
 }
 
 #post-form {
-    border: solid 1px black;
+    margin-top: 2%;
+    text-align: center;
+}
+
+#post-form input[type="text"] {
+    width: 80%;
+    padding: 1%;
+    margin: 2%;
 }
 
 
-@media screen and (max-width: 1340px){
+@media screen and (max-width: 1380px){
     .pl-span {
         display: none;
         padding-left: 2%;
@@ -160,5 +185,11 @@ body {
         float: none;
         text-align: center;
         width: 100%;
+    }
+}
+
+@media screen and (max-width: 1180px){
+    #pseudo-follow {
+        text-align: center;
     }
 }

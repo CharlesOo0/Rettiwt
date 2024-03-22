@@ -55,22 +55,23 @@ function displayProfil($connexion, $username) {
                 echo "<div id='avatar' class='col'>";
                     echo "<a href='profil.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
                     if ($rowProfil['avatar'] != NULL) {
-                        echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
+                        echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     } else {
-                        echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 5px black;' id='avatar'> <br>";
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     }
                     echo "</a>";
                 echo "</div>";
 
                 echo "<div id='pseudo-follow' class='col'>";
-                    echo "<p> @" . $rowProfil["username"] . "<p>";
-                    echo "<p>" . $rowFollower["COUNT(follower_id)"] . " Followers <p>";
+                    echo "<div id='pseudo'> @" . $rowProfil["username"] . "</div>";
+                    echo "<div id='sub'>" . $rowFollower["COUNT(follower_id)"] . " Followers </div>";
+                    echo "<div id='follow'> X Suivies </div>";
                 echo "</div>";
 
             echo "</div>";
 
             echo "<div id='bio' class='row'>";
-                echo "<p> Biographie : <br>" . $rowProfil["bio"] . " <p>";
+                echo "<div id='bio-text'> <span id='bio-text-title'>Biographie :</span><br>" . $rowProfil["bio"] . " </div>";
             echo "</div>";
 
         }

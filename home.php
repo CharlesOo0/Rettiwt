@@ -124,8 +124,7 @@
                         ?>
 
                     <div id="post-form" class="row">
-                        
-                        <h4 id="title">Post a message :</h4> <br>
+
                         <form method="POST" action="">
                             <input class="input" type="text" name="text" placeholder="Bonjour tout le monde !" required><br>
                             <input type="submit" value="Post">
