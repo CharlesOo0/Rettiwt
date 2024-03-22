@@ -116,7 +116,7 @@
 
     <div id="register-form-container">
 
-    <h1 id="register-form-title">Register :</h1>
+    <h1 id="register-form-title">Register</h1>
     <form id="register-form" method="POST" action="register.php">
         <label id="form-label-username" for="username">Pseudo :</label>
         <input id="form-input" type="text" id="username" name="username" placeholder="Entrer votre pseudo"  required><br><br>

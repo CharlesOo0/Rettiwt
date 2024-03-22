@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
             },sessionStorage.getItem('scrollPosition'));
         });
 
+        sessionStorage.removeItem('scrollPosition');
     }
 
     var likeButtons = document.getElementsByClassName("like-button");
