@@ -33,6 +33,7 @@ body.active {
     padding: 30px;
     transform: scale(0);
   }
+
 .post-form-container.active .post-form {
     transform: scale(1);
     transition: .4s ease;
@@ -43,8 +44,16 @@ body.active {
     position: absolute;
     top: 5px;
     left: 5px;
+    padding: 5px;
     border: none;
     background: #ffffff;
+
+    border-radius: 50%;
+}
+
+.post-form-container button:hover {
+    background: rgb(206, 94, 94);
+    transition: .3s ease;
 }
 
 .post-form-container form {
@@ -79,3 +88,75 @@ body.active {
 .post-form-container form input[type="submit"]:hover {
     background: black;
 }   
+
+
+.error-post {
+    text-align: center;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 4%;
+    width: 40%;
+    color: white;
+    background: rgb(206, 94, 94);
+    border: 2px solid rgb(128, 58, 58);
+    border-radius: 5px;
+}
+
+
+/* NOTIFICATION POPUP */
+
+.notification-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+
+    z-index: 1000;
+}
+
+.notification-container.active {
+    opacity: 1;
+    pointer-events: auto;
+    transition: .4s ease;
+}
+
+.notification-container .notification {
+    width: 40%;
+    height: 200px;
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    padding: 30px;
+    transform: scale(0);
+}
+
+.notification-container.active .notification {
+    transform: scale(1);
+    transition: .4s ease;
+    transition-delay: .25s;
+}
+
+.notification-container button {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 5px;
+    border: none;
+    background: #ffffff;
+
+    border-radius: 50%;
+}
+
+.notification-container button:hover {
+    background: rgb(206, 94, 94);
+    transition: .3s ease;
+}
+
+.notification-container h3{
+    text-align: center;
+}

@@ -73,13 +73,23 @@ body {
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
 }
 
-#profil-link-i {
+.profil-link-i {
     margin-top: 30px;
     margin-left: 25%;
     padding-left: 5%;
     padding-right: 5%;
     padding-top: 2%;
     padding-bottom: 2%;
+}
+
+#show-notification-button{
+    background: none;
+    border: none;
+}
+
+#show-notification-button:hover {
+    background-color: rgb(180, 180, 180);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
 }
 
 
@@ -200,8 +210,39 @@ body {
     background: black;
 }   
 
+.follow-info {
+    text-align: left;
+    padding: 2%;
+}
+
+.follow-sub-info {
+    text-align: right;
+    padding: 2%;
+}
+
+.follow-info-text {
+    margin-right: 4%;
+}
+
+.follow-sub-href {
+    margin-bottom: 7%;
+}
 
 
+.follow-sub-href a{
+    padding: 2%;
+    color: white;
+    background: rgb(0, 140, 255);
+    border-radius: 20px;
+    width: 50%;
+
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+.follow-sub-href a:hover {
+    background: black;
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
 
 
 @media screen and (max-width: 1380px){

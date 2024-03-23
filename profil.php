@@ -36,9 +36,9 @@
                 echo "<a href='home.php'> Fil rettiwt. </a>";
             }else {
                 if (isFollowing($connexion, $_SESSION['username'], $username)){ // Si l'utilisateur connecté follow déjà l'autre utilisateur
-                    echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Unfollow</a>"; // On affiche un lien pour donner l'option de pouvoir unfollow l'autre utilisateur
+                    echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Désabonner</a>"; // On affiche un lien pour donner l'option de pouvoir unfollow l'autre utilisateur
                 }else {// Sinon (si l'utilisateur connecté ne follow pas l'autre utilisateur) 
-                    echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Follow</a>"; // On affiche un lien pour donner l'option de pouvoir follow l'autre utilisateur
+                    echo "<a href='profil.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>S'abonner</a>"; // On affiche un lien pour donner l'option de pouvoir follow l'autre utilisateur
                 }
                 echo "<br>";
                 echo "<a href='home.php'> Fil rettiwt. </a>";

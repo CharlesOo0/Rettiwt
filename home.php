@@ -25,14 +25,36 @@
 <body>
 
     <!-- Les popups -->
+
+        <!-- Popup de post -->
     <div class="post-form-container">
         <div class="post-form">
+            <?php
+            // -------------------------- Gérer erreur en cas de post -------------------------- //
+            if (isset($_SESSION['error_post'])) { // Si on a une erreur
+                echo "<div class='error-post'>" . $_SESSION['error_post'] . "</div>";
+                unset($_SESSION['error_post']);
+            }
+            ?>
             <button id="close-post-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
             <form method="POST" action="">
                 <input type="hidden" name="action" value="posting">
                 <textarea name="text" placeholder="Bonjour tout le monde !"></textarea> <br>
                 <input type="submit" value="Post">
             </form>
+        </div>
+    </div>
+
+        <!-- Popup de notification -->
+
+    <div class="notification-container">
+        <div class="notification">
+            <button id="close-notification-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
+            <h3>Notifications</h3>
+            <div class="notification-content">
+                <?php // TODO: Rajouter les notifications ?>
+                <p>Vous n'avez pas de notifications.</p>
+            </div>
         </div>
     </div>
     <!-- Les popups -->
@@ -44,19 +66,27 @@
             <div id="left-band" class="col-md-3 d-none d-md-block">
 
                     <div id="profil-link" class="container-fluid">
-                        <a href="profil.php" id="profil-link-i" class="left-band-img">
+                        <a href="profil.php" class="left-band-img profil-link-i">
                             <img src="img/profil.png" alt="Profil"><span class="pl-span"> Profil</span>
                         </a> <br>
-                        <a href="home.php" id="profil-link-i" class="left-band-img">
-                            <img src="img/home.png" alt="Profil"><span class="pl-span"> Actualités</span>
+                        <a href="home.php" class="left-band-img profil-link-i">
+                            <img src="img/home.png" alt="Actualités"><span class="pl-span"> Actualités</span>
                         </a> <br>
-                        <a href="?forYou=true" id="profil-link-i" class="left-band-img">
-                            <img src="img/favorite.png" alt="Profil"><span class="pl-span"> Pour vous</span>
+                        <a href="?forYou=true" class="left-band-img profil-link-i">
+                            <img src="img/favorite.png" alt="Pour vous"><span class="pl-span"> Pour vous</span>
                         </a> <br>
-                        <a href="" id="profil-link-i" class="left-band-img">
-                            <img src="img/notification.png" alt="Notification"><span class="pl-span"> Notifications</span>
-                        </a> <br>
-                        <a href="logout.php"  id="profil-link-i" class="left-band-img">
+
+                        <button id="show-notification-button" class="left-band-img profil-link-i"><img src="img/notification.png" alt="Notification"><span class="pl-span"> Notifications</span></button><br>
+                        
+                        <a href="home.php"  class="left-band-img profil-link-i">
+                            <img src="img/stat.png" alt="Statistique"><span class="pl-span"> Statistique</span>
+                        </a>
+
+                        <a href="home.php"  class="left-band-img profil-link-i">
+                            <img src="img/edit.png" alt="Modifier"><span class="pl-span"> Modifier</span>
+                        </a>
+
+                        <a href="logout.php"  class="left-band-img profil-link-i">
                             <img src="img/disconnect.png" alt="Deconnexion"><span class="pl-span"> Déconnexion</span>
                         </a>
                     </div>
@@ -65,59 +95,65 @@
 
             <?php
                 // -------------------------- Crée un post -------------------------- //
-                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text']) && isset($_POST['action']) && $_POST['action'] == "posting"){
-                    if (!isset($_SESSION['username'])) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text']) && isset($_POST['action']) && $_POST['action'] == "posting"){ // Si on post sur cette page
+                    if (!isset($_SESSION['username'])) { // Si l'utilisateur n'est pas connecté
                         $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
                         header('Location: logout.php');
                         exit();
                     }
 
-                    $modify = true;
+                    // Initialise un booléen pour savoir si on peut poster
+                    $modify = true; 
+                    $text = htmlspecialchars($_POST['text']); // On récupère le texte
 
-                    if (empty($_POST['text'])) {
-                        $modify = false;
+                    if (empty($text)) { // Si le message est vide
+                        $modify = false; // On ne peut pas poster
                     }
 
-                    if (strlen($_POST['text']) > 270) {
+                    if (strlen($text) > 270) { // Si le message est trop long
                         $_SESSION['error_post'] = "Votre message est trop long.";
                         header('Location: home.php');
                         exit();
                     }
 
-                    $author = $_SESSION['username'];
-                    $text = htmlspecialchars($_POST['text']);
+                    $author = $_SESSION['username']; // On récupère l'auteur
 
                     $sql = "SELECT * FROM profil WHERE username='$author'"; // Vérifie si l'utilisateur existe
 
-                    try {
+                    try { // On essaye de faire la requête
                         $result = mysqli_query($connexion, $sql);
-                    } catch (Exception $e) {
-                        $_SESSION['error_post'] = "Erreur lors de la création du post : " . mysqli_error($connexion);
+                    } catch (Exception $e) { // Si on a une erreur
+                        $_SESSION['error_post'] = "Erreur lors de la récupération de votre profil.";
                         header('Location: home.php');
                         exit();
                     }
 
-                    if ($result->num_rows != 1) {
-                        $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
+                    if ($result->num_rows != 1) { // Si l'utilisateur n'existe pas
+                        $_SESSION['error'] = "Erreur lors de la récupération de votre profil, vous avez besoin d'être connecter pour poster un message.";
                         header('Location: logout.php');
                         exit();
                     } 
 
-                    $result = mysqli_fetch_assoc($result);
-                    $id = $result['id'];
+                    $result = mysqli_fetch_assoc($result); // On récupère les informations de l'utilisateur
+                    $id = $result['id']; // On récupère l'id de l'utilisateur
 
-                    // Crée la requête SQL
-                    $sql = "INSERT INTO post (author, text) VALUES ('$id', '$text')";
+                    // Crée la requête SQL pour ajouter le post
+                    $sql = "INSERT INTO post (author, text) VALUES ('$id', '$text')"; 
 
-                    if ($modify) {
-                        try {
+                    if ($modify) { // Si on peut poster
+                        try { // On essaye de faire la requête
                             mysqli_query($connexion, $sql);
-                        } catch (Exception $e) {
-                            echo "<p> Error: " . $sql . "<br>" . mysqli_error($connexion) . "</p>";
+                        } catch (Exception $e) { // Si on a une erreur
+                            $_SESSION['error_post'] = "<p>Erreur lors de la création de votre post...</p>";
+                            header('Location: home.php');
+                            exit();
                         }
                     }
 
                 }
+            ?>
+
+            <?php
 
                 // -------------------------- Ajoute/enleve un like -------------------------- //
                 handleLike($connexion, $_SESSION['username']);
@@ -125,26 +161,21 @@
                 // -------------------------- Ajoute/enleve un follow -------------------------- //
                 handleFollow($connexion, $_SESSION['username']);
 
-                // -------------------------- Gérer erreur en cas de post -------------------------- //
-                if (isset($_SESSION['error_post'])) {
-                    echo "<p>" . $_SESSION['error_post'] . "</p>";
-                    unset($_SESSION['error_post']);
-                }
             ?>
 
             <?php
                 // -------------------------- Affiche les posts -------------------------- //
                 echo "<div id='posts' class='col-md-5 col-12'>";
-                if (isset($_GET['displayFollower'])) {
+                if (isset($_GET['displayFollower']) && isset($_GET['username']) && $_GET['username'] != '') { // Si on veut afficher les abonnés
                     echo "<h4>Abonnés</h4>";
-                    displayFollow($connexion, $_SESSION['username'], 0);
-                } else if (isset($_GET['displayFollowing'])) {
+                    displayFollow($connexion, $_GET['username'], 0);
+                } else if (isset($_GET['displayFollowing']) && isset($_GET['username']) && $_GET['username'] != ''){ // Si on veut afficher les suivis
                     echo "<h4>Suivis</h4>";
-                    displayFollow($connexion, $_SESSION['username'], 1);
-                }else if (isset($_GET['forYou'])) {
+                    displayFollow($connexion, $_GET['username'], 1);
+                }else if (isset($_GET['forYou'])) { // Si on veut afficher les posts pour l'utilisateur
                     echo "<h4>Pour vous</h4>";
-                    displayPost($connexion, $_SESSION['username'], 1);
-                }else {
+                    displayPost($connexion, $_SESSION['username'], 1); 
+                }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
                     displayPost($connexion, NULL, NULL);
                 }

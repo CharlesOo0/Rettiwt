@@ -14,6 +14,30 @@ function checkCreds() {
 }
 
 /**
+ * Vérifie si l'utilisateur follow déjà
+ * 
+ * @param connexion La connexion à la base de données
+ * @param username Le nom d'utilisateur qui follow
+ * @param followed Le nom d'utilisateur qui est follow
+ * 
+ * @return bool
+ */
+function isFollowing($connexion, $username, $followed) {
+    $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
+
+    try { // Essaie de récupérer les followers
+        $result = mysqli_query($connexion, $sql);
+        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+            return true; // Si oui, l'utilisateur follow déjà
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la vérification du follow : " . mysqli_error($connexion) . "</p>";
+    }
+
+    return false; // Si la requête n'a pas retourné de lignes, l'utilisateur ne follow pas
+}
+
+/**
  * Affiche le profil de l'utilisateur
  * 
  * @param connexion La connexion à la base de données
@@ -61,27 +85,28 @@ function displayProfil($connexion, $username) {
             $rowFollowing = mysqli_fetch_assoc($resultFollowing);
 
 
-            echo "<div id='profil-detail' class='row'>";
+            echo "<div id='profil-detail' class='row'>"; 
 
                 echo "<div id='avatar' class='col'>";
+                    // Affiche l'avatar de l'utilisateur
                     echo "<a href='profil.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
-                    if ($rowProfil['avatar'] != NULL) {
+                    if ($rowProfil['avatar'] != NULL) { // Si l'utilisateur a un avatar
                         echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
-                    } else {
+                    } else { // Si l'utilisateur n'a pas d'avatar
                         echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     }
                     echo "</a>";
                 echo "</div>";
 
-                echo "<div id='pseudo-follow' class='col'>";
+                echo "<div id='pseudo-follow' class='col'>"; // Affiche le nom d'utilisateur et le nombre de followers et following
                     echo "<div id='pseudo'><a href='profil.php?profil_detail=" . urlencode($username) . "'>@" . $rowProfil["username"] . "</a></div>";
-                    echo "<div id='sub'><a href='?displayFollower=true' >" . $rowFollower["COUNT(follower_id)"] . " Followers</a> </div>";
-                    echo "<div id='follow'><a href='?displayFollowing=true' >". $rowFollowing["COUNT(following_id)"] ." Suivies</a> </div>";
+                    echo "<div id='sub'><a href='?displayFollower=true&username=". urlencode($username) ."' >" . $rowFollower["COUNT(follower_id)"] . " Followers</a> </div>";
+                    echo "<div id='follow'><a href='?displayFollowing=true&username=". urlencode($username) ."' >". $rowFollowing["COUNT(following_id)"] ." Suivies</a> </div>";
                 echo "</div>";
 
             echo "</div>";
 
-            echo "<div id='bio' class='row'>";
+            echo "<div id='bio' class='row'>"; // Affiche la biographie de l'utilisateur
                 echo "<div id='bio-text'> <span id='bio-text-title'>Biographie :</span><br>" . $rowProfil["bio"] . " </div>";
             echo "</div>";
 
@@ -153,20 +178,21 @@ function displayPost($connexion, $username, $sub) {
 
                 echo "<div class='row'>";
 
+                        //  Affiche l'avatar et le nom d'utilisateur de l'auteur
                         echo "<div class='col' id='post-avatar-username'>";
-                        echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                        if ($profil['avatar'] != NULL) {
-                            echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
-                        } else {
-                            echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                        }
-                        
-                        echo "@" . $profil['username']; 
-                        echo "</a>";
+                            echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                            if ($profil['avatar'] != NULL) {
+                                echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                            } else {
+                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                            }
+                            
+                            echo "@" . $profil['username']; 
+                            echo "</a>";
                         echo "</div>";
                         
                         echo "<div class='col' id='post-date'>";
-                        echo $row["date"]; // Affiche le nom de l'auteur
+                        echo $row["date"]; // Affiche la date du post
                         echo "</div>";
 
                 echo "</div>";
@@ -183,10 +209,12 @@ function displayPost($connexion, $username, $sub) {
                         echo "Likes: Error when trying to get the number of likes. <br>";
                     }
 
+                    // Récupère le nombre de commentaires
                     $sql = "SELECT * FROM likes WHERE post_id = " . $row["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
-                    try {
+
+                    try { // Essaie de récupérer le like
                         $result = mysqli_query($connexion, $sql);
-                    } catch (Exception $e) {
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
                         echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
                     }
 
@@ -195,13 +223,16 @@ function displayPost($connexion, $username, $sub) {
                         echo "<div class='col'></div>";
 
                         echo    "<div class='col text-right'>";
+                        // Crée un formulaire pour liker
                         echo    "<form method='post' action=''>";
                         echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
                         echo            "<input type='hidden' name='liking' value='true'>";
 
-                        if (mysqli_num_rows($result) > 0) {
+                        if (mysqli_num_rows($result) > 0) { // Si l'utilisateur a déjà liké
+                            // Affiche le bouton de like rempli
                             echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
-                        } else {
+                        } else { // Si l'utilisateur n'a pas liké
+                            // Affiche le bouton de like vide
                             echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
                         }
                         echo    "</form>";
@@ -209,6 +240,7 @@ function displayPost($connexion, $username, $sub) {
 
 
                         echo    "<div class='col text-left'>";
+                        // Crée un formulaire pour commenter
                         echo    "<form method='post' action=''>";
                         echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
                         echo            "<input type='hidden' name='commenting' value='true'>";
@@ -277,47 +309,55 @@ function displayFollow($connexion, $username, $mode) {
                 echo "Follower: Error when trying to get the number of followers. <br>";
             }
 
+            // Récupère le nombre de following de l'utilisateur qui suit
             $sql = "SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '" . $profil['username'] . "')";
+            try { // Essaie de récupérer le nombre de following
+                $following = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+            } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                echo "Follower: Error when trying to get the number of following. <br>";
+            }
             
 
-            echo "<div class='follow'>";
-                echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
-                if ($profil['avatar'] != NULL) {
-                    echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
-                } else {
-                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                }
-                echo "@" . $profil['username']; // Affiche le nom d'utilisateur qui suit
-                echo "</a>";
+            echo "<div class='follow row'>";
+
+                echo "<div class='follow-info col'>";
+                    // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
+                    echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
+                    if ($profil['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
+                        echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
+                    } else { // Si l'utilisateur qui suit n'a pas d'avatar
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                    }
+                    echo "@" . $profil['username']; // Affiche le nom d'utilisateur qui suit
+                    echo "</a>";
+                echo "</div>";
+
+                echo "<div class='follow-sub-info col'>";
+                    // Affiche le bouton pour follow ou unfollow l'utilisateur qui suit
+                    if ($_SESSION['username'] != $profil['username']) { // Si l'utilisateur qui suit n'est pas l'utilisateur connecté
+                        if(isFollowing($connexion, $_SESSION['username'], $profil['username'])) {  // Si l'utilisateur connecté follow déjà l'utilisateur qui suit
+                            // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
+                            echo "<div class='follow-sub-href'>"; 
+                                echo "<a href='home.php?follow=" . urlencode($profil['username']) . "&profil_detail=". urlencode($profil['username']) ."'>Désabonner</a>"; // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
+                            echo "</div>";
+                        } else { // Si l'utilisateur connecté ne follow pas l'utilisateur qui suit
+                            // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
+                            echo "<div class='follow-sub-href'>";
+                                echo "<a href='home.php?follow=" . urlencode($profil['username']) . "&profil_detail=". urlencode($profil['username']) ."'>S'abonner</a>"; // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
+                            echo "</div>";
+                        }
+                    }
+
+                    // Affiche le nombre de followers et following de l'utilisateur qui suit
+                    echo "<div class='follow-info-text'><a href='?displayFollower=true&username=". urlencode($profil['username']) ."' >" . $follower['COUNT(follower_id)'] . " Abonnés</a></div>"; // Affiche le nombre de followers de l'utilisateur qui suit
+                    echo "<div class='follow-info-text'><a href='?displayFollowing=true&username=". urlencode($profil['username']) ."' >" . $following['COUNT(following_id)'] . " Suivies</a></div>"; // Affiche le nombre de following de l'utilisateur qui suit
+
+                echo "</div>";
             echo "</div>";
         }
     } else {
         echo "Aucun résultat trouvé.";
     }
-}
-
-/**
- * Vérifie si l'utilisateur follow déjà
- * 
- * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui follow
- * @param followed Le nom d'utilisateur qui est follow
- * 
- * @return bool
- */
-function isFollowing($connexion, $username, $followed) {
-    $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
-
-    try { // Essaie de récupérer les followers
-        $result = mysqli_query($connexion, $sql);
-        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-            return true; // Si oui, l'utilisateur follow déjà
-        }
-    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la vérification du follow : " . mysqli_error($connexion) . "</p>";
-    }
-
-    return false; // Si la requête n'a pas retourné de lignes, l'utilisateur ne follow pas
 }
 
 /**
