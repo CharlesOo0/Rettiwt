@@ -38,6 +38,14 @@ h4 {
     border-bottom: solid 1px rgb(201, 201, 201);
 }
 
+a:hover {
+    /* Couleur du texte */
+    color: rgb(0, 140, 255);
+
+    /* Transition */
+    transition:  color 0.3s ease-in-out;
+}
+
 /* Style du <html> */
 html {
     /* Défini le défilement de la page */
@@ -140,7 +148,8 @@ body {
 #show-notification-button:hover {
     /* Couleur de fond */
     background-color: rgb(180, 180, 180);
-
+    color: rgb(0, 140, 255);
+    
     /* Transition */
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
 }
