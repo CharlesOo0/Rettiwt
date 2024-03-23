@@ -24,43 +24,45 @@
         $name = htmlspecialchars($_POST['username']);
         $password = htmlspecialchars($_POST['password']);
 
-        // Crée la requête SQL
-        $sql = "SELECT * FROM profil WHERE username='$name' AND password='$password'";
+        // Crée la requête SQL pour vérifier si le profil existe
+        $stmt = $connexion->prepare("SELECT * FROM profil WHERE username=? AND password=?");
+        $stmt->bind_param("ss", $name, $password);
 
         // Exécute la requête
         try {
-            $result = mysqli_query($connexion, $sql);
-        } catch (Exception $e) {
+            $result = $stmt->execute();
+        } catch (Exception $e) { // Gère les erreurs
             $_SESSION['error'] = "Erreur lors de la connexion : " . mysqli_error($connexion);
             header('Location: login.php');
             exit();
         }
 
+        $result = $stmt->get_result();
 
-        if ($result->num_rows == 1) {
-            echo "<div id='login-success'>";
+        if ($result->num_rows == 1) { // Si le profil existe
+            echo "<div id='login-success'>"; // Affiche un message de succès
             echo "<p> Login réussi redirection en cour ... </p>";
             echo "</div>";
-            $_SESSION['username'] = $name;
-            header("Location: home.php");
-        } else {
-            echo "<div id='login-error'>";
+            $_SESSION['username'] = $name;  // Stocke le nom d'utilisateur dans la session
+            header("Location: home.php");  // Redirige l'utilisateur vers la page d'accueil
+        } else {  // Si le profil n'existe pas
+            echo "<div id='login-error'>"; // Affiche un message d'erreur
             echo "Mauvais pseudo ou mot de passe !";
             echo "</div>";
         }
 
     }
 
-    if (isset($_SESSION['error'])) {
-        echo "<div id='login-error'>";
-        echo $_SESSION['error'];
+    if (isset($_SESSION['error'])) { // Si une erreur est stockée dans la session
+        echo "<div id='login-error'>"; // Affiche le message d'erreur
+        echo $_SESSION['error']; 
         echo "</div>";
-        unset($_SESSION['error']);
+        unset($_SESSION['error']); // Supprime l'erreur de la session
     }
 
     ?>
 
-    <div id="login-form-container">
+    <div id="login-form-container"> <!-- Formulaire de connexion -->
         <h1 id="login-form-title">Login</h1>
 
         <form id="login-form" method="POST" action="login.php">

@@ -1,32 +1,33 @@
-// https://codehalweb.com/popup-modal-in-html-css-javascript/
+// CREDIT : https://codehalweb.com/popup-modal-in-html-css-javascript/
 
-// Popup for login
-const showPostPopup = document.getElementById("show-post-button");
-const popupPostContainer = document.querySelector('.post-form-container');
-const closePostBtn = document.getElementById('close-post-button');
+// Popup pour login
 
-showPostPopup.addEventListener('click', () => {
-    popupPostContainer.classList.add('active');
-    document.body.classList.add('active');
+const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup
+const popupPostContainer = document.querySelector('.post-form-container'); // Conteneur du popup
+const closePostBtn = document.getElementById('close-post-button'); // Bouton pour fermer le popup
+ 
+showPostPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+    popupPostContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+    document.body.classList.add('active'); // On ajoute la classe active au body pour bloquer le scroll
 });
 
-closePostBtn.addEventListener('click', () => {
-    popupPostContainer.classList.remove('active');
-    document.body.classList.remove('active');
+closePostBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+    popupPostContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+    document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
 });
 
-// Popup for notification
+// Popup pour notification
 
-const showNotificationPopup = document.getElementById("show-notification-button");
-const popupNotificationContainer = document.querySelector('.notification-container');
-const closeNotificationBtn = document.getElementById('close-notification-button');
+const showNotificationPopup = document.getElementById("show-notification-button"); // Bouton pour afficher le popup
+const popupNotificationContainer = document.querySelector('.notification-container');  // Conteneur du popup
+const closeNotificationBtn = document.getElementById('close-notification-button');  // Bouton pour fermer le popup
 
-showNotificationPopup.addEventListener('click', () => {
-    popupNotificationContainer.classList.add('active');
-    document.body.classList.add('active');
+showNotificationPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+    popupNotificationContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+    document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
 });
 
-closeNotificationBtn.addEventListener('click', () => {
-    popupNotificationContainer.classList.remove('active');
-    document.body.classList.remove('active');
+closeNotificationBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+    popupNotificationContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+    document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
 });

@@ -71,7 +71,7 @@
         // Exécute la requête
         try {
             $result = $stmt->execute();
-        } catch (Exception $e) {
+        } catch (Exception $e) { // Gère les erreurs
             $error = mysqli_error($connexion); // Récupère l'erreur
 
             if (strpos($error, 'Duplicate entry') !== false) { // Vérifie si l'erreur est un doublon
@@ -91,30 +91,30 @@
         }
         
 
-        if ($result) {
-            echo "<div id='login-success'>";
+        if ($result) { // Si le compte est crée avec succès
+            echo "<div id='login-success'>"; // Affiche un message de succès
             echo "Compte crée avec succés redirection en cour ...";
             echo "</div>";
-            $_SESSION['username'] = $name;
-            header("Location: home.php");
-        } else {
-            echo "<div id='login-error'>";
+            $_SESSION['username'] = $name; // Stocke le nom d'utilisateur dans la session
+            header("Location: home.php"); // Redirige l'utilisateur vers la page d'accueil
+        } else { // Si le compte n'est pas crée
+            echo "<div id='login-error'>"; // Affiche un message d'erreur
             echo "<p> Erreur en tentant de crée votre compte ... </p>";
             echo "</div>";
         }
 
     }
 
-    if (isset($_SESSION['error'])) {
-        echo "<div id='login-error'>";
+    if (isset($_SESSION['error'])) { // Si une erreur est stockée dans la session
+        echo "<div id='login-error'>"; // Affiche le message d'erreur
         echo $_SESSION['error'];
         echo "</div>";
-        unset($_SESSION['error']);
+        unset($_SESSION['error']);  // Supprime l'erreur de la session
     }
 
     ?>
 
-    <div id="register-form-container">
+    <div id="register-form-container"> <!-- Formulaire d'inscription -->
 
     <h1 id="register-form-title">Register</h1>
     <form id="register-form" method="POST" action="register.php">

@@ -1,101 +1,153 @@
-/* POST FORM POPUP */
+/*-------------- POST FORM POPUP --------------*/
 
+/* Body */
 body.active {
+    /* Cache le surplus de la page */
     overflow: hidden;
 }
 
+/* Style du container du formulaire de post */
 .post-form-container {
-    position: fixed;
+    /* Occupe tout l'espace de la page */
     width: 100%;
     height: 100%;
+
+    /* Fond transparent par défaut */
     background: rgba(0, 0, 0, .3);
+    opacity: 0;
+
+    /* Positionnement */
+    position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0;
+
+    /* Empeche les clicks */
     pointer-events: none;
 
+    /* Affiche le formulaire en tête */
     z-index: 1000;
   }
 
+/* Active le container du formulaire de post */
 .post-form-container.active {
+    /* Affiche le formulaire */
     opacity: 1;
+
+    /* Active les clicks */
     pointer-events: auto;
+
+    /* Transition */
     transition: .4s ease;
 }
 
+/* Style du formulaire de post */
 .post-form-container .post-form {
+    /* Taille et position */
     width: 40%;
     height: 200px;
+    padding: 30px;
+
+    /* Fond et bordure */
     background: #ffffff;
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    padding: 30px;
+
+    /* Animation */
     transform: scale(0);
   }
 
+/* Active le formulaire de post */
 .post-form-container.active .post-form {
+    /* Affiche le formulaire */
     transform: scale(1);
+
+    /* Transition */
     transition: .4s ease;
     transition-delay: .25s;
 }
-  
+
+/* Style du bouton de fermeture */
 .post-form-container button {
+    /* Positionnement */
     position: absolute;
     top: 5px;
     left: 5px;
     padding: 5px;
+
+    /* Fond et bordure */
     border: none;
     background: #ffffff;
-
     border-radius: 50%;
 }
 
+/* Style du bouton de fermeture lorsqu'il est hover */
 .post-form-container button:hover {
+    /* Change la couleur de fond */
     background: rgb(206, 94, 94);
+
+    /* Transition */
     transition: .3s ease;
 }
 
+/* Style du formulaire */
 .post-form-container form {
+    /* Texte centré */
     text-align: center;
 }
 
+/* Style du champ de texte */
 .post-form-container form textarea {
+    /* Positionnement */
     border: none;
     border-left: 1px solid rgb(201, 201, 201);
-    padding-left: 5px;
     outline: none;
     background: #ffffff;
+
+    /* Taille */
     width: 90%;
     height: 100px;
+
+    /* Marge */
+    padding-left: 5px;
 }
 
+/* Style du bouton de soumission */
 .post-form-container form input[type="submit"] {
+    /* Taille et positionnement */
     width: 20%;
     position: absolute;
     bottom: 5px;
     right: 5px;
 
+    /* Couleur et bordure */
     border-radius: 20px;
     color: white;
     border: none;
-
-    transition: background 0.3s ease-in-out; /* Add this line */
     background: rgb(0, 140, 255);
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
 }
 
-
+/* Style du bouton de soumission lorsqu'il est hover */
 .post-form-container form input[type="submit"]:hover {
+    /* Change la couleur de fond */
     background: black;
 }   
 
-
+/* Style du message d'erreur du post */
 .error-post {
+    /* Positionnement */
     text-align: center;
     margin-left: 20%;
     margin-right: 20%;
     margin-bottom: 4%;
+
+    /* Taille */
     width: 40%;
+
+    /* Couleur et bordure */
     color: white;
     background: rgb(206, 94, 94);
     border: 2px solid rgb(128, 58, 58);
@@ -103,60 +155,94 @@ body.active {
 }
 
 
-/* NOTIFICATION POPUP */
+/*-------------- NOTIFICATION POPUP --------------*/
 
+/* Style du container de notification */
 .notification-container {
+    /* Positionnement */
     position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, .3);
     display: flex;
     justify-content: center;
     align-items: center;
+
+    /* Taille */
+    width: 100%;
+    height: 100%;
+
+    /* Fond transparent par défaut */
+    background: rgba(0, 0, 0, .3);
     opacity: 0;
+
+    /* Empeche les clicks */
     pointer-events: none;
 
+    /* Affiche la notification en tête */
     z-index: 1000;
 }
 
+/* Active le container de notification */
 .notification-container.active {
+    /* Affiche la notification */
     opacity: 1;
+
+    /* Active les clicks */
     pointer-events: auto;
+
+    /* Transition */
     transition: .4s ease;
 }
 
+/* Style de la notification */
 .notification-container .notification {
+    /* Taille et position */
     width: 40%;
     height: 200px;
+    padding: 30px;
+
+    /* Fond et bordure */
     background: #ffffff;
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    padding: 30px;
+    
+    /* Animation */
     transform: scale(0);
 }
 
+/* Active la notification */
 .notification-container.active .notification {
+    /* Affiche la notification */
     transform: scale(1);
+
+    /* Transition */
     transition: .4s ease;
     transition-delay: .25s;
 }
 
+/* Style du bouton de fermeture */
 .notification-container button {
+    /* Positionnement */
     position: absolute;
     top: 5px;
     left: 5px;
     padding: 5px;
+
+    /* Fond et bordure */
     border: none;
     background: #ffffff;
-
     border-radius: 50%;
 }
 
+/* Style du bouton de fermeture lorsqu'il est hover */
 .notification-container button:hover {
+    /* Change la couleur de fond */
     background: rgb(206, 94, 94);
+
+    /* Transition */
     transition: .3s ease;
 }
 
+/* Style du titre de la notification */
 .notification-container h3{
+    /* Texte centré */
     text-align: center;
 }
