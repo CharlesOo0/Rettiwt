@@ -82,7 +82,7 @@
                             <img src="img/stat.png" alt="Statistique"><span class="pl-span"> Statistique</span>
                         </a>
 
-                        <a href="home.php"  class="left-band-img profil-link-i">
+                        <a href="edit.php"  class="left-band-img profil-link-i">
                             <img src="img/edit.png" alt="Modifier"><span class="pl-span"> Modifier</span>
                         </a>
 

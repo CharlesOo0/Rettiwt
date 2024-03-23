@@ -28,39 +28,45 @@
         // -------------------------- Affiche les informations de l'utilisateur -------------------------- //
 
         $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
-        $sql = "SELECT * FROM profil WHERE username = '$currentUser'"; // Crée la requête SQL qui récupère les informations de l'utilisateur connecté
+        // Crée la requête SQL qui récupère les informations de l'utilisateur connecté
+        $stmt = $connexion->prepare("SELECT * FROM profil WHERE username=?"); // Prépare la requête
+        $stmt->bind_param("s", $currentUser); // Lie les paramètres à la requête
+        $stmt->execute(); // Exécute la requête
+        $result = $stmt->get_result(); // Récupère le résultat de la requête
         $picture = NULL; // Initialise une variable pour l'avatar de l'utilisateur a NULL
 
         try { // Exécute la requête
-            $result = mysqli_query($connexion, $sql);
-            $row = mysqli_fetch_assoc($result);
-
-            if (!empty($row)) { // Si le fetch a retourné quelque chose
-                if (isset($row['avatar']) && $row['avatar'] != null) { // Si l'utilisateur a un avatar
-                    $picture = $row['avatar']; // Récupère l'avatar de l'utilisateur
-                    // Affiche l'avatar de l'utilisateur en 3 tailles différentes
-                    echo "<p>Avatar actuel : <img src='img/" . $picture . "' alt='avatar' width='64' height='64'>
-                    <img src='img/" . $picture . "' alt='avatar' width='128' height='128'>
-                    <img src='img/" . $picture . "' alt='avatar' width='256' height='256'>
-                    </p>";
-                }else { // Sinon (si l'utilisateur n'a pas d'avatar)
-                    // Affiche l'avatar par défaut en 3 tailles différentes
-                    echo "<p>Avatar actuel : <img src='img/default_pfp.png' alt='avatar' width='64' height='64'>
-                    <img src='img/default_pfp.png' alt='avatar' width='128' height='128'>
-                    <img src='img/default_pfp.png' alt='avatar' width='256' height='256'>
-                    </p>";
-                }
-
-                // Affiche les informations de l'utilisateur
-                echo "<p>Pseudo : " . $row['username'] . "</p>";
-                echo "<p>Email : " . $row['email'] . "</p>";
-                echo "<p>Bio : " . $row['bio'] . "</p>";
-
-            } else { // Sinon (si le fetch n'a rien retourné)
-                echo "<p> Erreur profil non trouvé </p>";
-            }
+            $stmt->execute(); // Exécute la requête
+            $result = $stmt->get_result(); // Récupère le résultat de la requête
         } catch (Exception $e) { // Si il y a une erreur lors de la récupération du profil
             echo "<p>Erreur lors de la récupération du profil : " . mysqli_error($connexion) . "</p>";
+        }
+
+        $row = mysqli_fetch_assoc($result);
+
+        if (!empty($row)) { // Si le fetch a retourné quelque chose
+            if (isset($row['avatar']) && $row['avatar'] != null) { // Si l'utilisateur a un avatar
+                $picture = $row['avatar']; // Récupère l'avatar de l'utilisateur
+                // Affiche l'avatar de l'utilisateur en 3 tailles différentes
+                echo "<p>Avatar actuel : <img src='img/" . $picture . "' alt='avatar' width='64' height='64'>
+                <img src='img/" . $picture . "' alt='avatar' width='128' height='128'>
+                <img src='img/" . $picture . "' alt='avatar' width='256' height='256'>
+                </p>";
+            }else { // Sinon (si l'utilisateur n'a pas d'avatar)
+                // Affiche l'avatar par défaut en 3 tailles différentes
+                echo "<p>Avatar actuel : <img src='img/default_pfp.png' alt='avatar' width='64' height='64'>
+                <img src='img/default_pfp.png' alt='avatar' width='128' height='128'>
+                <img src='img/default_pfp.png' alt='avatar' width='256' height='256'>
+                </p>";
+            }
+
+            // Affiche les informations de l'utilisateur
+            echo "<p>Pseudo : " . $row['username'] . "</p>";
+            echo "<p>Email : " . $row['email'] . "</p>";
+            echo "<p>Bio : " . $row['bio'] . "</p>";
+
+        } else { // Sinon (si le fetch n'a rien retourné)
+            echo "<p> Erreur profil non trouvé </p>";
         }
         ?>
 
@@ -165,41 +171,43 @@
 
 
             $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
-            $sql = "UPDATE profil SET " . implode(', ', $setClauses). " WHERE username = '$currentUser'"; // Crée la requête SQL pour modifier le profil de l'utilisateur connecté
+            $stmt = $connexion->prepare("UPDATE profil SET ".implode(', ', $setClauses)." WHERE username=?"); // Prépare la requête
+            $stmt->bind_param("s",$currentUser); // Lie les paramètres à la requête
+
+
 
             if ($modify == true) { // Si il n'y a pas eu d'erreur lors de la modification du profil
 
                 try { // Exécute la requête
-                    mysqli_query($connexion, $sql);
-
-                    if ($passwordModified) { // Si le mot de passe a été modifié
-                        $modifyiedUsername = null;
-                        foreach ($setClauses as $clause) {
-                            if (strpos($clause, 'username') !== false) {
-                                // Récupère le nouveau pseudo
-                                $parts = explode(" = ", $clause);
-                                $modifyiedUsername = trim($parts[1], "'");
-                                break;
-                            }
-                        }
-
-                        $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
-                    }
-
-                    if ($picture != NULL) { // Si l'utilisateur a un avatar
-                        unlink("img/" . $picture); // Supprime l'ancien avatar
-                    }
-
-                    echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
-                    // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
-
-                    $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
-
+                    $stmt->execute(); // Exécute la requête
                 } catch (Exception $e) { // Si il y a une erreur lors de la modification du profil
                     echo "<p>Erreur lors de la modification du profil : " . mysqli_error($connexion) . "</p>";
                 }
 
-            }  
+            } 
+
+            if ($passwordModified) { // Si le mot de passe a été modifié
+                $modifyiedUsername = null;
+                foreach ($setClauses as $clause) {
+                    if (strpos($clause, 'username') !== false) {
+                        // Récupère le nouveau pseudo
+                        $parts = explode(" = ", $clause);
+                        $modifyiedUsername = trim($parts[1], "'");
+                        break;
+                    }
+                }
+
+                $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
+            }
+
+            if ($picture != NULL) { // Si l'utilisateur a un avatar
+                unlink("img/" . $picture); // Supprime l'ancien avatar
+            }
+
+            echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
+            // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
+
+            $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
         }
 
         ?>
