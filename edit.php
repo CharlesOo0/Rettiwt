@@ -140,6 +140,7 @@
 
             }
 
+            $avatarModified = false; // Initialise une variable pour savoir si l'avatar a été modifié
             if (isset($_FILES['avatar']) && $_FILES['avatar']['tmp_name'] != "") { // Si l'utilisateur veux modifier son avatar
 
                 $avatar = $_FILES['avatar']['tmp_name']; // Récupère le fichier
@@ -159,6 +160,7 @@
                         echo "<p> Il y a eu une erruer en téléchargant votre image. </p>";
                     }else {
                         $setClauses[] = "avatar = '" . $identifiant_unique . "." . $file_extension ."'";
+                        $avatarModified = true;
                     }
 
                 }
@@ -171,43 +173,41 @@
 
 
             $currentUser = $_SESSION['username']; // Récupère le username de l'utilisateur connecté
-            $stmt = $connexion->prepare("UPDATE profil SET ".implode(', ', $setClauses)." WHERE username=?"); // Prépare la requête
-            $stmt->bind_param("s",$currentUser); // Lie les paramètres à la requête
-
-
+            $sql = "UPDATE profil SET " . implode(', ', $setClauses) . " WHERE username = '$currentUser'"; // Crée la requête SQL pour modifier le profil de l'utilisateur connecté
 
             if ($modify == true) { // Si il n'y a pas eu d'erreur lors de la modification du profil
 
                 try { // Exécute la requête
-                    $stmt->execute(); // Exécute la requête
+                    mysqli_query($connexion, $sql);
                 } catch (Exception $e) { // Si il y a une erreur lors de la modification du profil
                     echo "<p>Erreur lors de la modification du profil : " . mysqli_error($connexion) . "</p>";
                 }
 
-            } 
-
-            if ($passwordModified) { // Si le mot de passe a été modifié
-                $modifyiedUsername = null;
-                foreach ($setClauses as $clause) {
-                    if (strpos($clause, 'username') !== false) {
-                        // Récupère le nouveau pseudo
-                        $parts = explode(" = ", $clause);
-                        $modifyiedUsername = trim($parts[1], "'");
-                        break;
+                if ($passwordModified) { // Si le mot de passe a été modifié
+                    $modifyiedUsername = null;
+                    foreach ($setClauses as $clause) {
+                        if (strpos($clause, 'username') !== false) {
+                            // Récupère le nouveau pseudo
+                            $parts = explode(" = ", $clause);
+                            $modifyiedUsername = trim($parts[1], "'");
+                            break;
+                        }
                     }
+
+                    $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
                 }
 
-                $_SESSION['username'] = $modifyiedUsername;  // Change le username de la session pour le nouveau pseudo
-            }
+                if ($picture != NULL && $avatarModified) { // Si l'utilisateur a un avatar
+                    unlink("img/" . $picture); // Supprime l'ancien avatar
+                }
 
-            if ($picture != NULL) { // Si l'utilisateur a un avatar
-                unlink("img/" . $picture); // Supprime l'ancien avatar
-            }
+                echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
+                // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
 
-            echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations
-            // En utilisant meta refresh pour éviter le message de confirmation de rechargement de la page
+                $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
 
-            $_SESSION['modifyied'] = true; // Ajoute une variable de session pour savoir si le profil a été modifié
+            } 
+            
         }
 
         ?>
