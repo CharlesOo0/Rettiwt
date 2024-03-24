@@ -91,7 +91,7 @@ function displayProfil($connexion, $username) {
                     // Affiche l'avatar de l'utilisateur
                     echo "<a href='home.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
                     if ($rowProfil['avatar'] != NULL) { // Si l'utilisateur a un avatar
-                        echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
+                        echo "<img src='pfp/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     } else { // Si l'utilisateur n'a pas d'avatar
                         echo "<img src='img/default_pfp.png' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     }
@@ -188,10 +188,10 @@ function displayPost($connexion, $username, $sub) {
                 echo "<div class='row'>";
 
                         //  Affiche l'avatar et le nom d'utilisateur de l'auteur
-                        echo "<div class='col' id='post-avatar-username'>";
+                        echo "<div class='col post-avatar-username'>";
                             echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                             if ($profil['avatar'] != NULL) {
-                                echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
                             } else {
                                 echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                             }
@@ -200,16 +200,30 @@ function displayPost($connexion, $username, $sub) {
                             echo "</a>";
                         echo "</div>";
                         
-                        echo "<div class='col' id='post-date'>";
+                        echo "<div class='col post-date'>";
                         echo $row["date"]; // Affiche la date du post
                         echo "</div>";
 
                 echo "</div>";
 
                 echo "<div class='container-fluid'>";
-                    // Affiche les informations du post
-                    echo "<div class='col' id='post-text'>" . $row["text"] . "</div>";
+                    // Affiche le texte du post
+                    echo "<div class='col post-text'>" . $row["text"] . "</div>";
 
+                    // Affiche les images du post
+                    echo "<div class='col post-img'>";
+                    $sql = "SELECT * FROM post_images WHERE post_id=" . $row['id'];
+                    try { // Essaie de récupérer les images du post
+                        $images = mysqli_query($connexion, $sql);
+                        if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Images: Error when trying to get the images. <br>";
+                    }
+                    echo "</div>";
                     // Récupère le nombre de likes
                     $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
                     try { // Essaie de récupérer le nombre de likes
@@ -228,7 +242,7 @@ function displayPost($connexion, $username, $sub) {
                     }
 
                     // Affiche le bouton pour liker
-                    echo "<div class='row' id='like-comment'>";
+                    echo "<div class='row like-comment'>";
                         echo "<div class='col'></div>";
 
                         echo    "<div class='col text-right'>";
@@ -253,7 +267,7 @@ function displayPost($connexion, $username, $sub) {
                         echo    "<form method='post' action=''>";
                         echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
                         echo            "<input type='hidden' name='commenting' value='true'>";
-                        echo            "<input class='like-button' type='image' src='img/comment.png' width='20' height='20' value='Comment'> X <br>";
+                        echo            "<input class='comment-button' type='image' src='img/comment.png' width='20' height='20' value='Comment'> X <br>";
                         
                         echo    "</form>";
                         echo   "</div>";
@@ -333,7 +347,7 @@ function displayFollow($connexion, $username, $mode) {
                     // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
                     echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
                     if ($profil['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
-                        echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
+                        echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
                     } else { // Si l'utilisateur qui suit n'a pas d'avatar
                         echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                     }

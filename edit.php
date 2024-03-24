@@ -53,8 +53,8 @@
                         if (isset($row['avatar']) && $row['avatar'] != null) { // Si l'utilisateur a un avatar
                             $picture = $row['avatar']; // Récupère l'avatar de l'utilisateur
                             // Affiche l'avatar de l'utilisateur en 2 tailles différentes
-                            echo "<p>Avatar actuel : <img src='img/" . $picture . "' alt='avatar' width='64' height='64' style='border-radius:50%;'>
-                            <img src='img/" . $picture . "' alt='avatar' width='128' height='128' style='border-radius:50%;'>
+                            echo "<p>Avatar actuel : <img src='pfp/" . $picture . "' alt='avatar' width='64' height='64' style='border-radius:50%;'>
+                            <img src='pfp/" . $picture . "' alt='avatar' width='128' height='128' style='border-radius:50%;'>
                             </p>";
                         }else { // Sinon (si l'utilisateur n'a pas d'avatar)
                             // Affiche l'avatar par défaut en 2 tailles différentes
@@ -170,7 +170,7 @@
                             header("Location: edit.php?error_modify=L'image ne peut pas dépasser 64 KB");
                             exit();
                         } else {
-                            $target_dir = "img/"; // Fichier dans lequel on enregistre nos images
+                            $target_dir = "pfp/"; // Fichier dans lequel on enregistre nos images
                             $identifiant_unique = uniqid('avatar_');
 
                             // Récupère l'extension du fichier
@@ -222,7 +222,7 @@
                         }
 
                         if ($picture != NULL && $avatarModified) { // Si l'utilisateur a un avatar
-                            unlink("img/" . $picture); // Supprime l'ancien avatar
+                            unlink("pfp/" . $picture); // Supprime l'ancien avatar
                         }
 
                         echo("<meta http-equiv='refresh' content='0'>"); // Rafraichit la page pour afficher les nouvelles informations

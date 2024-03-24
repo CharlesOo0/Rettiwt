@@ -29,17 +29,13 @@
         <!-- Popup de post -->
     <div class="post-form-container">
         <div class="post-form">
-            <?php
-            // -------------------------- Gérer erreur en cas de post -------------------------- //
-            if (isset($_SESSION['error_post'])) { // Si on a une erreur
-                echo "<div class='error-post'>" . $_SESSION['error_post'] . "</div>";
-                unset($_SESSION['error_post']);
-            }
-            ?>
             <button id="close-post-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="posting">
                 <textarea name="text" placeholder="Bonjour tout le monde !"></textarea> <br>
+                <div id="file-input-post">
+                    <label for="images">Ajouter des images (3 maximum) </label><input type="file" name="images[]" multiple> <br>
+                </div>
                 <input type="submit" value="Post">
             </form>
         </div>
@@ -118,9 +114,31 @@
                     }
 
                     if (strlen($text) > 270) { // Si le message est trop long
-                        $_SESSION['error_post'] = "Votre message est trop long.";
+                        $_SESSION['error_post'] = "Votre message est trop long pas plus de 270 charactères.";
                         header('Location: home.php');
                         exit();
+                    }
+
+                    if ($_FILES['images'] && is_array($_FILES['images']['name'])) { // Si on a des images
+                        $images = $_FILES['images']; // On récupère les images
+
+                        if (count($_FILES['images']['name']) > 3) { // Si on a plus de 3 images
+                            $_SESSION['error_post'] = "Vous ne pouvez pas ajouter plus de 3 images.";
+                            header('Location: home.php');
+                            exit();
+                        }
+
+                        $size = 0;
+                        for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
+                            // Ajoute la taille de l'image à la taille totale
+                            $size += $images['size'][$i];
+                        }
+
+                        if ($size > 1000000) { // Si la taille totale des images dépasse 1Mo
+                            $_SESSION['error_post'] = "La taille totale des images est supérieur a 1Mo.";
+                            header('Location: home.php');
+                            exit();
+                        }
                     }
 
                     $author = $_SESSION['username']; // On récupère l'auteur
@@ -154,6 +172,34 @@
                             $_SESSION['error_post'] = "<p>Erreur lors de la création de votre post...</p>";
                             header('Location: home.php');
                             exit();
+                        }
+                    }
+
+                    if (isset($images)) { // Si on a des images
+                        $count = 0; // Compteur pour les images
+                        $target_dir = "post_images/"; // Le dossier où on va stocker les images
+                        for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
+                            $identifiant_unique = uniqid(); // Crée un identifiant unique
+                            
+                            $file_extension = pathinfo($images['name'][$i], PATHINFO_EXTENSION); // Récupère l'extension du fichier
+
+                            $target_file = $target_dir . $identifiant_unique . "." . $file_extension; // Crée le chemin du fichier
+
+                            if (!move_uploaded_file($images['tmp_name'][$i], $target_file)) { // Si on ne peut pas déplacer le fichier
+                                $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image.";
+                                header('Location: home.php');
+                                exit();
+                            }else {
+                                $sql = "INSERT INTO `post_images`(`post_id`, `image`) VALUES ((SELECT id FROM post WHERE author='$id' ORDER BY id DESC LIMIT 1),'$identifiant_unique.$file_extension')";
+                                try { // On essaye de faire la requête
+                                    mysqli_query($connexion, $sql);
+                                } catch (Exception $e) { // Si on a une erreur
+                                    $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image.";
+                                    echo "Erreur : " . $e->getMessage();
+                                    exit();
+                                }
+                            }
+                            ++$count; // On incrémente le compteur
                         }
                     }
 
@@ -208,6 +254,14 @@
                         <button id="show-post-button">Post</button>
                         <label for="show-post-button">Parler au monde entier !</label>
                     </div>
+
+                    <?php
+                    // -------------------------- Gérer erreur en cas de post -------------------------- //
+                    if (isset($_SESSION['error_post'])) { // Si on a une erreur
+                        echo "<div class='error-post'>" . $_SESSION['error_post'] . "</div>";
+                        unset($_SESSION['error_post']); // On enlève l'erreur
+                    }
+                    ?>
 
                 </div>
 

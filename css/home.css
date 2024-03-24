@@ -188,7 +188,7 @@ body {
 }
 
 /* Style de l'affichage des avatar username des posts */
-#post-avatar-username {
+.post-avatar-username {
     /* Positionnement */
     padding-top: 2%;
     margin-left: 2%;
@@ -196,7 +196,7 @@ body {
 }
 
 /* Style de l'affichage de la date des posts */
-#post-date {
+.post-date {
     /* Positionnement */
     padding-top: 2%;
     margin-right: 2%;
@@ -204,14 +204,34 @@ body {
 }
 
 /* Style du texte des posts */
-#post-text {
+.post-text{
     /* Positionnement */
     padding: 5%;
     text-align: left;
 }
 
+.post-img{
+    /* Positionnement */
+    padding: 2%;
+    text-align: center;
+    margin-bottom: 4%;
+
+    /* Taille */
+    width: 100%;
+}
+
+.post-img img{
+    /* Positionnement */
+    border: solid 2px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 30%;
+    height: 300px;
+}
+
 /* Style des likes et commentaires */
-#like-comment {
+.like-comment {
     /* Positionnement */
     text-align: center;
     padding-bottom: 2%;
