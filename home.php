@@ -63,12 +63,15 @@
 
         <div class="row no-gutters">
 
-            <div id="left-band" class="col-md-3 d-none d-md-block">
+            <div id="left-band" class="col-md-3 d-none d-md-block"> <!-- Bandeau de gauche avec les liens -->
 
                     <div id="profil-link" class="container-fluid">
-                        <a href="profil.php" class="left-band-img profil-link-i">
+                        <a href="home.php?profil_detail=<?php echo urlencode($_SESSION['username']); ?>" class="left-band-img profil-link-i">
                             <img src="img/profil.png" alt="Profil"><span class="pl-span"> Profil</span>
                         </a> <br>
+                        
+                        <button id="show-search-button" class="left-band-img profil-link-i"><img src="img/search.png" alt="Rechercher"><span class="pl-span"> Recherche</span></button><br>
+
                         <a href="home.php" class="left-band-img profil-link-i">
                             <img src="img/home.png" alt="Actualités"><span class="pl-span"> Actualités</span>
                         </a> <br>
@@ -80,11 +83,15 @@
                         
                         <a href="home.php"  class="left-band-img profil-link-i">
                             <img src="img/stat.png" alt="Statistique"><span class="pl-span"> Statistique</span>
-                        </a>
+                        </a><br>
 
                         <a href="edit.php"  class="left-band-img profil-link-i">
                             <img src="img/edit.png" alt="Modifier"><span class="pl-span"> Modifier</span>
-                        </a>
+                        </a><br>
+
+                        <a href="home.php"  class="left-band-img profil-link-i">
+                            <img src="img/admin.png" alt="Admin"><span class="pl-span"> Admin</span>
+                        </a><br>
 
                         <a href="logout.php"  class="left-band-img profil-link-i">
                             <img src="img/disconnect.png" alt="Deconnexion"><span class="pl-span"> Déconnexion</span>
@@ -175,6 +182,12 @@
                 }else if (isset($_GET['forYou'])) { // Si on veut afficher les posts pour l'utilisateur
                     echo "<h4>Pour vous</h4>";
                     displayPost($connexion, $_SESSION['username'], 1); 
+                }else if(isset($_GET['profil_detail'])) {
+                    echo "<h4>Profil</h4>";
+                    $username = $_GET['profil_detail'];  // On récupère le username de l'autre utilisateur
+                    displayProfil($connexion, $username); // On affiche le profil de l'autre utilisateur
+                    echo "<div class='style-display-profil'>Post du profil</div>";
+                    displayPost($connexion, $username, NULL); // On affiche les posts de l'autre utilisateur
                 }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
                     displayPost($connexion, NULL, NULL);

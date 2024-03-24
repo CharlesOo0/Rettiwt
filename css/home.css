@@ -34,8 +34,11 @@ h4 {
     top: 0;
 
     /* Couleur et bordure */
-    background: white;
+    background: rgb(0, 140, 255);
     border-bottom: solid 1px rgb(201, 201, 201);
+
+    /* Police */
+    color:white;
 }
 
 a:hover {
@@ -138,14 +141,14 @@ body {
 }
 
 /* Style du bouton pour afficher les notifications */
-#show-notification-button{
+#show-notification-button, #show-search-button{
     /* Enleve les styles par défaut */
     background: none;
     border: none;
 }
 
 /* Style du bouton pour afficher les notifications au survol */
-#show-notification-button:hover {
+#show-notification-button:hover, #show-search-button:hover {
     /* Couleur de fond */
     background-color: rgb(180, 180, 180);
     color: rgb(0, 140, 255);
@@ -376,6 +379,25 @@ body {
 
     /* Transition */
     transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+.style-display-profil {
+    /* Positionnement */
+    margin-top: 5%;
+
+    /* Bordure */
+    border-top: solid 1px rgb(201, 201, 201);
+    border-bottom: solid 1px rgb(201, 201, 201);
+
+    /* Centrage */
+    text-align: center;
+
+    /* Police */
+    font-size: 1.5em;
+    color:white;
+
+    /* Couleur de fond */
+    background: black;
 }
 
 /* Ajoute un effet responsive pour les icones de gauches */

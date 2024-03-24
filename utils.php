@@ -89,7 +89,7 @@ function displayProfil($connexion, $username) {
 
                 echo "<div id='avatar' class='col'>";
                     // Affiche l'avatar de l'utilisateur
-                    echo "<a href='profil.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
+                    echo "<a href='home.php?profil_detail=" . urlencode($username) . "'>"; // Crée un lien vers le profil de l'auteur
                     if ($rowProfil['avatar'] != NULL) { // Si l'utilisateur a un avatar
                         echo "<img src='img/" . $rowProfil['avatar'] . "' alt='avatar' width='64' height='64' style='border-radius: 50%;border: solid 1px black;' id='avatar'> <br>";
                     } else { // Si l'utilisateur n'a pas d'avatar
@@ -99,7 +99,16 @@ function displayProfil($connexion, $username) {
                 echo "</div>";
 
                 echo "<div id='pseudo-follow' class='col'>"; // Affiche le nom d'utilisateur et le nombre de followers et following
-                    echo "<div id='pseudo'><a href='profil.php?profil_detail=" . urlencode($username) . "'>@" . $rowProfil["username"] . "</a></div>";
+                if ($username != $_SESSION['username']) {
+                    echo "<div class='follow-sub-href'>"; // Affiche le bouton pour follow ou unfollow l'utilisateur
+                    if (isFollowing($connexion, $_SESSION['username'], $username)){ // Si l'utilisateur connecté follow déjà l'autre utilisateur
+                        echo "<a href='home.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>Désabonner</a>"; // On affiche un lien pour donner l'option de pouvoir unfollow l'autre utilisateur
+                    }else {// Sinon (si l'utilisateur connecté ne follow pas l'autre utilisateur) 
+                        echo "<a href='home.php?follow=" . urlencode($username) . "&profil_detail=". urlencode($username) ."'>S'abonner</a>"; // On affiche un lien pour donner l'option de pouvoir follow l'autre utilisateur
+                    }
+                    echo "</div>";
+                }
+                    echo "<div id='pseudo'><a href='home.php?profil_detail=" . urlencode($username) . "'>@" . $rowProfil["username"] . "</a></div>";
                     echo "<div id='sub'><a href='?displayFollower=true&username=". urlencode($username) ."' >" . $rowFollower["COUNT(follower_id)"] . " Followers</a> </div>";
                     echo "<div id='follow'><a href='?displayFollowing=true&username=". urlencode($username) ."' >". $rowFollowing["COUNT(following_id)"] ." Suivies</a> </div>";
                 echo "</div>";
@@ -180,7 +189,7 @@ function displayPost($connexion, $username, $sub) {
 
                         //  Affiche l'avatar et le nom d'utilisateur de l'auteur
                         echo "<div class='col' id='post-avatar-username'>";
-                            echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                             if ($profil['avatar'] != NULL) {
                                 echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
                             } else {
@@ -322,7 +331,7 @@ function displayFollow($connexion, $username, $mode) {
 
                 echo "<div class='follow-info col'>";
                     // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
-                    echo "<a href='profil.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
+                    echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
                     if ($profil['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
                         echo "<img src='img/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
                     } else { // Si l'utilisateur qui suit n'a pas d'avatar
