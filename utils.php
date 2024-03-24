@@ -211,13 +211,21 @@ function displayPost($connexion, $username, $sub) {
                     echo "<div class='col post-text'>" . $row["text"] . "</div>";
 
                     // Affiche les images du post
-                    echo "<div class='col post-img'>";
                     $sql = "SELECT * FROM post_images WHERE post_id=" . $row['id'];
+                    echo "<div class='col post-img'>";
                     try { // Essaie de récupérer les images du post
                         $images = mysqli_query($connexion, $sql);
-                        if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                        if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
                             while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                echo "<img src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                echo "<img class='post-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='post-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='post-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
                             }
                         }
                     } catch (Exception $e) { // Si ça échoue, affiche une erreur

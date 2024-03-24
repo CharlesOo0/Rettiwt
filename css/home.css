@@ -210,6 +210,7 @@ body {
     text-align: left;
 }
 
+/* Style du conteneur des images des posts */
 .post-img{
     /* Positionnement */
     padding: 2%;
@@ -220,14 +221,37 @@ body {
     width: 100%;
 }
 
-.post-img img{
+/* Style des images des posts quand il y a 3 images */
+.post-img-3{
     /* Positionnement */
-    border: solid 2px rgb(0, 140, 255);
+    border: solid 1px rgb(0, 140, 255);
     border-radius: 5px;
 
     /* Taille */
     width: 30%;
     height: 300px;
+}
+
+/* Style des images des posts quand il y a 2 images */
+.post-img-2{
+    /* Positionnement */
+    border: solid 2px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 45%;
+    height: 400px;
+}
+
+/* Style des images des posts quand il y a 1 image */
+.post-img-1{
+    /* Positionnement */
+    border: solid 2px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 80%;
+    height: auto;
 }
 
 /* Style des likes et commentaires */
