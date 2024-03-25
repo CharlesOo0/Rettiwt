@@ -251,7 +251,7 @@ function displayPost($connexion, $username, $sub) {
 
                     // Affiche le bouton pour liker
                     echo "<div class='row like-comment'>";
-                        echo "<div class='col'></div>";
+                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
 
                         echo    "<div class='col text-right'>";
                         // Crée un formulaire pour liker
@@ -271,16 +271,11 @@ function displayPost($connexion, $username, $sub) {
 
 
                         echo    "<div class='col text-left'>";
-                        // Crée un formulaire pour commenter
-                        echo    "<form method='post' action=''>";
-                        echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
-                        echo            "<input type='hidden' name='commenting' value='true'>";
-                        echo            "<input class='comment-button' type='image' src='img/comment.png' width='20' height='20' value='Comment'> X <br>";
-                        
-                        echo    "</form>";
-                        echo   "</div>";
+                        // Crée un bouton pour afficher le formulaire de like du post
+                        echo    "<button class='comment-button' name='post_id' value='".$row["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> X <br>";
+                        echo    "</div>";
 
-                        echo "<div class='col'></div>";
+                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
                     echo "</div>";
 
                 echo "</div>";
@@ -392,70 +387,27 @@ function displayFollow($connexion, $username, $mode) {
 }
 
 /**
- * Gère les likes
+ * Affiche le formulaire de commentaire
  * 
  * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui like
+ * @param username Le nom d'utilisateur qui commente
  * 
  * @return void
  */
-function handleLike($connexion, $username) {
+function displayCommentForm($connexion, $username) {
+    echo "<form class='comment-form' method='post' action='home.php' enctype='multipart/form-data'>";
+        echo "<h4 id='comment-form-title'>Commenter</h4>";
+        echo "<input type='hidden' id='comment-post-id' name='post_id' value=''>";
+        echo "<input type='hidden' name='commenting' value='true'>";
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['post_id']) && isset($_POST['liking'])) { // Si on post sur cette page alors on veux liker un post
-        $id = $_POST['post_id']; // Récupère l'id du post 
+        echo "<div class='comment-form-input col'>";
+            echo "<textarea id='comment-form-textarea' class='row' type='textarea' name='comment' placeholder='Commenter'></textarea>";
+            echo "<input id='comment-form-file' class='row' type='file' name='comment_image[]' multiple>";
+        echo "</div>";
 
-        $sql = "INSERT INTO likes (post_id, user_id) VALUES ('$id', (SELECT id FROM profil WHERE username = '$username'))"; // Crée la requête SQL pour ajouter un like
-
-        try { // Essaie d'ajouter un like
-            mysqli_query($connexion, $sql); 
-        } catch (Exception $e) { // Si ça échoue, affiche une erreur
-            $error = mysqli_error($connexion); // Récupère l'erreur
-            if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
-                $sql = "DELETE FROM likes WHERE post_id='$id' AND user_id=(SELECT id FROM profil WHERE username = '$username')"; // Crée la requête SQL pour retirer le like
-                try { // Essaie de retirer le like
-                    mysqli_query($connexion, $sql);  
-                } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                    echo "<p> Erreur lors de la suppression du like : " . mysqli_error($connexion) . "</p>";
-                }
-            }else { // Si l'erreur n'est pas un doublon 
-                echo "<p> Erreur lors de l'ajout du like : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
-            }
-        }
-
-    }
-}
-
-/**
- * Gère les followers
- * 
- * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui follow
- * 
- * @return void
- */
-function handleFollow($connexion, $username) {
-    if (isset($_GET['follow'])) { // Si on a un GET request avec un follow
-        $followed = $_GET['follow']; // Récupère le nom d'utilisateur à follow
-        // Crée la requête SQL pour ajouter ou retirer un follow
-        $sql = "INSERT INTO followers (follower_id, following_id) VALUES ((SELECT id FROM profil WHERE username = '$username'), (SELECT id FROM profil WHERE username = '$followed'))";
-
-        try { // Essaie d'ajouter un follow
-            mysqli_query($connexion, $sql);
-        } catch (Exception $e) { // Si ça échoue, affiche une erreur
-            $error = mysqli_error($connexion);
-            if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
-                // Crée la requête SQL pour retirer le follow
-                $sql = "DELETE FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
-                try { // Essaie de retirer le follow
-                    mysqli_query($connexion, $sql);
-                } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                    echo "<p> Erreur lors de la suppression du follow : " . mysqli_error($connexion) . "</p>";
-                }
-            }else { // Si l'erreur n'est pas un doublon
-                echo "<p> Erreur lors de l'ajout du follow : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
-            }
-        }
-    }
+        echo "<button id='close-comment-form' type='button'>Fermer</button>";
+        echo "<input type='submit' value='Commenter'>";
+    echo "</form>";
 }
 
 ?>
