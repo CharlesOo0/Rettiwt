@@ -1,40 +1,164 @@
 <?php
 
 /**
- * Vérifie si l'utilisateur est connecté
+ * Fonction qui récupère l'arborescence des commentaires d'un post
  * 
- * @return void
+ * @param connexion La connexion à la base de données
+ * @param root L'id du post racine
+ * @param parentId L'id du commentaire parent
+ * 
+ * @return array L'arborescence des commentaires
  */
-function checkCreds() {
-    if (!isset($_SESSION['username'])) { // Vérifie si l'utilisateur est connecté a travers le cookie qui devrait être set
-        $_SESSION['error'] = "You need to be logged in to access this page."; // Stocke un message d'erreur
-        header('Location: logout.php'); // Redirige vers la page de déconnexion
-        exit();
+function getComments($connexion, $root, $parentId = NULL) {
+
+    if ($parentId === NULL) { // On est a la racine
+        $sql = "SELECT * FROM post WHERE parent_id=$root"; // Crée la requête SQL pour récupérer les commentaires de la racine
+    }else { // On est dans un commentaire
+        $sql = "SELECT * FROM post WHERE parent_id=$parentId"; // Crée la requête SQL pour récupérer les commentaires du 
     }
+    
+    try { // Essaie de récupérer les commentaires
+        $comments = mysqli_query($connexion, $sql);
+
+    } catch (Exception $e) { // Si ça échoue
+        return []; // Retourne un tableau vide
+    }
+
+    // Récupère les commentaires sous forme de tableau associatif
+    $comments = mysqli_fetch_all($comments, MYSQLI_ASSOC);
+
+    // Pour chaque commentaire, récupère les réponses
+    foreach ($comments as &$comment) {
+        // Récupère les réponses avec un appel récursif
+        $comment['replies'] = getComments($connexion, $root, $comment['id']);
+    }
+    
+    return $comments; // Retourne les commentaires
 }
 
 /**
- * Vérifie si l'utilisateur follow déjà
+ * Fonction qui affiche les commentaires
  * 
- * @param connexion La connexion à la base de données
- * @param username Le nom d'utilisateur qui follow
- * @param followed Le nom d'utilisateur qui est follow
+ * @param comments Les commentaires à afficher
  * 
- * @return bool
+ * @return void
  */
-function isFollowing($connexion, $username, $followed) {
-    $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id=(SELECT id FROM profil WHERE username = '$followed')";
+function displayComments($connexion, $comments) {
+    echo "<div class='comments'>";
+        foreach ($comments as $comment) { // Pour chaque commentaire
+            echo "<div class='comment'>";
+                // Récupère le nom de l'auteur
+                $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
+                try { // Essaie de récupérer le nom de l'auteur
+                    $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Author: Error when trying to get the name. <br>";
+                }
 
-    try { // Essaie de récupérer les followers
-        $result = mysqli_query($connexion, $sql);
-        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-            return true; // Si oui, l'utilisateur follow déjà
+                echo "<div class='row'>";
+
+                        //  Affiche l'avatar et le nom d'utilisateur de l'auteur
+                        echo "<div class='col comment-avatar-username'>";
+                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                            if ($profil['avatar'] != NULL) {
+                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                            } else {
+                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                            }
+                            
+                            echo "@" . $profil['username']; 
+                            echo "</a>";
+                        echo "</div>";
+                        
+                        echo "<div class='col comment-date'>";
+                        echo $comment["date"]; // Affiche la date du commentaire
+                        echo "</div>";
+                
+                echo "</div>";
+
+                echo "<div class='container-fluid'>";
+                    // Affiche le texte du commentaire
+                    echo "<div class='col comment-text'>" . $comment["text"] . "</div>";
+
+                    // Affiche les images du commentaire
+                    $sql = "SELECT * FROM post_images WHERE post_id=" . $comment['id'];
+                    echo "<div class='col comment-img'>";
+                    try { // Essaie de récupérer les images du commentaire
+                        $images = mysqli_query($connexion, $sql);
+                        if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='comment-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='comment-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='comment-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Images: Error when trying to get the images. <br>";
+                    }
+                    echo "</div>";
+
+                    // Récupère le nombre de likes
+                    $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $comment['id'];
+                    try { // Essaie de récupérer le nombre de likes
+                        $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Likes: Error when trying to get the number of likes. <br>";
+
+                    }
+                
+                    // Permet de savoir si l'utilisateur a liké le commentaire
+                    $sql = "SELECT * FROM likes WHERE post_id = " . $comment["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
+                    try { // Essaie de récupérer le like
+                        $result = mysqli_query($connexion, $sql);
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
+                    }
+
+                    // Affiche le bouton pour liker
+                    echo "<div class='row like-comment'>";
+                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
+
+                        echo    "<div class='col text-right'>";
+                        // Crée un formulaire pour liker
+                        echo    "<form class='like-form' method='post' action=''>";
+                        echo            "<input type='hidden' name='post_id' value='" . $comment["id"] . "'>";
+                        // echo            "<input type='hidden' name='liking' value='true'>"; Ca essaie sans ca
+
+                        if (mysqli_num_rows($result) > 0) { // Si l'utilisateur a déjà liké
+                            // Affiche le bouton de like rempli
+                            echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . "</div> <br>";
+                        } else { // Si l'utilisateur n'a pas liké
+                            // Affiche le bouton de like vide
+                            echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . " </div><br>";
+                        }
+                        echo    "</form>";
+                        echo   "</div>";
+
+                        echo    "<div class='col text-left'>";
+                        // Crée un bouton pour afficher le formulaire de like du commentaire
+                        echo    "<button class='comment-button' name='post_id' value='".$comment["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
+                        echo    "</div>";
+
+                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
+
+                    echo "</div>";
+
+                echo "</div>"; // Fin de la div container-fluid     
+
+                // Affiche les réponses
+                if (isset($comment['replies'])) {
+                    displayComments($connexion, $comment['replies']);
+                }
+            echo "</div>";
         }
-    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la vérification du follow : " . mysqli_error($connexion) . "</p>";
-    }
 
-    return false; // Si la requête n'a pas retourné de lignes, l'utilisateur ne follow pas
+    echo "</div>";
 }
 
 /**
@@ -161,7 +285,7 @@ function displayPost($connexion, $username, $sub) {
         }
 
     }else { // Si on veut afficher les posts de tous les utilisateurs
-        $sql = "SELECT * FROM post ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+        $sql = "SELECT * FROM post WHERE parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
     }
 
     $recuperationPostFailed = false;
@@ -250,7 +374,7 @@ function displayPost($connexion, $username, $sub) {
                     }
 
                     // Récupère les commentaires
-                    $sql = "SELECT * FROM comments WHERE post_id=" . $row['id'];
+                    $sql = "SELECT * FROM post WHERE parent_id=" . $row['id'];
 
                     try { // Essaie de récupérer les commentaires
                         $comments = mysqli_query($connexion, $sql);
@@ -289,37 +413,12 @@ function displayPost($connexion, $username, $sub) {
 
                 echo "</div>"; // Fin de la div container-fluid
 
-                // Affiche les commentaires
-                echo "<div class='comments'>";
-                    while ($comment = mysqli_fetch_assoc($comments)) { // Pour chaque commentaire
-                        // Récupère le nom d'utilisateur du commentaire
-                        $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
-                        try { // Essaie de récupérer le nom d'utilisateur du commentaire
-                            $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                            echo "Comment: Error when trying to get the name. <br>";
-                        }
-
-                        echo "<div class='comment'>";
-                            // Affiche l'avatar et le nom d'utilisateur du commentaire
-                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur du commentaire
-                            if ($profil['avatar'] != NULL) { // Si l'auteur du commentaire a un avatar
-                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur du commentaire
-                            } else { // Si l'auteur du commentaire n'a pas d'avatar
-                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                            }
-                            echo "@" . $profil['username']; // Affiche le nom d'utilisateur du commentaire
-                            echo "</a>";
-
-                            echo "<div class='comment-date'>" . $comment['date'] . "</div>"; // Affiche la date du commentaire
-
-                            // Affiche le texte du commentaire
-                            echo "<div class='comment-text'>" . $comment['text'] . "</div>";
-                        echo "</div>";
-                    }
-                echo "</div>";
-
             echo "</div>";
+
+            // Affiche les commentaires
+            $connexion_mysqli = connexion_mysqli();
+            $comments = getComments($connexion_mysqli, $row['id'], NULL);
+            displayComments($connexion_mysqli, $comments);
         }
     } else {
         echo "Aucun résultat trouvé.";

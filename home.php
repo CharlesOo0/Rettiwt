@@ -3,6 +3,7 @@
     <?php
     // -------------------------- Vérifie tout ce qui est nécessaire -------------------------- //
     require 'sql.php'; // Inclut le fichier 'sql.php
+    require 'utils.php'; // Inclut le fichier 'utils.php
     require 'utils_display.php'; // Inclut le fichier 'utils.php
     require 'utils_handle.php'; // Inclut le fichier 'utils_handle.php
 
