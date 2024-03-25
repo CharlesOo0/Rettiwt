@@ -240,7 +240,7 @@ function displayPost($connexion, $username, $sub) {
                         echo "Likes: Error when trying to get the number of likes. <br>";
                     }
 
-                    // Récupère le nombre de commentaires
+                    // Permet de savoir si l'utilisateur a liké le post
                     $sql = "SELECT * FROM likes WHERE post_id = " . $row["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
 
                     try { // Essaie de récupérer le like
@@ -249,22 +249,31 @@ function displayPost($connexion, $username, $sub) {
                         echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
                     }
 
+                    // Récupère les commentaires
+                    $sql = "SELECT * FROM comments WHERE post_id=" . $row['id'];
+
+                    try { // Essaie de récupérer les commentaires
+                        $comments = mysqli_query($connexion, $sql);
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Comments: Error when trying to get the comments. <br>";
+                    }
+
                     // Affiche le bouton pour liker
                     echo "<div class='row like-comment'>";
                         echo "<div class='col'></div>"; // Colonne pour centrer les boutons
 
                         echo    "<div class='col text-right'>";
                         // Crée un formulaire pour liker
-                        echo    "<form method='post' action=''>";
+                        echo    "<form class='like-form' method='post' action=''>";
                         echo            "<input type='hidden' name='post_id' value='" . $row["id"] . "'>";
-                        echo            "<input type='hidden' name='liking' value='true'>";
+                        // echo            "<input type='hidden' name='liking' value='true'>"; Ca essaie sans ca
 
                         if (mysqli_num_rows($result) > 0) { // Si l'utilisateur a déjà liké
                             // Affiche le bouton de like rempli
-                            echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                            echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . "</div> <br>";
                         } else { // Si l'utilisateur n'a pas liké
                             // Affiche le bouton de like vide
-                            echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> " . $likes['COUNT(post_id)'] . " <br>";
+                            echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . " </div><br>";
                         }
                         echo    "</form>";
                         echo   "</div>";
@@ -272,12 +281,42 @@ function displayPost($connexion, $username, $sub) {
 
                         echo    "<div class='col text-left'>";
                         // Crée un bouton pour afficher le formulaire de like du post
-                        echo    "<button class='comment-button' name='post_id' value='".$row["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> X <br>";
+                        echo    "<button class='comment-button' name='post_id' value='".$row["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". $comments->num_rows ." <br>";
                         echo    "</div>";
 
                         echo "<div class='col'></div>"; // Colonne pour centrer les boutons
                     echo "</div>";
 
+                echo "</div>"; // Fin de la div container-fluid
+
+                // Affiche les commentaires
+                echo "<div class='comments'>";
+                    while ($comment = mysqli_fetch_assoc($comments)) { // Pour chaque commentaire
+                        // Récupère le nom d'utilisateur du commentaire
+                        $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
+                        try { // Essaie de récupérer le nom d'utilisateur du commentaire
+                            $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                            echo "Comment: Error when trying to get the name. <br>";
+                        }
+
+                        echo "<div class='comment'>";
+                            // Affiche l'avatar et le nom d'utilisateur du commentaire
+                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur du commentaire
+                            if ($profil['avatar'] != NULL) { // Si l'auteur du commentaire a un avatar
+                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur du commentaire
+                            } else { // Si l'auteur du commentaire n'a pas d'avatar
+                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                            }
+                            echo "@" . $profil['username']; // Affiche le nom d'utilisateur du commentaire
+                            echo "</a>";
+
+                            echo "<div class='comment-date'>" . $comment['date'] . "</div>"; // Affiche la date du commentaire
+
+                            // Affiche le texte du commentaire
+                            echo "<div class='comment-text'>" . $comment['text'] . "</div>";
+                        echo "</div>";
+                    }
                 echo "</div>";
 
             echo "</div>";
