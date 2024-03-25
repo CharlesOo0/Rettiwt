@@ -18,14 +18,14 @@ function connexion() {
         $connexion = mysqli_connect($serveur, $utilisateur, $motdepasse, $basededonnees);
     }catch (Exception $e) { // Si ça échoue, stocke un message d'erreur
         $_SESSION['error'] = "La connexion à la base de données a échoué : " . mysqli_connect_error();
-        header('Location: logout.php'); // Redirige vers la page d'erreur
+        header('Location: login.php'); // Redirige vers la page d'erreur
         exit();
     }
 
     // Vérifie la connextion
     if (!$connexion) { // Si la connexion a échoué, stocke un message d'erreur
         $_SESSION['error'] = "La connexion à la base de données a échoué : " . mysqli_connect_error();
-        header('Location: logout.php'); // Redirige vers la page d'erreur
+        header('Location: login.php'); // Redirige vers la page d'erreur
         exit();
     }
 

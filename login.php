@@ -5,6 +5,7 @@
     require 'sql.php'; // Inclut le fichier 'sql.php
 
     $connexion = connexion(); // Se connecte a la base de données
+
     ?>
 
 <html>
