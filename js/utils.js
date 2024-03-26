@@ -24,7 +24,6 @@ var showButtons = document.querySelectorAll(".show-hidde-comment-button"); // On
 for (var i = 0; i < showButtons.length; i++) { // Pour chaque bouton d'affichage des commentaires
     showButtons[i].addEventListener("click", function(event) { // Quand on clique dessus
         var comment_id = this.value; // On récupère l'id du commentaire
-        console.log(comment_id);
         showComment(comment_id); // On appelle la fonction showComment
     });
 }
@@ -35,8 +34,11 @@ var commentButtons = document.getElementsByClassName("comment-button"); // On r�
 
 for (var i = 0; i < commentButtons.length; i++) { // Pour chaque bouton commentaire
     commentButtons[i].addEventListener("click", function(event) { // Quand on clique dessus
-        var post_id = this.value; // On récupère l'id du post
+        var post_id = this.dataset.postId; // On récupère l'id du post
+        var parent_id = this.dataset.parentId; // On récupère l'id du commentaire parent
+
         document.getElementById("comment-post-id").value = post_id; // On met cet id dans le champ caché du formulaire
+        document.getElementById("comment-parent-id").value = parent_id; // On met cet id dans le champ caché du formulaire
         
         const comment_form = document.getElementsByClassName("comment-form"); // On affiche le formulaire
 

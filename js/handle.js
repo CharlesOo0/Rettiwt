@@ -8,9 +8,6 @@ $(document).ready(function() {
             url: "ajax_request/handleLike.php",
             data: form.serialize(),
             success: function(data) {
-                
-                console.log(data);
-
                 if (data == 1) {
                     var likeCount = form.find(".like-count");
                     var newCount = parseInt(likeCount.text()) + 1; // Parse the text to an integer and add 1

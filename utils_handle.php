@@ -152,7 +152,7 @@ function handlePost($connexion) {
             }
         }
 
-        if (isset($images)) { // Si on a des images
+        if (isset($images) && count($_FILES['images']['name']) > 1) { // Si on a des images
             $count = 0; // Compteur pour les images
             $target_dir = "post_images/"; // Le dossier où on va stocker les images
             for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
@@ -192,7 +192,8 @@ function handlePost($connexion) {
  */
 function handleComment($connexion) {
     // -------------------------- Crée un commentaire -------------------------- //
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text']) && isset($_POST['action']) && $_POST['action'] == "commenting"){ // Si on post sur cette page
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text']) && isset($_POST['commenting'])){ // Si on post sur cette page
+
         if (!isset($_SESSION['username'])) { // Si l'utilisateur n'est pas connecté
             $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
             header('Location: logout.php');
@@ -205,7 +206,14 @@ function handleComment($connexion) {
             exit();
         }
 
+        if (!isset($_POST['parent_id'])) { // Si on a pas d'id de parent
+            $_SESSION['error_post'] = "Erreur lors de la récupération du parent.";
+            header('Location: home.php');
+            exit();
+        }
+
         $post_id = $_POST['post_id']; // On récupère l'id du post
+        $parent_id = $_POST['parent_id']; // On récupère l'id du parent
         // Initialise un booléen pour savoir si on peut poster
         $modify = true; 
         $text = htmlspecialchars($_POST['text']); // On récupère le texte
@@ -220,17 +228,17 @@ function handleComment($connexion) {
             exit();
         }
 
-        if ($_FILES['images'] && is_array($_FILES['images']['name'])) { // Si on a des images
-            $images = $_FILES['images']; // On récupère les images
+        if ($_FILES['comment_images'] && is_array($_FILES['comment_images']['name'])) { // Si on a des images
+            $images = $_FILES['comment_images']; // On récupère les images
 
-            if (count($_FILES['images']['name']) > 3) { // Si on a plus de 3 images
+            if (count($_FILES['comment_images']['name']) > 3) { // Si on a plus de 3 images
                 $_SESSION['error_post'] = "Vous ne pouvez pas ajouter plus de 3 images.";
                 header('Location: home.php');
                 exit();
             }
 
             $size = 0;
-            for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
+            for ($i = 0; $i < count($_FILES['comment_images']['name']); $i++) { // Itère sur chaque image
                 // Ajoute la taille de l'image à la taille totale
                 $size += $images['size'][$i];
             }
@@ -265,7 +273,11 @@ function handleComment($connexion) {
         $id = $result['id']; // On récupère l'id de l'utilisateur
 
         // Crée la requête SQL pour ajouter le post
-        $sql = "INSERT INTO post (author, text, parent_id) VALUES ('$id', '$text', '$post_id')";
+        if ($parent_id != 'NULL') {
+            $sql = "INSERT INTO post (author, text, parent_id) VALUES ('$id', '$text', '$parent_id')";
+        }else {
+            $sql = "INSERT INTO post (author, text, parent_id) VALUES ('$id', '$text', '$post_id')";
+        }
 
         if ($modify) { //
             try { // On essaye de faire la requête
@@ -276,10 +288,10 @@ function handleComment($connexion) {
                 exit();
             }
 
-            if (isset($images)) { // Si on a des images
+            if (isset($images) && count($images['name']) > 1) { // Si on a des images
                 $count = 0; // Compteur pour les images
-                $target_dir = "comment_images/"; // Le dossier où on va stocker les images
-                for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
+                $target_dir = "post_images/"; // Le dossier où on va stocker les images
+                for ($i = 0; $i < count($images['name']); $i++) { // Itère sur chaque image
                     $identifiant_unique = uniqid(); // Crée un identifiant unique
                     
                     $file_extension = pathinfo($images['name'][$i], PATHINFO_EXTENSION); // Récupère l'extension du fichier
@@ -291,7 +303,7 @@ function handleComment($connexion) {
                         header('Location: home.php');
                         exit();
                     }else {
-                        $sql = "INSERT INTO `comment_images`(`comment_id`, `image`) VALUES ((SELECT id FROM comment WHERE author='$id' ORDER BY id DESC LIMIT 1),'$identifiant_unique.$file_extension')";
+                        $sql = "INSERT INTO `post_images`(`post_id`, `image`) VALUES ((SELECT id FROM post WHERE author='$id' ORDER BY id DESC LIMIT 1),'$identifiant_unique.$file_extension')";
                         try { // On essaye de faire la requête
                             mysqli_query($connexion, $sql);
                         } catch (Exception $e) { // Si on a une erreur

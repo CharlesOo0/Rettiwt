@@ -148,7 +148,7 @@ function displayComments($connexion, $comments) {
 
                             echo    "<div class='col text-left'>";
                             // Crée un bouton pour afficher le formulaire de like du commentaire
-                            echo    "<button class='comment-button' name='post_id' value='".$comment["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
+                            echo    "<button class='comment-button' name='post_id' data-parent-id='".$comment["id"]."' data-post-id='".$comment["parent_id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
                             echo    "</div>";
 
                             echo "<div class='col'></div>"; // Colonne pour centrer les boutons
@@ -423,7 +423,7 @@ function displayPost($connexion, $username, $sub) {
 
                         echo    "<div class='col text-left'>";
                         // Crée un bouton pour afficher le formulaire de like du post
-                        echo    "<button class='comment-button' name='post_id' value='".$row["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". $comments->num_rows ." <br>";
+                        echo    "<button class='comment-button' name='post_id' data-post-id='".$row["id"]."' data-parent-id='NULL'> <img src='img/comment.png' width='20' height='20'> </button> ". $comments->num_rows ." <br>";
                         echo    "</div>";
 
                         echo "<div class='col'></div>"; // Colonne pour centrer les boutons
@@ -561,12 +561,12 @@ function displayCommentForm($connexion, $username) {
     echo "<form class='comment-form' method='post' action='home.php' enctype='multipart/form-data'>";
         echo "<h4 id='comment-form-title'>Commenter</h4>";
         echo "<input type='hidden' id='comment-post-id' name='post_id' value=''>";
-        echo "<input type='hidden' id='comment-id' name='comment_id' value=''>";
+        echo "<input type='hidden' id='comment-parent-id' name='parent_id' value=''>";
         echo "<input type='hidden' name='commenting' value='true'>";
 
         echo "<div class='comment-form-input col'>";
-            echo "<textarea id='comment-form-textarea' class='row' type='textarea' name='comment' placeholder='Commenter'></textarea>";
-            echo "<input id='comment-form-file' class='row' type='file' name='comment_image[]' multiple>";
+            echo "<textarea id='comment-form-textarea' class='row' type='textarea' name='text' placeholder='Commenter'></textarea>";
+            echo "<input id='comment-form-file' class='row' type='file' name='comment_images[]' multiple>";
         echo "</div>";
 
         echo "<button id='close-comment-form' type='button'>Fermer</button>";
