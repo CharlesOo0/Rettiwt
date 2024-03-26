@@ -1,23 +1,3 @@
-<script>
-/**
- * Fonction qui affiche ou cache les commentaires
- * 
- * @param commentId L'id du commentaire à afficher ou cacher
- * 
- * @return void
- */
-function showComment(commentId) {
-    var commentElement = document.querySelector('#comment-' + commentId); // Récupère l'élément du commentaire
-    var showButton = document.querySelector('#show-button-' + commentId); // Récupère le bouton pour afficher ou cacher les commentaires
-    if (commentElement.style.display === "none") { // Si les commentaires sont cachés
-        commentElement.style.display = "block";  // Affiche les commentaires
-        showButton.innerHTML = "Cacher les commentaires"; // Change le texte du bouton
-    } else { // Si les commentaires sont affichés
-        commentElement.style.display = "none"; // Cache les commentaires
-        showButton.innerHTML = "Afficher les commentaires"; // Change le texte du bouton
-    }
-}
-</script>
 
 <?php
 
@@ -179,7 +159,7 @@ function displayComments($connexion, $comments) {
 
                     echo "<div class='show-more'>";
                     if (count($comment['replies']) > 0) { // Si le commentaire a des réponses
-                        echo "<button class='show-hidde-comment-button' id='show-button-".$comment["id"]."' onclick=\"showComment(".$comment["id"].")\">Afficher les commentaires</button>"; // Affiche un bouton pour afficher les réponses
+                        echo "<button class='show-hidde-comment-button' id='show-button-".$comment["id"]."' value='".$comment["id"]."'>Afficher les commentaires</button>"; // Affiche un bouton pour afficher les réponses
                     }
                     echo "</div>";
 
@@ -455,7 +435,7 @@ function displayPost($connexion, $username, $sub) {
 
             $identifiant_comment = uniqid();
             if ($comments->num_rows > 0) { // Si le post a des commentaires
-                echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' onclick=\"showComment('".$identifiant_comment."')\">Afficher les commentaires</button>";
+                echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' value='".$identifiant_comment."'>Afficher les commentaires</button>";
             }
 
             echo "<div style='display: none;' id='comment-".$identifiant_comment."'>"; // Crée une div pour afficher les commentaires
