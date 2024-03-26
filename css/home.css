@@ -175,6 +175,69 @@ body {
     border-bottom: solid 1px rgb(201, 201, 201);
 }
 
+/* Style du button d'affichage des commentaires */
+.show-hidde-comment-button {
+    /* Positionnement */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+    /* Taille */
+    width: 100%;
+
+    /* Couleur de fond et texte */
+    background: rgb(0, 140, 255);
+    color: white;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+
+}
+
+/* Style du button d'affichage des commentaires au survol */
+.show-hidde-comment-button:hover {
+    /* Couleur de fond */
+    background: black;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+/* Style de l'affichage des commentaires */
+.comment {
+    /* Positionnement */
+    text-align: right;
+
+    border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+/* Style de la ligne de commentaire */
+.comment-line {
+    /* Positionnement */
+    
+
+    /* Taille */
+    height: 100%;
+    width: 5px;
+
+    background: rgb(170, 170, 170);
+
+}
+
+/* Style du conteneur des commentaires */
+.comment-container {
+    /* Positionnement */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Style de l'affichage des commentaires */
+.show-more {
+    margin-bottom: 1%;
+}
+
 /* Style de l'affichage follow */
 .follow {
     /* Positionnement */

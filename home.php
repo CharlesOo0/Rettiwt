@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-    <?php
+<?php
     // -------------------------- Vérifie tout ce qui est nécessaire -------------------------- //
     require 'sql.php'; // Inclut le fichier 'sql.php
     require 'utils.php'; // Inclut le fichier 'utils.php
@@ -11,7 +11,7 @@
 
     checkCreds(); // Vérifie si l'utilisateur est connecté
 
-    ?>
+?>
 
 <html>
 
@@ -103,6 +103,9 @@
             <?php
                 // -------------------------- Crée un post -------------------------- //
                 handlePost($connexion);
+
+                // -------------------------- Crée un commentaire -------------------------- //
+                handleComment($connexion);
             ?>
 
             <?php
@@ -175,8 +178,8 @@
     </div>
 
     <script src="js/popup.js"></script>
-    <script src="js/utils.js"></script>
     <script src="js/handle.js"></script>
+    <script src="js/utils.js"></script>
 
 </body>
 

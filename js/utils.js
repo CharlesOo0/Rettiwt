@@ -24,5 +24,3 @@ closeCommentButton.addEventListener("click", function(event) { // Quand on cliqu
     const comment_form = document.getElementsByClassName("comment-form"); // On cache le formulaire
     comment_form[0].style.display = "none";
 });
-
-

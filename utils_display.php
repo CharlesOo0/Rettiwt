@@ -1,3 +1,24 @@
+<script>
+/**
+ * Fonction qui affiche ou cache les commentaires
+ * 
+ * @param commentId L'id du commentaire à afficher ou cacher
+ * 
+ * @return void
+ */
+function showComment(commentId) {
+    var commentElement = document.querySelector('#comment-' + commentId); // Récupère l'élément du commentaire
+    var showButton = document.querySelector('#show-button-' + commentId); // Récupère le bouton pour afficher ou cacher les commentaires
+    if (commentElement.style.display === "none") { // Si les commentaires sont cachés
+        commentElement.style.display = "block";  // Affiche les commentaires
+        showButton.innerHTML = "Cacher les commentaires"; // Change le texte du bouton
+    } else { // Si les commentaires sont affichés
+        commentElement.style.display = "none"; // Cache les commentaires
+        showButton.innerHTML = "Afficher les commentaires"; // Change le texte du bouton
+    }
+}
+</script>
+
 <?php
 
 /**
@@ -46,115 +67,132 @@ function getComments($connexion, $root, $parentId = NULL) {
 function displayComments($connexion, $comments) {
     echo "<div class='comments'>";
         foreach ($comments as $comment) { // Pour chaque commentaire
-            echo "<div class='comment'>";
-                // Récupère le nom de l'auteur
-                $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
-                try { // Essaie de récupérer le nom de l'auteur
-                    $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                    echo "Author: Error when trying to get the name. <br>";
-                }
-
-                echo "<div class='row'>";
-
-                        //  Affiche l'avatar et le nom d'utilisateur de l'auteur
-                        echo "<div class='col comment-avatar-username'>";
-                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                            if ($profil['avatar'] != NULL) {
-                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
-                            } else {
-                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                            }
-                            
-                            echo "@" . $profil['username']; 
-                            echo "</a>";
-                        echo "</div>";
-                        
-                        echo "<div class='col comment-date'>";
-                        echo $comment["date"]; // Affiche la date du commentaire
-                        echo "</div>";
-                
+            echo "<div class='container-fluid row comment-container'>";
+                echo "<div class='comment col-1'>";
+                echo "<div class='comment-line'></div>";
                 echo "</div>";
 
-                echo "<div class='container-fluid'>";
-                    // Affiche le texte du commentaire
-                    echo "<div class='col comment-text'>" . $comment["text"] . "</div>";
-
-                    // Affiche les images du commentaire
-                    $sql = "SELECT * FROM post_images WHERE post_id=" . $comment['id'];
-                    echo "<div class='col comment-img'>";
-                    try { // Essaie de récupérer les images du commentaire
-                        $images = mysqli_query($connexion, $sql);
-                        if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
-                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                echo "<img class='comment-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                            }
-                        }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
-                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                echo "<img class='comment-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                            }
-                        }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
-                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                echo "<img class='comment-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                            }
-                        }
+                echo "<div class='post col'>";
+                    // Récupère le nom de l'auteur
+                    $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
+                    try { // Essaie de récupérer le nom de l'auteur
+                        $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
                     } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "Images: Error when trying to get the images. <br>";
+                        echo "Author: Error when trying to get the name. <br>";
+                    }
+
+                    echo "<div class='row'>";
+
+                            //  Affiche l'avatar et le nom d'utilisateur de l'auteur
+                            echo "<div class='col post-avatar-username'>";
+                                echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                                if ($profil['avatar'] != NULL) {
+                                    echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                                } else {
+                                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                                }
+                                
+                                echo "@" . $profil['username']; 
+                                echo "</a>";
+                            echo "</div>";
+                            
+                            echo "<div class='col post-date'>";
+                            echo $comment["date"]; // Affiche la date du commentaire
+                            echo "</div>";
+                    
+                    echo "</div>";
+
+                    echo "<div class='container-fluid'>";
+                        // Affiche le texte du commentaire
+                        echo "<div class='col post-text'>" . $comment["text"] . "</div>";
+
+                        // Affiche les images du commentaire
+                        $sql = "SELECT * FROM post_images WHERE post_id=" . $comment['id'];
+                        echo "<div class='col post-img'>";
+                        try { // Essaie de récupérer les images du commentaire
+                            $images = mysqli_query($connexion, $sql);
+                            if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }
+                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                            echo "Images: Error when trying to get the images. <br>";
+                        }
+                        echo "</div>";
+
+                        // Récupère le nombre de likes
+                        $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $comment['id'];
+                        try { // Essaie de récupérer le nombre de likes
+                            $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                            echo "Likes: Error when trying to get the number of likes. <br>";
+
+                        }
+                    
+                        // Permet de savoir si l'utilisateur a liké le commentaire
+                        $sql = "SELECT * FROM likes WHERE post_id = " . $comment["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
+                        try { // Essaie de récupérer le like
+                            $result = mysqli_query($connexion, $sql);
+                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                            echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
+                        }
+
+                        // Affiche le bouton pour liker
+                        echo "<div class='row like-comment'>";
+                            echo "<div class='col'></div>"; // Colonne pour centrer les boutons
+
+                            echo    "<div class='col text-right'>";
+                            // Crée un formulaire pour liker
+                            echo    "<form class='like-form' method='post' action=''>";
+                            echo            "<input type='hidden' name='post_id' value='" . $comment["id"] . "'>";
+                            // echo            "<input type='hidden' name='liking' value='true'>"; Ca essaie sans ca
+
+                            if (mysqli_num_rows($result) > 0) { // Si l'utilisateur a déjà liké
+                                // Affiche le bouton de like rempli
+                                echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . "</div> <br>";
+                            } else { // Si l'utilisateur n'a pas liké
+                                // Affiche le bouton de like vide
+                                echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . " </div><br>";
+                            }
+                            echo    "</form>";
+                            echo   "</div>";
+
+                            echo    "<div class='col text-left'>";
+                            // Crée un bouton pour afficher le formulaire de like du commentaire
+                            echo    "<button class='comment-button' name='post_id' value='".$comment["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
+                            echo    "</div>";
+
+                            echo "<div class='col'></div>"; // Colonne pour centrer les boutons
+
+                        echo "</div>";
+
+                    echo "</div>"; // Fin de la div container-fluid     
+
+                    echo "<div class='show-more'>";
+                    if (count($comment['replies']) > 0) { // Si le commentaire a des réponses
+                        echo "<button class='show-hidde-comment-button' id='show-button-".$comment["id"]."' onclick=\"showComment(".$comment["id"].")\">Afficher les commentaires</button>"; // Affiche un bouton pour afficher les réponses
                     }
                     echo "</div>";
 
-                    // Récupère le nombre de likes
-                    $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $comment['id'];
-                    try { // Essaie de récupérer le nombre de likes
-                        $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "Likes: Error when trying to get the number of likes. <br>";
+                echo "</div>";
+            echo "</div>";
 
-                    }
-                
-                    // Permet de savoir si l'utilisateur a liké le commentaire
-                    $sql = "SELECT * FROM likes WHERE post_id = " . $comment["id"] . " AND user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "')";
-                    try { // Essaie de récupérer le like
-                        $result = mysqli_query($connexion, $sql);
-                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "<p> Erreur lors de la récupération du like : " . mysqli_error($connexion) . "</p>";
-                    }
-
-                    // Affiche le bouton pour liker
-                    echo "<div class='row like-comment'>";
-                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
-
-                        echo    "<div class='col text-right'>";
-                        // Crée un formulaire pour liker
-                        echo    "<form class='like-form' method='post' action=''>";
-                        echo            "<input type='hidden' name='post_id' value='" . $comment["id"] . "'>";
-                        // echo            "<input type='hidden' name='liking' value='true'>"; Ca essaie sans ca
-
-                        if (mysqli_num_rows($result) > 0) { // Si l'utilisateur a déjà liké
-                            // Affiche le bouton de like rempli
-                            echo         "<input class='like-button' type='image' src='img/like_filled.png' width='20' height='20'  value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . "</div> <br>";
-                        } else { // Si l'utilisateur n'a pas liké
-                            // Affiche le bouton de like vide
-                            echo         "<input class='like-button' type='image' src='img/like_empty.png' width='20' height='20' value='Like'> <div class='like-count' style='display:inline-block'>" . $likes['COUNT(post_id)'] . " </div><br>";
-                        }
-                        echo    "</form>";
-                        echo   "</div>";
-
-                        echo    "<div class='col text-left'>";
-                        // Crée un bouton pour afficher le formulaire de like du commentaire
-                        echo    "<button class='comment-button' name='post_id' value='".$comment["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
-                        echo    "</div>";
-
-                        echo "<div class='col'></div>"; // Colonne pour centrer les boutons
-
-                    echo "</div>";
-
-                echo "</div>"; // Fin de la div container-fluid     
-
-                // Affiche les réponses
-                if (isset($comment['replies'])) {
-                    displayComments($connexion, $comment['replies']);
-                }
+            
+            
+            echo "<div style='display: none;' id='comment-".$comment["id"]."'>"; // Crée une div pour afficher les réponses
+            // Affiche les réponses
+            if (isset($comment['replies'])) { // Si le commentaire a des réponses
+                displayComments($connexion, $comment['replies']); // Affiche les réponses
+            }
             echo "</div>";
         }
 
@@ -415,10 +453,17 @@ function displayPost($connexion, $username, $sub) {
 
             echo "</div>";
 
-            // Affiche les commentaires
-            $connexion_mysqli = connexion_mysqli();
-            $comments = getComments($connexion_mysqli, $row['id'], NULL);
-            displayComments($connexion_mysqli, $comments);
+            $identifiant_comment = uniqid();
+            if ($comments->num_rows > 0) { // Si le post a des commentaires
+                echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' onclick=\"showComment('".$identifiant_comment."')\">Afficher les commentaires</button>";
+            }
+
+            echo "<div style='display: none;' id='comment-".$identifiant_comment."'>"; // Crée une div pour afficher les commentaires
+                // Affiche les commentaires
+                $connexion_mysqli = connexion_mysqli(); // Connexion à la base de données
+                $comments = getComments($connexion_mysqli, $row['id'], NULL); // Récupère les commentaires
+                displayComments($connexion_mysqli, $comments); // Affiche les commentaires
+            echo "</div>";
         }
     } else {
         echo "Aucun résultat trouvé.";
@@ -536,6 +581,7 @@ function displayCommentForm($connexion, $username) {
     echo "<form class='comment-form' method='post' action='home.php' enctype='multipart/form-data'>";
         echo "<h4 id='comment-form-title'>Commenter</h4>";
         echo "<input type='hidden' id='comment-post-id' name='post_id' value=''>";
+        echo "<input type='hidden' id='comment-id' name='comment_id' value=''>";
         echo "<input type='hidden' name='commenting' value='true'>";
 
         echo "<div class='comment-form-input col'>";
