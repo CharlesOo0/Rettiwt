@@ -240,6 +240,12 @@ body {
     padding-bottom: 2%;
 }
 
+/* Style des items du dropdown */
+.dropdown-item {
+    /* Couleur */
+    color: red;
+}
+
 /* Ajoute un effet responsive pour les icones de gauches */
 @media screen and (max-width: 1380px){
     .pl-span {

@@ -40,15 +40,43 @@ function getComments($connexion, $root, $parentId = NULL) {
 /**
  * Fonction qui permet d'afficher le menu dropdown
  * 
+ * @param postId L'id du post pour lequel on affiche le menu dropdown
+ * 
  * @return void
  */
-function displayDropdown() {
+function displayDropdown($postId) {
+    $sql = "SELECT * FROM profil WHERE username = '" . $_SESSION['username'] . "'";
+    $connexion = connexion_mysqli();
+
+    try { // Essaie de récupérer le profil de l'utilisateur connecté
+        $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur en tentant d'afficher le dropdown."; // Stocke un message d'erreur
+        echo "<meta http-equiv='refresh' content='0'>"; // Actualise la page
+        exit();
+    }
+
+    $sql = "SELECT * FROM post WHERE id = $postId AND author = " . $profil['id'];
+
+    try { // Essaie de récupérer le post
+        $post = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur en tentant d'afficher le dropdown."; // Stocke un message d'erreur
+        echo "<meta http-equiv='refresh' content='0'>"; // Actualise la page
+        exit();
+    }
+
+    if ($post == NULL) { // Si le post n'existe pas
+        return; // Ne fait rien
+    }
+
+    // Sinon affiche le menu dropdown
     echo '<div class="dropdown">'; // Affiche le menu dropdown
     echo '    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
     echo '        <i class="fas fa-ellipsis-v"></i>';
     echo '    </button>';
     echo '    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
-    echo '        <li><a class="dropdown-item" href="#">Action</a></li>';
+    echo '        <li><a class="dropdown-item" href="">Supprimer</a></li>';
     echo '    </ul>';
     echo '</div>';
 }
@@ -95,7 +123,7 @@ function displayComments($connexion, $comments) {
                             echo "<div class='col post-date'>";
                             echo $comment["date"]; // Affiche la date du commentaire
 
-                            displayDropdown(); // Affiche le menu dropdown
+                            displayDropdown($comment['id']); // Affiche le menu dropdown
 
                             echo "</div>";
                     
@@ -167,7 +195,7 @@ function displayComments($connexion, $comments) {
 
                             echo    "<div class='col text-left'>";
                             // Crée un bouton pour afficher le formulaire de like du commentaire
-                            echo    "<button class='comment-button' name='post_id' data-parent-id='".$comment["id"]."' data-post-id='".$comment["parent_id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
+                            echo    "<button class='comment-button' name='post_id' data-parent-id='".$comment["id"]."' data-post-id='".$comment["parent_id"]."' data-identifier-id='".$comment["id"]."'> <img src='img/comment.png' width='20' height='20'> </button> ". count($comment['replies']) ." <br>";
                             echo    "</div>";
 
                             echo "<div class='col'></div>"; // Colonne pour centrer les boutons
@@ -364,7 +392,7 @@ function displayPost($connexion, $username, $sub) {
                         echo "<div class='col post-date'>";
                         echo $row["date"]; // Affiche la date du post
 
-                        displayDropdown(); // Affiche le menu dropdown
+                        displayDropdown($row["id"]); // Affiche le menu dropdown
 
                         echo "</div>";
 
@@ -442,10 +470,11 @@ function displayPost($connexion, $username, $sub) {
                         echo    "</form>";
                         echo   "</div>";
 
+                        $identifiant_comment = uniqid(); // Identifiant unique pour les commentaires
 
                         echo    "<div class='col text-left'>";
                         // Crée un bouton pour afficher le formulaire de like du post
-                        echo    "<button class='comment-button' name='post_id' data-post-id='".$row["id"]."' data-parent-id='NULL'> <img src='img/comment.png' width='20' height='20'> </button> ". $comments->num_rows ." <br>";
+                        echo    "<button class='comment-button' name='post_id' data-post-id='".$row["id"]."' data-parent-id='NULL' data-identifier-id='".$identifiant_comment."'> <img src='img/comment.png' width='20' height='20'> </button> ". $comments->num_rows ." <br>";
                         echo    "</div>";
 
                         echo "<div class='col'></div>"; // Colonne pour centrer les boutons
@@ -455,7 +484,6 @@ function displayPost($connexion, $username, $sub) {
 
             echo "</div>";
 
-            $identifiant_comment = uniqid();
             if ($comments->num_rows > 0) { // Si le post a des commentaires
                 echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' value='".$identifiant_comment."'>Afficher les commentaires</button>";
             }
@@ -584,6 +612,7 @@ function displayCommentForm($connexion, $username) {
         echo "<h4 id='comment-form-title'>Commenter</h4>";
         echo "<input type='hidden' id='comment-post-id' name='post_id' value=''>";
         echo "<input type='hidden' id='comment-parent-id' name='parent_id' value=''>";
+        echo "<input type='hidden' id='identifier-id' name='identifier_id' value=''>";
         echo "<input type='hidden' name='commenting' value='true'>";
 
         echo "<div class='comment-form-input col'>";

@@ -36,9 +36,11 @@ for (var i = 0; i < commentButtons.length; i++) { // Pour chaque bouton commenta
     commentButtons[i].addEventListener("click", function(event) { // Quand on clique dessus
         var post_id = this.dataset.postId; // On récupère l'id du post
         var parent_id = this.dataset.parentId; // On récupère l'id du commentaire parent
+        var identifier_id = this.dataset.identifierId; // On récupère l'id de l'élément qui a été cliqué
 
         document.getElementById("comment-post-id").value = post_id; // On met cet id dans le champ caché du formulaire
         document.getElementById("comment-parent-id").value = parent_id; // On met cet id dans le champ caché du formulaire
+        document.getElementById("identifier-id").value = identifier_id; // On met cet id dans le champ caché du formulaire
         
         const comment_form = document.getElementsByClassName("comment-form"); // On affiche le formulaire
 

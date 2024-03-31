@@ -22,7 +22,6 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="css/home_style.css">
 
     <link rel="stylesheet" type="text/css" href="css/comment-form.css">
     <link rel="stylesheet" type="text/css" href="css/left-band.css">
@@ -116,9 +115,6 @@
             ?>
 
             <?php
-
-                // -------------------------- Ajoute/enleve un like -------------------------- //
-                handleLike($connexion, $_SESSION['username']);
 
                 // -------------------------- Ajoute/enleve un follow -------------------------- //
                 handleFollow($connexion, $_SESSION['username']);
