@@ -1,0 +1,270 @@
+/* Réinitialiser les styles par défaut */
+* {
+    /* Supprime les marges et les paddings */
+    margin: 0;
+    padding: 0;
+
+    /* Utilise la box-sizing border-box */
+    box-sizing: border-box;
+}
+
+/* Ajoute une police custom */
+@font-face {
+    /* Nom de la police */
+    font-family: 'Poppins';
+
+    /* Chemin de la police */
+    src: url('../font/Poppins-Medium.ttf');
+}
+
+/* Style des <a> */
+a {
+    /* Couleur du texte */
+    color: inherit;
+
+    /* Supprime le soulignement */
+    text-decoration: none;
+}
+
+/* Style des <h> */
+h4 {
+    /* Positionnement */
+    text-align: center;
+    position: sticky;
+    top: 0;
+    margin: 0;
+    z-index: 1;
+
+    /* Couleur et bordure */
+    background: rgb(0, 140, 255);
+    border-bottom: solid 1px rgb(201, 201, 201);
+
+    /* Police */
+    color:white;
+}
+
+a:hover {
+    /* Couleur du texte */
+    color: rgb(0, 140, 255);
+
+    /* Transition */
+    transition:  color 0.3s ease-in-out;
+}
+
+/* Style du <html> */
+html {
+    /* Défini le défilement de la page */
+    scroll-behavior: 'instant';
+}
+
+/* Style du <body> */
+body {
+    /* Utilise la police custom */
+    font-family: 'Poppins';
+
+    /* Taille */
+    height: 100%;
+
+    /* Positionnement */
+    padding: 0;
+    margin: 0;
+
+    /* Type de box */
+    box-sizing: border-box;
+}
+
+/* Style du conteneur des posts */
+#posts {
+    /* Positionnement */
+    padding: 0;
+    margin: 0;
+}
+
+/* Style des posts */
+.post {
+    /* Positionnement */
+    margin: 0;
+    padding: 0;
+
+    /* Bordure */
+    border-bottom: solid 1px rgb(201, 201, 201);
+}
+
+/* Style du button d'affichage des commentaires */
+.show-hidde-comment-button {
+    /* Positionnement */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+    /* Taille */
+    width: 100%;
+
+    /* Couleur de fond et texte */
+    background: rgb(0, 140, 255);
+    color: white;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+
+}
+
+/* Style du button d'affichage des commentaires au survol */
+.show-hidde-comment-button:hover {
+    /* Couleur de fond */
+    background: black;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+/* Style de l'affichage des commentaires */
+.comment {
+    /* Positionnement */
+    text-align: right;
+
+    border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+/* Style de la ligne de commentaire */
+.comment-line {
+    /* Positionnement */
+    
+
+    /* Taille */
+    height: 100%;
+    width: 5px;
+
+    background: rgb(170, 170, 170);
+
+}
+
+/* Style du conteneur des commentaires */
+.comment-container {
+    /* Positionnement */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Style de l'affichage des commentaires */
+.show-more {
+    margin-bottom: 1%;
+}
+
+/* Style de l'affichage follow */
+.follow {
+    /* Positionnement */
+    margin: 0;
+    padding: 3%;
+
+    /* Bordure */
+    border-bottom: solid 1px rgb(201, 201, 201);
+
+    /* Centrage */
+    text-align: center;
+}
+
+/* Style de l'affichage des avatar username des posts */
+.post-avatar-username {
+    /* Positionnement */
+    padding-top: 2%;
+    margin-left: 2%;
+    text-align: left;
+}
+
+/* Style de l'affichage de la date des posts */
+.post-date {
+    /* Positionnement */
+    padding-top: 2%;
+    margin-right: 2%;
+    text-align: right;
+}
+
+/* Style du texte des posts */
+.post-text{
+    /* Positionnement */
+    padding: 5%;
+    text-align: left;
+}
+
+/* Style du conteneur des images des posts */
+.post-img{
+    /* Positionnement */
+    padding: 2%;
+    text-align: center;
+    margin-bottom: 4%;
+
+    /* Taille */
+    width: 100%;
+}
+
+/* Style des images des posts quand il y a 3 images */
+.post-img-3{
+    /* Positionnement */
+    border: solid 1px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 30%;
+    height: 300px;
+}
+
+/* Style des images des posts quand il y a 2 images */
+.post-img-2{
+    /* Positionnement */
+    border: solid 2px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 45%;
+    height: 400px;
+}
+
+/* Style des images des posts quand il y a 1 image */
+.post-img-1{
+    /* Positionnement */
+    border: solid 2px rgb(0, 140, 255);
+    border-radius: 5px;
+
+    /* Taille */
+    width: 80%;
+    height: auto;
+}
+
+/* Style des likes et commentaires */
+.like-comment {
+    /* Positionnement */
+    text-align: center;
+    padding-bottom: 2%;
+}
+
+/* Ajoute un effet responsive pour les icones de gauches */
+@media screen and (max-width: 1380px){
+    .pl-span {
+        display: none;
+        padding-left: 2%;
+    }
+
+    #profil-link-i {
+        padding: 5%;
+        margin-right: 0;
+
+        width: 40%;
+        height: auto;
+    }
+
+    #profil-link {
+        float: none;
+        text-align: center;
+        width: 100%;
+    }
+}
+
+/* Ajoute un effet responsive pour les textes du profil */
+@media screen and (max-width: 1180px){
+    #pseudo-follow {
+        text-align: center;
+    }
+}

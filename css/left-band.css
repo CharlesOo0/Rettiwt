@@ -1,0 +1,85 @@
+/* Style du bandeau de gauche */
+#left-band {
+    /* Taille */
+    height: 100vh;
+
+    /* Bordure */
+    border-right: solid 1px rgb(201, 201, 201);
+
+    /* Positionnement */
+    position: sticky;
+    top: 0;
+}
+
+/* Style du conteneur de lien */
+#profil-link {
+    /* Taille */
+    height: 100%;
+    width: 80%;
+
+    /* Positionnement */
+    float: right;
+
+    /* Alignement a gauche */
+    text-align: left;
+}
+
+/* Style du conteneur des images du bandeau de gauche */
+.left-band-img {
+    /* Positionnement */
+    display: inline-block;
+
+    /* Bordure arrondie */
+    border-radius: 30px;
+
+    /* Texte */
+    color: black;
+    text-shadow: none; 
+
+    /* Transition */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+/* Style des images du bandeau de gauche */
+.left-band-img img {
+    /* Taille */
+    width: 40px;
+    height: auto;
+}
+
+/* Style des images du bandeau de gauche au survol */
+.left-band-img:hover {
+    /* Couleur de fond */
+    background-color: rgb(180, 180, 180);
+
+    /* Transition */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
+}
+
+/* Style des liens du bandeau de gauche */
+.profil-link-i {
+    /* Positionnement */
+    margin-top: 30px;
+    margin-left: 25%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+/* Style du bouton pour afficher les notifications */
+#show-notification-button, #show-search-button{
+    /* Enleve les styles par défaut */
+    background: none;
+    border: none;
+}
+
+/* Style du bouton pour afficher les notifications au survol */
+#show-notification-button:hover, #show-search-button:hover {
+    /* Couleur de fond */
+    background-color: rgb(180, 180, 180);
+    color: rgb(0, 140, 255);
+    
+    /* Transition */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
+}

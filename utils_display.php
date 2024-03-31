@@ -38,6 +38,22 @@ function getComments($connexion, $root, $parentId = NULL) {
 }
 
 /**
+ * Fonction qui permet d'afficher le menu dropdown
+ * 
+ * @return void
+ */
+function displayDropdown() {
+    echo '<div class="dropdown">'; // Affiche le menu dropdown
+    echo '    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
+    echo '        <i class="fas fa-ellipsis-v"></i>';
+    echo '    </button>';
+    echo '    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
+    echo '        <li><a class="dropdown-item" href="#">Action</a></li>';
+    echo '    </ul>';
+    echo '</div>';
+}
+
+/**
  * Fonction qui affiche les commentaires
  * 
  * @param comments Les commentaires à afficher
@@ -78,6 +94,9 @@ function displayComments($connexion, $comments) {
                             
                             echo "<div class='col post-date'>";
                             echo $comment["date"]; // Affiche la date du commentaire
+
+                            displayDropdown(); // Affiche le menu dropdown
+
                             echo "</div>";
                     
                     echo "</div>";
@@ -341,9 +360,12 @@ function displayPost($connexion, $username, $sub) {
                             echo "@" . $profil['username']; 
                             echo "</a>";
                         echo "</div>";
-                        
+
                         echo "<div class='col post-date'>";
                         echo $row["date"]; // Affiche la date du post
+
+                        displayDropdown(); // Affiche le menu dropdown
+
                         echo "</div>";
 
                 echo "</div>";

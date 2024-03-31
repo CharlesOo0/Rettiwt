@@ -21,7 +21,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="css/home_style.css">
+
+    <link rel="stylesheet" type="text/css" href="css/comment-form.css">
+    <link rel="stylesheet" type="text/css" href="css/left-band.css">
+    <link rel="stylesheet" type="text/css" href="css/post.css">
+    <link rel="stylesheet" type="text/css" href="css/right-band.css">
+
     <link rel="stylesheet" type="text/css" href="css/popup.css">
     
 </head>
@@ -180,6 +187,9 @@
     <script src="js/popup.js"></script>
     <script src="js/handle.js"></script>
     <script src="js/utils.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 
 </body>
 

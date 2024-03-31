@@ -1,0 +1,182 @@
+/* Style du bandeau de droite */
+#right-band {
+    /* Taille */
+    height: 100vh;
+
+    /* Bordure */
+    border-left: solid 1px rgb(201, 201, 201);
+    
+    /* Positionnement */
+    position: sticky;
+    top: 0;
+}
+
+/* Style du conteneur du profil */
+#profil {
+    /* Taille */
+    height: 100%;
+}
+
+/* Style du détail du profil */
+#profil-detail {
+    /* Positionnement */
+    text-align: center;
+    padding: 5%;
+}
+
+/* Style du conteneur de l'avatar */
+#avatar {
+    /* Positionnement */
+    margin: 5%;
+}
+
+/* Style de l'avatar */
+#avatar img {
+    /* Taille */
+    width: 128px;
+    height: auto;
+}
+
+/* Style du pseudo et du follow */
+#pseudo-follow {
+    /* Positionnement */
+    margin: 5%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+}
+
+/* Style de la bio */
+#bio {
+    /* Positionnement */
+    text-align: left;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+/* Style du texte de la bio */
+#bio-text {
+    /* Positionnement */
+    padding: 3%;
+
+    /* Bordure */
+    border: 1px solid rgb(201, 201, 201);
+    border-radius: 10px;
+}
+
+/* Style du titre de la bio */
+#bio-text-title {
+    /* Positionnement */
+    margin-bottom: 2%;
+}
+
+/* Style du conteneur du boutton pour afficher le formulaire de post */
+#show-post-container {
+    /* Positionnement */
+    margin-top: 2%;
+    text-align: center;
+}
+
+/* Style du boutton pour afficher le formulaire de post */
+#show-post-button {
+
+    /* Taille */
+    width: 70%;
+
+    /* Positionnement */
+    padding-top: 2%;
+    padding-bottom: 2%;
+    margin-top: 5%;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Bordure */
+    border-radius: 20px;
+    border: none;
+
+    /* Couleur de fond et texte */
+    background: rgb(0, 140, 255);
+    color: white;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+/* Style du boutton pour afficher le formulaire de post au survol */
+#show-post-button:hover {
+    /* Couleur de fond */
+    background: black;
+}   
+
+/* Style du conteneur des avatar dans displayFollow */
+.follow-info {
+    /* Positionnement */
+    text-align: left;
+    padding: 2%;
+}
+
+/* Style du titre des Suivies / Abonnées dans displayFollow */
+.follow-sub-info {
+    text-align: right;
+    padding: 2%;
+}
+
+/* Style du texte des Suivies / Abonnées dans displayFollow */
+.follow-info-text {
+    /* Positionnement */
+    margin-right: 4%;
+}
+
+/* Style du conteneur des href des Suivies / Abonnées dans displayFollow */
+.follow-sub-href {
+    /* Positionnement */
+    margin-bottom: 7%;
+}
+
+/* Style des href des Suivies / Abonnées dans displayFollow */
+.follow-sub-href a{
+    /* Positionnement */
+    padding: 2%;
+
+    /* Couleur de fond et texte */
+    color: white;
+    background: rgb(0, 140, 255);
+
+    /* Bordure */
+    border-radius: 20px;
+
+    /* Taille */
+    width: 50%;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+/* Style des href des Suivies / Abonnées dans displayFollow au survol */
+.follow-sub-href a:hover {
+    /* Couleur de fond */
+    background: black;
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+.style-display-profil {
+    /* Positionnement */
+    margin-top: 5%;
+
+    /* Bordure */
+    border-top: solid 1px rgb(201, 201, 201);
+    border-bottom: solid 1px rgb(201, 201, 201);
+
+    /* Centrage */
+    text-align: center;
+
+    /* Police */
+    font-size: 1.5em;
+    color:white;
+
+    /* Couleur de fond */
+    background: black;
+}
