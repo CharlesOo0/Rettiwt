@@ -23,12 +23,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <link rel="stylesheet" type="text/css" href="css/comment-form.css">
-    <link rel="stylesheet" type="text/css" href="css/left-band.css">
-    <link rel="stylesheet" type="text/css" href="css/post.css">
-    <link rel="stylesheet" type="text/css" href="css/right-band.css">
+    <link rel="stylesheet" type="text/css" href="css/comment-form.css"> <!-- Style du formulaire de commentaire -->
+    <link rel="stylesheet" type="text/css" href="css/left-band.css"> <!-- Style de la bande de gauche -->
+    <link rel="stylesheet" type="text/css" href="css/post.css"> <!-- Style des posts --> 
+    <link rel="stylesheet" type="text/css" href="css/right-band.css"> <!-- Style de la bande de droite -->
 
-    <link rel="stylesheet" type="text/css" href="css/popup.css">
+    <link rel="stylesheet" type="text/css" href="css/popup.css"> <!-- Style des popups -->
     
 </head>
 
@@ -37,6 +37,7 @@
     <!-- Les popups -->
 
         <!-- Popup de post -->
+
     <div class="post-form-container">
         <div class="post-form">
             <button id="close-post-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
@@ -44,7 +45,7 @@
                 <input type="hidden" name="action" value="posting">
                 <textarea name="text" placeholder="Bonjour tout le monde !"></textarea> <br>
                 <div id="file-input-post">
-                    <label for="images">Ajouter des images (3 maximum) </label><input type="file" name="images[]" multiple> <br>
+                    <label for="images">Ajouter des images (3 maximums) </label><input type="file" name="images[]" multiple> <br>
                 </div>
                 <input type="submit" value="Post">
             </form>
@@ -63,6 +64,25 @@
             </div>
         </div>
     </div>
+
+        <!-- Popup de Ban -->
+
+    <div class="admin-container">
+        <div class="admin">
+            <button id="close-admin-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
+            <h3>Admin</h3>
+            <div class="admin-content">
+                <h5 id="admin-type-form">Formulaire d'admin.</h4>
+                <form method="POST" action="">
+                    <input id="type-of-input-admin" type="hidden" name="action" value="">
+                    <textarea name="reason" placeholder="Motif"></textarea> <br>
+                    <input id="date-input-admin" type="hidden" name="ban_date"> <br>
+                    <input id="type-of-submit-admin" type="submit" value="Ban">
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Les popups -->
 
     <div class="container-fluid">

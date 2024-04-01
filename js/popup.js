@@ -1,33 +1,109 @@
 // CREDIT : https://codehalweb.com/popup-modal-in-html-css-javascript/
 
-// Popup pour login
+$(document).ready(function() {
 
-const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup
-const popupPostContainer = document.querySelector('.post-form-container'); // Conteneur du popup
-const closePostBtn = document.getElementById('close-post-button'); // Bouton pour fermer le popup
- 
-showPostPopup.addEventListener('click', () => { // Quand on clique sur le bouton
-    popupPostContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
-    document.body.classList.add('active'); // On ajoute la classe active au body pour bloquer le scroll
-});
+    // Popup pour login
 
-closePostBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
-    popupPostContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
-    document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
-});
+    const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup
+    const popupPostContainer = document.querySelector('.post-form-container'); // Conteneur du popup
+    const closePostBtn = document.getElementById('close-post-button'); // Bouton pour fermer le popup
+    
+    showPostPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+        popupPostContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+        document.body.classList.add('active'); // On ajoute la classe active au body pour bloquer le scroll
+    });
 
-// Popup pour notification
+    closePostBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+        popupPostContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    });
 
-const showNotificationPopup = document.getElementById("show-notification-button"); // Bouton pour afficher le popup
-const popupNotificationContainer = document.querySelector('.notification-container');  // Conteneur du popup
-const closeNotificationBtn = document.getElementById('close-notification-button');  // Bouton pour fermer le popup
+    // Popup pour notification
 
-showNotificationPopup.addEventListener('click', () => { // Quand on clique sur le bouton
-    popupNotificationContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
-    document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
-});
+    const showNotificationPopup = document.getElementById("show-notification-button"); // Bouton pour afficher le popup
+    const popupNotificationContainer = document.querySelector('.notification-container');  // Conteneur du popup
+    const closeNotificationBtn = document.getElementById('close-notification-button');  // Bouton pour fermer le popup
 
-closeNotificationBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
-    popupNotificationContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
-    document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    showNotificationPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+        popupNotificationContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+        document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+    });
+
+    closeNotificationBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+        popupNotificationContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    });
+
+    // Popup pour les bans, warns, et suppression de post
+
+    const showBanPopup = document.querySelectorAll(".ban-post-button"); // Bouton pour afficher le popup
+    const showWarnPopup = document.querySelectorAll(".warn-post-button"); // Bouton pour afficher le popup
+    const showDeletePopup = document.querySelectorAll(".delete-post-button"); // Bouton pour afficher le popup
+    const showFlagPopup = document.querySelectorAll(".flag-post-button"); // Bouton pour afficher le popup
+
+    const popupAdminContainer = document.querySelector('.admin-container');  // Conteneur du popup
+    const closeAdminBtn = document.getElementById('close-admin-button');  // Bouton pour fermer le popup
+    
+    var adminTypeForm = document.getElementById('admin-type-form'); // Titre du formulaire
+    var adminTypeHiddenInput = document.getElementById('type-of-input-admin'); // Input caché pour le type de formulaire
+    var adminTypeSubmit = document.getElementById('type-of-submit-admin'); // Bouton pour soumettre le formulaire
+    var dateInput = document.getElementById('date-input-admin'); // On récupère l'input pour la date
+
+    showBanPopup.forEach((button) => { // Pour chaque bouton de ban
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            adminTypeForm.innerHTML = "Formulaire de banissement"; // On change le titre du formulaire
+            adminTypeSubmit.value = "Ban"; // On change le texte du bouton de soumission
+            adminTypeHiddenInput.value = "ban"; // On change la valeur de l'input caché
+
+            dateInput.type = "date"; // On change le type de l'input pour la date
+
+            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+        });
+    });
+
+    showWarnPopup.forEach((button) => { // Pour chaque bouton de warn
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            adminTypeForm.innerHTML = "Formulaire d'avertissement"; // On change le titre du formulaire
+            adminTypeSubmit.value = "Avertir"; // On change le texte du bouton de soumission
+            adminTypeHiddenInput.value = "warn"; // On change la valeur de l'input caché
+
+            dateInput.type = "hidden"; // On change le type de l'input pour la date
+
+            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+        });
+    });
+
+    showDeletePopup.forEach((button) => { // Pour chaque bouton de suppression 
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            adminTypeForm.innerHTML = "Formulaire de supression de post"; // On change le titre du formulaire
+            adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
+            adminTypeHiddenInput.value = "delete"; // On change la valeur de l'input caché
+
+            dateInput.type = "hidden"; // On change le type de l'input pour la date
+
+            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+        });
+    });
+
+    showFlagPopup.forEach((button) => { // Pour chaque bouton de signalement
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            adminTypeForm.innerHTML = "Formulaire de signalement"; // On change le titre du formulaire
+            adminTypeSubmit.value = "Signaler"; // On change le texte du bouton de soumission
+            adminTypeHiddenInput.value = "flag"; // On change la valeur de l'input caché
+
+            dateInput.type = "hidden"; // On change le type de l'input pour la date
+
+            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+        });
+    });
+
+    closeAdminBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+        popupAdminContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    });
+
 });

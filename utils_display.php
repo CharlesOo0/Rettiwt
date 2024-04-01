@@ -45,6 +45,7 @@ function getComments($connexion, $root, $parentId = NULL) {
  * @return void
  */
 function displayDropdown($postId) {
+    // Crée la requête SQL pour récupérer le profil de l'utilisateur connecté
     $sql = "SELECT * FROM profil WHERE username = '" . $_SESSION['username'] . "'";
     $connexion = connexion_mysqli();
 
@@ -56,6 +57,7 @@ function displayDropdown($postId) {
         exit();
     }
 
+    // Crée la requête pour vérifier si l'utilisateur est l'auteur du post
     $sql = "SELECT * FROM post WHERE id = $postId AND author = " . $profil['id'];
 
     try { // Essaie de récupérer le post
@@ -66,7 +68,9 @@ function displayDropdown($postId) {
         exit();
     }
 
-    if ($post == NULL) { // Si le post n'existe pas
+    $isAuthor = $post != NULL; // Vérifie si l'utilisateur est l'auteur du post
+
+    if ($isAuthor == NULL && !$profil['isAdmin']) { // Si le post n'existe pas
         return; // Ne fait rien
     }
 
@@ -76,7 +80,30 @@ function displayDropdown($postId) {
     echo '        <i class="fas fa-ellipsis-v"></i>';
     echo '    </button>';
     echo '    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
-    echo '        <li><a class="dropdown-item" href="">Supprimer</a></li>';
+
+    if ($isAuthor) { // Si l'utilisateur est l'auteur du post
+        echo "  <li>
+                    <button class='delete-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer</button>
+                </li>";
+    }
+
+    if ($profil['isAdmin'] && !$isAuthor) { // Si l'utilisateur est un admin
+        echo "  <li>
+                    <button class='delete-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer (Admin)</button>
+                </li>";
+
+        echo "  <li>
+                    <button class='ban-post-button dropdown-item' data-post-id='" . $postId . "'>Bannir (Admin)</button>
+                </li>";
+
+        echo "  <li>
+                    <button class='warn-post-button dropdown-item' data-post-id='" . $postId . "'>Avertissement (Admin)</button>
+                </li>";
+        
+        echo "  <li>
+                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "'>Sensible (Admin)</button>
+                </li>";
+    }
     echo '    </ul>';
     echo '</div>';
 }

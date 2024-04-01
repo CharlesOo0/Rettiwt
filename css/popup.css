@@ -258,3 +258,141 @@ body.active {
     /* Texte centré */
     text-align: center;
 }
+
+/*-------------- ADMIN POPUP --------------*/
+
+/* Style du container de l'admin */
+.admin-container {
+    /* Positionnement */
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Taille */
+    width: 100%;
+    height: 100%;
+
+    /* Fond transparent par défaut */
+    background: rgba(0, 0, 0, .3);
+    opacity: 0;
+
+    /* Empeche les clicks */
+    pointer-events: none;
+
+    /* Affiche l'admin en tête */
+    z-index: 1000;
+}
+
+/* Active le container de l'admin */
+.admin-container.active {
+    /* Affiche l'admin */
+    opacity: 1;
+
+    /* Active les clicks */
+    pointer-events: auto;
+
+    /* Transition */
+    transition: .4s ease;
+}
+
+/* Style de l'admin */
+.admin-container .admin {
+    /* Taille et position */
+    width: 40%;
+    height: 200px;
+    padding: 30px;
+
+    /* Fond et bordure */
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    
+    /* Animation */
+    transform: scale(0);
+}
+
+/* Active l'admin */
+.admin-container.active .admin {
+    /* Affiche l'admin */
+    transform: scale(1);
+
+    /* Transition */
+    transition: .4s ease;
+    transition-delay: .25s;
+}
+
+/* Style du bouton de fermeture */
+.admin-container button {
+    /* Positionnement */
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 5px;
+
+    /* Fond et bordure */
+    border: none;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+/* Style du bouton de fermeture lorsqu'il est hover */
+.admin-container button:hover {
+    /* Change la couleur de fond */
+    background: rgb(206, 94, 94);
+
+    /* Transition */
+    transition: .3s ease;
+}
+
+/* Style du titre de l'admin */
+.admin-container h3{
+    /* Texte centré */
+    text-align: center;
+}
+
+/* Style du formulaire de l'admin */
+.admin-container form {
+    /* Texte centré */
+    text-align: center;
+}
+
+/* Style du champ de texte */
+.admin-container form input[type="text"] {
+    /* Positionnement */
+    border: none;
+    border-left: 1px solid rgb(201, 201, 201);
+    outline: none;
+    background: #ffffff;
+
+    /* Taille */
+    width: 90%;
+    height: 30px;
+
+    /* Marge */
+    padding-left: 5px;
+}
+
+/* Style du bouton de soumission */
+.admin-container form input[type="submit"] {
+    /* Taille et positionnement */
+    width: 20%;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    /* Couleur et bordure */
+    border-radius: 20px;
+    color: white;
+    border: none;
+    background: rgb(0, 140, 255);
+
+    /* Transition */
+    transition: background 0.3s ease-in-out; /* Add this line */
+}
+
+/* Style du bouton de soumission lorsqu'il est hover */
+.admin-container form input[type="submit"]:hover {
+    /* Change la couleur de fond */
+    background: black;
+}

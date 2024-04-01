@@ -1,4 +1,5 @@
 $(document).ready(function() { // Quand le document est prêt
+    
     $(".like-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
