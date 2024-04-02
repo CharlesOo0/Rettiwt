@@ -26,6 +26,8 @@ $(document).ready(function() { // Quand le document est prêt
     });
 
     // ------------------------ Handle le signalement
+    const popupAdminContainer = document.querySelector('.admin-container');  // Conteneur du popup
+
     $("#admin-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
@@ -33,10 +35,11 @@ $(document).ready(function() { // Quand le document est prêt
 
         $.ajax({ // Fait une requête AJAX
             type: "POST",  
-            url: "ajax_request/handleComment.php",
+            url: "ajax_request/handleAdmin.php",
             data: form.serialize(),
             success: function(data) { // Quand la requête est terminée
-                
+                popupAdminContainer.classList.remove('active'); // On enlève la classe active pour cacher le popup
+                document.body.classList.remove('active'); // On enlève la classe active pour débloquer le scroll
             }
         });
     });

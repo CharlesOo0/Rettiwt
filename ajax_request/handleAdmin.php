@@ -10,6 +10,7 @@ checkCreds($connexion); // Vérifie que l'utilisateur est connecté
 
 if (isset($_POST['action'])) { // Vérifie si l'action est définie
     $action = $_POST['action']; // Récupère l'action
+    $username = mysqli_real_escape_string($connexion, $_POST['user_id']); // Récupère le nom d'utilisateur
 
     if ($action =='delete') {
 
@@ -35,8 +36,11 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
 
     } else if ($action == 'ban' && isAdmin($connexion, $_SESSION['username'])) {
 
-        $username = mysqli_real_escape_string($connexion, $_POST['username']); // Récupère le nom d'utilisateur
-        $sql = "UPDATE profil SET isBanned=1 WHERE username='$username'"; // Crée la requête SQL pour bannir un utilisateur
+        $ban_date = $_POST['ban_date']; // Récupère la date de bannissement
+
+        $ban_date = date('Y-m-d', strtotime(str_replace('-', '/', $ban_date))); // Formate la date de bannissement
+
+        $sql = "UPDATE profil SET isBanned=1, ban_date='$ban_date' WHERE id='$username'"; // Crée la requête SQL pour bannir un utilisateur
         try { // Essaie de bannir un utilisateur
             mysqli_query($connexion, $sql); 
         } catch (Exception $e) { // Si ça échoue, affiche une erreur

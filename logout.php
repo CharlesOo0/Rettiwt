@@ -4,10 +4,6 @@ if (session_status() == PHP_SESSION_NONE) { // Vérifie si la session est démar
     session_start(); // Démarre la session si elle ne l'est pas
 }
 
-foreach ($_SESSION as $key => $value) { // Nettoie toutes les données de session stockés
-    unset($_SESSION[$key]);
-}
-
 foreach ($_COOKIE as $key => $value) { // Nettoie tout les cookies stockées
     unset($_COOKIE[$key]);
 }

@@ -49,6 +49,7 @@ $(document).ready(function() {
     var adminTypeForm = document.getElementById('admin-type-form'); // Titre du formulaire
     var adminTypeHiddenInput = document.getElementById('type-of-input-admin'); // Input caché pour le type de formulaire
     var adminPostIdInput = document.getElementById('admin-post-id'); // Input caché pour l'id du post
+    var adminUsernameInput = document.getElementById('admin-username'); // Input caché pour l'username du post
     var adminTypeSubmit = document.getElementById('type-of-submit-admin'); // Bouton pour soumettre le formulaire
     var dateInput = document.getElementById('date-input-admin'); // On récupère l'input pour la date
 
@@ -58,6 +59,7 @@ $(document).ready(function() {
             adminTypeSubmit.value = "Ban"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "ban"; // On change la valeur de l'input caché
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
 
             dateInput.type = "date"; // On change le type de l'input pour la date
             dateInput.required = true; // On change la valeur de l'input pour la date
@@ -73,6 +75,8 @@ $(document).ready(function() {
             adminTypeSubmit.value = "Avertir"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "warn"; // On change la valeur de l'input caché
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
+
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
             dateInput.required = false; // On change la valeur de l'input pour la date
@@ -88,6 +92,8 @@ $(document).ready(function() {
             adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "delete-admin"; // On change la valeur de l'input caché
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
+
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
             dateInput.required = false; // On change la valeur de l'input pour la date
@@ -103,6 +109,8 @@ $(document).ready(function() {
             adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "delete"; // On change la valeur de l'input caché
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
+
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
             dateInput.required = false; // On change la valeur de l'input pour la date
@@ -118,6 +126,8 @@ $(document).ready(function() {
             adminTypeSubmit.value = "Signaler"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "flag"; // On change la valeur de l'input caché
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
+            
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
             dateInput.required = false; // On change la valeur de l'input pour la date

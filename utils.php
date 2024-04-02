@@ -7,7 +7,7 @@
  */
 function checkCreds($connexion) {
     if (!isset($_SESSION['username'])) { // Vérifie si l'utilisateur est connecté a travers le cookie qui devrait être set
-        $_SESSION['error'] = "You need to be logged in to access this page."; // Stocke un message d'erreur
+        $_SESSION['error'] = "Vous devez être connecter pour accéder a cette page."; // Stocke un message d'erreur
         header('Location: logout.php'); // Redirige vers la page de déconnexion
         exit();
     }
@@ -18,7 +18,8 @@ function checkCreds($connexion) {
         try { // Essaie de récupérer l'utilisateur
             $result = mysqli_query($connexion, $sql);
             if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-                $_SESSION['error'] = "You are banned."; // Stocke un message d'erreur
+                $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
+                $_SESSION['error'] = "Vous êtes bannis jusqu'au " . $result['ban_date'] . "."; // Stocke un message d'erreur
                 header('Location: logout.php'); // Redirige vers la page de déconnexion
                 exit();
             }
@@ -26,7 +27,7 @@ function checkCreds($connexion) {
             echo "<p> Erreur lors de la vérification du bannissement : " . mysqli_error($connexion) . "</p>";
         }
 
-        $_SESSION['error'] = "You are banned until ".$result['ban_date']."."; // Stocke un message d'erreur
+        $_SESSION['error'] = "Vous êtes bannis jusqu'au ".$result['ban_date']."."; // Stocke un message d'erreur
         header('Location: logout.php'); // Redirige vers la page de déconnexion
         exit();
     }

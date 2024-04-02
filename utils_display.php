@@ -57,8 +57,8 @@ function displayDropdown($postId) {
         exit();
     }
 
-    // Crée la requête pour vérifier si l'utilisateur est l'auteur du post
-    $sql = "SELECT * FROM post WHERE id = $postId AND author = " . $profil['id'];
+    // Crée la requête SQL pour récupérer le profil de l'utilisateur autheur du post
+    $sql = "SELECT * FROM post WHERE id = $postId";
 
     try { // Essaie de récupérer le post
         $post = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
@@ -68,7 +68,7 @@ function displayDropdown($postId) {
         exit();
     }
 
-    $isAuthor = $post != NULL; // Vérifie si l'utilisateur est l'auteur du post
+    $isAuthor = $profil['id'] == $post['author']; // Vérifie si l'utilisateur est l'auteur du post
 
     if ($isAuthor == NULL && !$profil['isAdmin']) { // Si le post n'existe pas
         return; // Ne fait rien
@@ -83,25 +83,25 @@ function displayDropdown($postId) {
 
     if ($isAuthor) { // Si l'utilisateur est l'auteur du post
         echo "  <li>
-                    <button class='delete-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer</button>
+                    <button class='delete-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Supprimer</button>
                 </li>";
     }
 
     if ($profil['isAdmin'] && !$isAuthor) { // Si l'utilisateur est un admin
         echo "  <li>
-                    <button class='delete-admin-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer (Admin)</button>
+                    <button class='delete-admin-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Supprimer (Admin)</button>
                 </li>";
 
         echo "  <li>
-                    <button class='ban-post-button dropdown-item' data-post-id='" . $postId . "'>Bannir (Admin)</button>
+                    <button class='ban-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Bannir (Admin)</button>
                 </li>";
 
         echo "  <li>
-                    <button class='warn-post-button dropdown-item' data-post-id='" . $postId . "'>Avertissement (Admin)</button>
+                    <button class='warn-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Avertissement (Admin)</button>
                 </li>";
         
         echo "  <li>
-                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "'>Sensible (Admin)</button>
+                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Sensible (Admin)</button>
                 </li>";
     }
     echo '    </ul>';
