@@ -101,8 +101,16 @@ function displayDropdown($postId) {
                 </li>";
         
         echo "  <li>
-                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>Sensible (Admin)</button>
-                </li>";
+                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>";
+
+        if ($post['isFlag'] == 0) {
+            echo "Flag";
+        }else {
+            echo "Unflag";
+        
+        }
+        echo        "</button>";
+        echo    "</li>";
     }
     echo '    </ul>';
     echo '</div>';

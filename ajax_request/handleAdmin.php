@@ -55,7 +55,24 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
     } else if ($action == 'flag' && isAdmin($connexion, $_SESSION['username'])) {
 
         $id = mysqli_real_escape_string($connexion, $_POST['post_id']); // Récupère l'id du post
-        $sql = "UPDATE post SET isFlag=1 WHERE id='$id'"; // Crée la requête SQL pour signaler un post
+
+        $sql = "SELECT * FROM post WHERE id='$id'"; // Crée la requête SQL pour récupérer un post
+        try { // Essaie de récupérer un post
+            $result = mysqli_query($connexion, $sql);
+            if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+                $result = mysqli_fetch_assoc($result); // Récupère les données du post
+            }
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+            $_SESSION['error_post'] = " Erreur lors de la récupération du post";
+            header('Location: ../home.php');
+        }
+
+        if ($result['isFlag'] == 1) { // Vérifie si le post est déjà signalé
+            $sql = "UPDATE post SET isFlag=0 WHERE id='$id'"; // Crée la requête SQL pour signaler un post
+        } else {
+            $sql = "UPDATE post SET isFlag=1 WHERE id='$id'"; // Crée la requête SQL pour signaler un post
+        }
+        
         try { // Essaie de signaler un post
             mysqli_query($connexion, $sql); 
         } catch (Exception $e) { // Si ça échoue, affiche une erreur
