@@ -1,5 +1,6 @@
 $(document).ready(function() { // Quand le document est prêt
     
+    // ------------------------ Handle le like
     $(".like-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
@@ -20,6 +21,22 @@ $(document).ready(function() { // Quand le document est prêt
                     likeCount.text(newCount); // Met à jour le texte de l'élément
                     form.find(".like-button").attr("src", "img/like_empty.png")
                 }
+            }
+        });
+    });
+
+    // ------------------------ Handle le signalement
+    $("#admin-form").submit(function(e) { // Quand le formulaire est soumis
+        e.preventDefault(); // Empêcher le comportement par défaut du formulaire
+        var form = $(this);  // Récupérer le formulaire
+        console.log(form.serialize());
+
+        $.ajax({ // Fait une requête AJAX
+            type: "POST",  
+            url: "ajax_request/handleComment.php",
+            data: form.serialize(),
+            success: function(data) { // Quand la requête est terminée
+                
             }
         });
     });

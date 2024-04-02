@@ -7,9 +7,9 @@
     require 'utils_display.php'; // Inclut le fichier 'utils.php
     require 'utils_handle.php'; // Inclut le fichier 'utils_handle.php
 
-    $connexion = connexion(); // Se connecte a la base de données
+    $connexion = connexion($connexion); // Se connecte a la base de données
 
-    checkCreds(); // Vérifie si l'utilisateur est connecté
+    checkCreds($connexion); // Vérifie si l'utilisateur est connecté
 
 ?>
 
@@ -73,9 +73,10 @@
             <h3>Admin</h3>
             <div class="admin-content">
                 <h5 id="admin-type-form">Formulaire d'admin.</h4>
-                <form method="POST" action="">
+                <form id="admin-form" method="POST" action="">
                     <input id="type-of-input-admin" type="hidden" name="action" value="">
-                    <textarea name="reason" placeholder="Motif"></textarea> <br>
+                    <input id="admin-post-id" type="hidden" name="post_id" value="">
+                    <textarea name="reason" placeholder="Motif" required></textarea> <br>
                     <input id="date-input-admin" type="hidden" name="ban_date"> <br>
                     <input id="type-of-submit-admin" type="submit" value="Ban">
                 </form>

@@ -8,7 +8,7 @@
 
         $connexion = connexion(); // Se connecte a la base de données
 
-        checkCreds(); // Vérifie si l'utilisateur est connecté
+        checkCreds($connexion); // Vérifie si l'utilisateur est connecté
 
         ?>
 

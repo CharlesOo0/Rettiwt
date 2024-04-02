@@ -7,6 +7,8 @@ require '../utils_display.php'; // Inclut le fichier 'utils.php'
 
 $connexion = connexion(); // Se connecte a la base de données
 
+checkCreds($connexion); // Vérifie que l'utilisateur est connecté
+
 if (isset($_POST['post_id'])) {
     $post_id = mysqli_real_escape_string($connexion, $_POST['post_id']); // Récupère l'id du post
     $parent_id = mysqli_real_escape_string($connexion, $_POST['parent_id']); // Récupère l'id du commentaire parent

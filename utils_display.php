@@ -89,7 +89,7 @@ function displayDropdown($postId) {
 
     if ($profil['isAdmin'] && !$isAuthor) { // Si l'utilisateur est un admin
         echo "  <li>
-                    <button class='delete-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer (Admin)</button>
+                    <button class='delete-admin-post-button dropdown-item' data-post-id='" . $postId . "'>Supprimer (Admin)</button>
                 </li>";
 
         echo "  <li>

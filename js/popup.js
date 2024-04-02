@@ -1,4 +1,5 @@
 // CREDIT : https://codehalweb.com/popup-modal-in-html-css-javascript/
+// Tutoriel utiliser pour la structure principale des popups
 
 $(document).ready(function() {
 
@@ -39,6 +40,7 @@ $(document).ready(function() {
     const showBanPopup = document.querySelectorAll(".ban-post-button"); // Bouton pour afficher le popup
     const showWarnPopup = document.querySelectorAll(".warn-post-button"); // Bouton pour afficher le popup
     const showDeletePopup = document.querySelectorAll(".delete-post-button"); // Bouton pour afficher le popup
+    const showDeleteAdminPopup = document.querySelectorAll(".delete-admin-post-button"); // Bouton pour afficher le popup
     const showFlagPopup = document.querySelectorAll(".flag-post-button"); // Bouton pour afficher le popup
 
     const popupAdminContainer = document.querySelector('.admin-container');  // Conteneur du popup
@@ -46,6 +48,7 @@ $(document).ready(function() {
     
     var adminTypeForm = document.getElementById('admin-type-form'); // Titre du formulaire
     var adminTypeHiddenInput = document.getElementById('type-of-input-admin'); // Input caché pour le type de formulaire
+    var adminPostIdInput = document.getElementById('admin-post-id'); // Input caché pour l'id du post
     var adminTypeSubmit = document.getElementById('type-of-submit-admin'); // Bouton pour soumettre le formulaire
     var dateInput = document.getElementById('date-input-admin'); // On récupère l'input pour la date
 
@@ -54,8 +57,10 @@ $(document).ready(function() {
             adminTypeForm.innerHTML = "Formulaire de banissement"; // On change le titre du formulaire
             adminTypeSubmit.value = "Ban"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "ban"; // On change la valeur de l'input caché
+            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
 
             dateInput.type = "date"; // On change le type de l'input pour la date
+            dateInput.required = true; // On change la valeur de l'input pour la date
 
             popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
             document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
@@ -67,8 +72,25 @@ $(document).ready(function() {
             adminTypeForm.innerHTML = "Formulaire d'avertissement"; // On change le titre du formulaire
             adminTypeSubmit.value = "Avertir"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "warn"; // On change la valeur de l'input caché
+            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
+            dateInput.required = false; // On change la valeur de l'input pour la date
+
+            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+        });
+    });
+
+    showDeleteAdminPopup.forEach((button) => { // Pour chaque bouton de suppression par un admin
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            adminTypeForm.innerHTML = "Formulaire de supression de post"; // On change le titre du formulaire
+            adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
+            adminTypeHiddenInput.value = "delete-admin"; // On change la valeur de l'input caché
+            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
+
+            dateInput.type = "hidden"; // On change le type de l'input pour la date
+            dateInput.required = false; // On change la valeur de l'input pour la date
 
             popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
             document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
@@ -80,8 +102,10 @@ $(document).ready(function() {
             adminTypeForm.innerHTML = "Formulaire de supression de post"; // On change le titre du formulaire
             adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "delete"; // On change la valeur de l'input caché
+            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
+            dateInput.required = false; // On change la valeur de l'input pour la date
 
             popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
             document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
@@ -93,8 +117,10 @@ $(document).ready(function() {
             adminTypeForm.innerHTML = "Formulaire de signalement"; // On change le titre du formulaire
             adminTypeSubmit.value = "Signaler"; // On change le texte du bouton de soumission
             adminTypeHiddenInput.value = "flag"; // On change la valeur de l'input caché
+            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
 
             dateInput.type = "hidden"; // On change le type de l'input pour la date
+            dateInput.required = false; // On change la valeur de l'input pour la date
 
             popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
             document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
