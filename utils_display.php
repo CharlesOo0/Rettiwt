@@ -31,7 +31,9 @@ function getComments($connexion, $root, $parentId = NULL) {
     // Pour chaque commentaire, récupère les réponses
     foreach ($comments as &$comment) {
         // Récupère les réponses avec un appel récursif
-        $comment['replies'] = getComments($connexion, $root, $comment['id']);
+        if ($comment['isDeleted'] == 0) {
+            $comment['replies'] = getComments($connexion, $root, $comment['id']);
+        }
     }
     
     return $comments; // Retourne les commentaires
@@ -101,7 +103,7 @@ function displayDropdown($postId) {
                 </li>";
         
         echo "  <li>
-                    <button class='flag-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>";
+                    <button id='warn-".$post['id']."' class='flag-post-button dropdown-item' data-post-id='" . $postId . "' data-username='".$post['author']."'>";
 
         if ($post['isFlag'] == 0) {
             echo "Flag";
@@ -126,7 +128,7 @@ function displayDropdown($postId) {
 function displayComments($connexion, $comments) {
     echo "<div class='comments'>";
         foreach ($comments as $comment) { // Pour chaque commentaire
-            echo "<div class='container-fluid row comment-container'>";
+            echo "<div id='post-".$comment['id']."' class='container-fluid row comment-container'>";
                 echo "<div class='comment col-1'>";
                 echo "<div class='comment-line'></div>";
                 echo "</div>";
@@ -385,7 +387,7 @@ function displayPost($connexion, $username, $sub) {
         }
 
     }else { // Si on veut afficher les posts de tous les utilisateurs
-        $sql = "SELECT * FROM post WHERE parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+        $sql = "SELECT * FROM post WHERE isDeleted=0 AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
     }
 
     $recuperationPostFailed = false;
@@ -400,7 +402,7 @@ function displayPost($connexion, $username, $sub) {
         // Affiche les données de chaque ligne
         while ($row = mysqli_fetch_assoc($resultPost)) { // Pour chaque post
 
-            echo "<div class='post'>";
+            echo "<div id='post-".$row['id']."' class='post'>";
                 // Récupère le nom de l'auteur
                 $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
                 try { // Essaie de récupérer le nom de l'auteur

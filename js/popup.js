@@ -77,7 +77,6 @@ $(document).ready(function() {
             adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
             adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
 
-
             dateInput.type = "hidden"; // On change le type de l'input pour la date
             dateInput.required = false; // On change la valeur de l'input pour la date
 
@@ -105,18 +104,22 @@ $(document).ready(function() {
 
     showDeletePopup.forEach((button) => { // Pour chaque bouton de suppression 
         button.addEventListener('click', () => { // Quand on clique sur le bouton
-            adminTypeForm.innerHTML = "Formulaire de supression de post"; // On change le titre du formulaire
-            adminTypeSubmit.value = "Supprimer"; // On change le texte du bouton de soumission
-            adminTypeHiddenInput.value = "delete"; // On change la valeur de l'input caché
-            adminPostIdInput.value = button.getAttribute('data-post-id'); // On change la valeur de l'input caché pour l'id du post
-            adminUsernameInput.value = button.getAttribute('data-username'); // On change la valeur de l'input caché pour l'username du post
+            var data = {
+                'action': 'delete', // On envoie l'action 'delete-post
+                'post_id': button.getAttribute('data-post-id'),
+                'user_id': button.getAttribute('data-username')
+            }
 
-
-            dateInput.type = "hidden"; // On change le type de l'input pour la date
-            dateInput.required = false; // On change la valeur de l'input pour la date
-
-            popupAdminContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
-            document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+            $.ajax({ // Fait une requête AJAX
+                type: "POST",  
+                url: "ajax_request/handleAdmin.php",
+                data: data,
+                success: function(data) { // Quand la requête est terminée
+                    if (data == 1) { // Si la requête a réussi
+                        $('#post-' + button.getAttribute('data-post-id')).hide();
+                    }
+                }
+            });
         });
     });
 

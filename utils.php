@@ -34,6 +34,29 @@ function checkCreds($connexion) {
 }
 
 /**
+ * Récupère l'id de l'utilisateur connecter
+ * 
+ * @param connexion La connexion à la base de données
+ * 
+ * @return int
+ */
+function getUserId($connexion) {
+    $sql = "SELECT id FROM profil WHERE username='" . $_SESSION['username'] . "'"; // Crée la requête SQL pour récupérer l'id de l'utilisateur
+
+    try { // Essaie de récupérer l'id de l'utilisateur
+        $result = mysqli_query($connexion, $sql);
+        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+            $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
+            return $result['id']; // Retourne l'id de l'utilisateur
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération de l'id de l'utilisateur : " . mysqli_error($connexion) . "</p>";
+    }
+
+    return null; // Si la requête n'a pas retourné de lignes, retourne null
+}
+
+/**
  * Vérifie si l'utilisateur est banni
  * 
  * @param connexion La connexion à la base de données
@@ -102,6 +125,26 @@ function isFollowing($connexion, $username, $followed) {
     }
 
     return false; // Si la requête n'a pas retourné de lignes, l'utilisateur ne follow pas
+}
+
+/**
+ * Ajoute une log d'admin dans la base de données
+ * 
+ * @param connexion La connexion à la base de données
+ * @param username_source L'id de l'utilisateur source de l'action
+ * @param username_target L'id de l'utilisateur cible de l'action
+ * @param action L'action effectuée par l'admin
+ * @param reason La raison de l'action
+ */
+function addAdminLog($connexion, $username_source, $username_target, $action, $reason) {
+    $sql = "INSERT INTO admin_logs (admin_id, target_user_id, action_type, reason) VALUES ('$username_source', '$username_target', '$action', '$reason')"; // Crée la requête SQL pour ajouter une log d'admin
+
+    try { // Essaie d'ajouter une log d'admin
+        mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de l'ajout de la log d'admin.</p>";
+    }
+
 }
 
 ?>

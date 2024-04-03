@@ -31,15 +31,32 @@ $(document).ready(function() { // Quand le document est prêt
     $("#admin-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
-        console.log(form.serialize());
+        var action = form.find('input[name="action"]').val(); // Récupérer la valeur de l'action
 
         $.ajax({ // Fait une requête AJAX
             type: "POST",  
             url: "ajax_request/handleAdmin.php",
             data: form.serialize(),
             success: function(data) { // Quand la requête est terminée
-                popupAdminContainer.classList.remove('active'); // On enlève la classe active pour cacher le popup
-                document.body.classList.remove('active'); // On enlève la classe active pour débloquer le scroll
+                if (data == 1) { // Si la requête a réussi
+                    popupAdminContainer.classList.remove('active'); // On enlève la classe active pour cacher le popup
+                    document.body.classList.remove('active'); // On enlève la classe active pour débloquer le scroll
+
+                    if (action == "flag") { // Si l'action est de flagger un post
+                        var warnButton = document.getElementById('warn-' + form.find('input[name="post_id"]').val()); // On cache le post
+
+                        if (warnButton.innerHTML == "Flag") { // Si le bouton est "Flag"
+                            warnButton.innerHTML = "Unflag"; // On change le texte du bouton
+                        } else { // Si le bouton est "Unflag"
+                            warnButton.innerHTML = "Flag"; // On change le texte du bouton
+                        }
+                    }
+
+                    if (action == "delete-admin") { // Si l'action est de supprimer un post
+                        $('#post-' + form.find('input[name="post_id"]').val()).hide(); // On cache le post
+                    }
+
+                }
             }
         });
     });
