@@ -145,4 +145,53 @@ $(document).ready(function() {
         document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
     });
 
+    // Gere les bouttons d'unban / ban pour les admins dans les logs
+
+    const unbanButton = document.querySelectorAll('.unban-log-button'); // Bouton pour unban
+    const banButton = document.querySelectorAll('.ban-log-button'); // Bouton pour ban
+
+    unbanButton.forEach((button) => { // Pour chaque bouton d'unban
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            var data = {
+                'action': 'unban', // On envoie l'action 'unban'
+                'user_id': button.getAttribute('data-user-id')
+            }
+
+            $.ajax({ // Fait une requête AJAX
+                type: "POST",  
+                url: "ajax_request/handleAdmin.php",
+                data: data,
+                success: function(data) { // Quand la requête est terminée
+                    if (data == 1) { // Si la requête a réussi
+                        button.innerHTML = "Ban"; // On change le texte du bouton
+                        button.classList.remove('unban-log-button'); // On enlève la classe unban pour mettre ban
+                        button.classList.add('ban-log-button'); // On ajoute la classe ban
+                    }
+                }
+            });
+        });
+    });
+
+    banButton.forEach((button) => { // Pour chaque bouton de ban
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            var data = {
+                'action': 'ban', // On envoie l'action 'ban'
+                'user_id': button.getAttribute('data-user-id')
+            }
+
+            $.ajax({ // Fait une requête AJAX
+                type: "POST",  
+                url: "ajax_request/handleAdmin.php",
+                data: data,
+                success: function(data) { // Quand la requête est terminée
+                    if (data == 1) { // Si la requête a réussi
+                        button.innerHTML = "Unban"; // On change le texte du bouton
+                        button.classList.remove('ban-log-button'); // On enlève la classe ban pour mettre unban
+                        button.classList.add('unban-log-button'); // On ajoute la classe unban
+                    }
+                }
+            });
+        });
+    });
+
 });

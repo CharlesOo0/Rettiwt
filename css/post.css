@@ -246,6 +246,26 @@ body {
     color: red;
 }
 
+/* Style du conteneur des logs */
+.logs {
+    /* Positionnement */
+    text-align: center;
+}
+
+/* Style de la table */
+table {
+    /* Bordure */
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+/* Style des cellules de la table */
+td, th {
+    /* Bordure */
+    border: 1px solid black;
+    padding: 8px;
+}
+
 /* Ajoute un effet responsive pour les icones de gauches */
 @media screen and (max-width: 1380px){
     .pl-span {

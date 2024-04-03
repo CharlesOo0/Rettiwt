@@ -69,7 +69,22 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du bannissement
         addAdminLog($connexion, $adminId, $username, 'ban', $reason); // Ajoute une entrée dans les logs
 
-    } else if ($action == 'warn' && isAdmin($connexion, $_SESSION['username'])) {
+    } else if ($action == 'unban' && isAdmin($connexion, $_SESSION['username'])) {
+
+        // ----------------- Exécute la requête demander ----------------- //
+        $sql = "UPDATE profil SET isBanned=0, ban_date=NULL WHERE id='$username'"; // Crée la requête SQL pour débannir un utilisateur
+        try { // Essaie de débannir un utilisateur
+            mysqli_query($connexion, $sql); 
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+            $_SESSION['error_post'] = " Erreur lors de la tentative de débannissement de l'utilisateur";
+            header('Location: ../home.php');
+        }
+        // ----------------- Exécute la requête demander ----------------- //
+
+        $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du débannissement
+        addAdminLog($connexion, $adminId, $username, 'unban', $reason); // Ajoute une entrée dans les logs
+
+    }else if ($action == 'warn' && isAdmin($connexion, $_SESSION['username'])) {
 
         // TODO : Envoie une notification à l'utilisateur
 

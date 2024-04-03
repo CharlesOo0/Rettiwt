@@ -11,6 +11,12 @@
 
     checkCreds($connexion); // Vérifie si l'utilisateur est connecté
 
+    if (isset($_GET['adminLogs']) && !isAdmin($connexion, $_SESSION['username'])) { // Si on veut afficher les logs admin
+        $_SESSION['error_post'] = "Vous n'avez pas les droits pour accéder a cette page."; // Stocke un message d'erreur
+        header('Location: home.php'); // Redirige vers la page d'accueil
+        exit();
+    }
+
 ?>
 
 <html>
@@ -117,9 +123,14 @@
                             <img src="img/edit.png" alt="Modifier"><span class="pl-span"> Modifier</span>
                         </a><br>
 
-                        <a href="home.php"  class="left-band-img profil-link-i">
-                            <img src="img/admin.png" alt="Admin"><span class="pl-span"> Admin</span>
-                        </a><br>
+                        <?php
+                        if (isAdmin($connexion, $_SESSION['username'])) { // Si l'utilisateur est un admin
+                            echo "<a href='?adminLogs=true'  class='left-band-img profil-link-i'>
+                                <img src='img/admin.png' alt='Admin'><span class='pl-span'> Admin</span>
+                            </a><br>";
+                        }
+                        ?>
+
 
                         <a href="logout.php"  class="left-band-img profil-link-i">
                             <img src="img/disconnect.png" alt="Deconnexion"><span class="pl-span"> Déconnexion</span>
@@ -165,6 +176,10 @@
                     displayProfil($connexion, $username); // On affiche le profil de l'autre utilisateur
                     echo "<div class='style-display-profil'>Post du profil</div>";
                     displayPost($connexion, $username, NULL); // On affiche les posts de l'autre utilisateur
+                }else if(isset($_GET['adminLogs'])) { // Si on veut afficher les logs admin
+                    echo "<h4>Logs admin</h4>";
+                    displayLogs($connexion);
+
                 }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
                     displayCommentForm($connexion, $_SESSION['username']);

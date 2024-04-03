@@ -662,4 +662,75 @@ function displayCommentForm($connexion, $username) {
     echo "</form>";
 }
 
+/**
+ * Affiche les logs admins
+ * 
+ * @param connexion La connexion à la base de données
+ * 
+ * @return void
+ */
+function displayLogs($connexion) {
+    // Crée la requête SQL pour récupérer les logs
+    $sql = "SELECT * FROM admin_logs ORDER BY date DESC";
+
+    try { // Essaie de récupérer les logs
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération des logs : " . mysqli_error($connexion) . "</p>";
+    }
+
+    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+        // Affiche les données de chaque ligne
+        echo "<div class='table-responsive'>"; 
+
+            echo "<table class='logs container-fluid'>"; 
+
+            echo "<tr>";  // Crée une ligne pour les titres
+            echo "<th>Admin</th>"; 
+            echo "<th>Utilisateur cible</th>"; 
+            echo "<th>Action</th>"; 
+            echo "<th>Motif</th>"; 
+            echo "<th>Date</th>"; 
+            echo "</tr>";
+
+            while ($row = mysqli_fetch_assoc($result)) { // For each log
+                // Récupère le profil de l'admin
+                $sql = "SELECT * FROM profil WHERE id=" . $row['admin_id'];
+
+                try { // Essaie de récupérer le profil de l'admin
+                    $admin = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Admin: Error when trying to get the name. <br>";
+                }
+
+                // Récupère le profil de l'utilisateur ciblé
+                $sql = "SELECT * FROM profil WHERE id=" . $row['target_user_id'];
+
+                try { // Essaie de récupérer le profil de l'utilisateur ciblé
+                    $target_user = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Target user: Error when trying to get the name. <br>";
+                }
+
+                echo "<tr class='log'>"; // Crée une ligne pour chaque log
+                echo "<td>" . $admin['username'] . "</td>"; 
+                echo "<td>" . $target_user['username'] . "</td>"; 
+                if ($row['action_type'] == 'ban') {
+                    echo "<td>" . $row['action_type'] . "<button class='unban-log-button dropdown-item' data-username='".$target_user['id']."'>Unban ?</button></td>";
+                }else {
+                    echo "<td>" . $row['action_type'] . "</td>"; 
+                }
+                echo "<td>" . $row['reason'] . "</td>"; 
+                echo "<td>" . $row['date'] . "</td>"; 
+                echo "</tr>"; 
+            }
+            echo "</table>";
+
+        echo "</div>"; 
+    } else {
+        echo "Aucun résultat trouvé.";
+    }
+
+}
+
 ?>
