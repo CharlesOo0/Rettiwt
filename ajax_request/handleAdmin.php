@@ -51,6 +51,24 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
 
 
     } else if ($action == 'ban' && isAdmin($connexion, $_SESSION['username'])) {
+        // ----------------- Vérifie si l'utilisateur est déjà banni ----------------- //
+        $sql = "SELECT * FROM profil WHERE id='$username'"; // Crée la requête SQL pour récupérer un utilisateur
+
+        try { // Essaie de récupérer un utilisateur
+            $result = mysqli_query($connexion, $sql);
+            if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+                $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
+            }
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+            $_SESSION['error_post'] = " Erreur lors de la récupération de l'utilisateur";
+            header('Location: ../home.php');
+        }
+
+        if ($result['isBanned'] == 1) { // Vérifie si l'utilisateur est déjà banni
+            echo json_encode(0); // Retourne un message d'erreur
+            exit();
+        }
+        // ----------------- Vérifie si l'utilisateur est déjà banni ----------------- //
 
         // ----------------- Exécute la requête demander ----------------- //
         $ban_date = $_POST['ban_date']; // Récupère la date de bannissement
@@ -70,6 +88,23 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
         addAdminLog($connexion, $adminId, $username, 'ban', $reason); // Ajoute une entrée dans les logs
 
     } else if ($action == 'unban' && isAdmin($connexion, $_SESSION['username'])) {
+        // ----------------- Vérifie si l'utilisateur est déjà unban ----------------- //
+        $sql = "SELECT * FROM profil WHERE id='$username'"; // Crée la requête SQL pour récupérer un utilisateur
+        try { // Essaie de récupérer un utilisateur
+            $result = mysqli_query($connexion, $sql);
+            if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+                $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
+            }
+        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+            $_SESSION['error_post'] = " Erreur lors de la récupération de l'utilisateur";
+            header('Location: ../home.php');
+        }
+
+        if ($result['isBanned'] == 0) { // Vérifie si l'utilisateur est déjà débanni
+            echo json_encode(0); // Retourne un message d'erreur
+            exit();
+        }
+        // ----------------- Vérifie si l'utilisateur est déjà unban ----------------- //
 
         // ----------------- Exécute la requête demander ----------------- //
         $sql = "UPDATE profil SET isBanned=0, ban_date=NULL WHERE id='$username'"; // Crée la requête SQL pour débannir un utilisateur

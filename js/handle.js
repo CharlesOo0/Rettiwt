@@ -52,12 +52,24 @@ $(document).ready(function() { // Quand le document est prêt
                         }
                     }
 
+
                     if (action == "delete-admin") { // Si l'action est de supprimer un post
                         $('#post-' + form.find('input[name="post_id"]').val()).hide(); // On cache le post
                     }
 
                 }
             }
+        });
+
+        // ------------------------ Handle l'unban d'un utilisateur
+        $(".unban-log-button").click(function() { // Quand le bouton est cliqué
+            e.preventDefault(); // Empêcher le comportement par défaut du formulaire
+            var userId = $(this).attr('data-user-id'); // Récupérer l'id de l'utilisateur
+            var form = $("#admin-form"); // Récupérer le formulaire
+            form.find('input[name="user_id"]').val(userId); // Mettre l'id de l'utilisateur dans le formulaire
+            form.find('input[name="post_id"]').val(NULL); // Mettre l'action unban dans le formulaire
+            form.find('input[name="action"]').val("unban"); // Mettre l'action unban dans le formulaire
+            form.submit(); // Soumettre le formulaire
         });
     });
 

@@ -162,6 +162,7 @@
     transition: background 0.3s ease-in-out; /* Add this line */
 }
 
+/* Style du display profil */
 .style-display-profil {
     /* Positionnement */
     margin-top: 5%;
@@ -179,4 +180,10 @@
 
     /* Couleur de fond */
     background: black;
+}
+
+/* Style du dropdown pour les posts */
+.dropdown-post {
+    position: relative;
+    right: 15px;
 }

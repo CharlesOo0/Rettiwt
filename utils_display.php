@@ -77,7 +77,7 @@ function displayDropdown($postId) {
     }
 
     // Sinon affiche le menu dropdown
-    echo '<div class="dropdown">'; // Affiche le menu dropdown
+    echo '<div class="dropdown dropdown-post">'; // Affiche le menu dropdown
     echo '    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
     echo '        <i class="fas fa-ellipsis-v"></i>';
     echo '    </button>';
@@ -116,6 +116,54 @@ function displayDropdown($postId) {
     }
     echo '    </ul>';
     echo '</div>';
+}
+
+/** Fonction qui permet d'afficher le menu dropdown des profils
+ * 
+ * @param connexion La connexion à la base de données
+ * @param username Le nom d'utilisateur pour lequel on affiche le menu dropdown
+ * 
+ * @return void
+ */
+function displayProfilDropdown($connexion, $username) {
+    // Crée la requête SQL pour récupérer le profil de l'utilisateur connecté
+    $sql = "SELECT * FROM profil WHERE username = '" . $_SESSION['username'] . "'";
+
+    try { // Essaie de récupérer le profil de l'utilisateur connecté
+        $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur en tentant d'afficher le dropdown."; // Stocke un message d'erreur
+        echo "<meta http-equiv='refresh' content='0'>"; // Actualise la page
+        exit();
+    }
+
+    $sql = "SELECT * FROM profil WHERE username = '$username'";
+
+    try { // Essaie de récupérer le profil de l'utilisateur
+        $target = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur en tentant d'afficher le dropdown."; // Stocke un message d'erreur
+        echo "<meta http-equiv='refresh' content='0'>"; // Actualise la page
+        exit();
+    }
+
+    if ($profil['isAdmin'] == 0 || $profil['id'] == $target['id']) { // Si l'utilisateur n'est pas un admin et qu'il est le propriétaire du profil
+        return; // Ne fait rien
+    }
+
+    // Sinon affiche le menu dropdown
+    echo '<div class="dropdown dropdown-profil col-2">'; // Affiche le menu dropdown
+    echo '    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">';
+    echo '        <i class="fas fa-ellipsis-v"></i>';
+    echo '    </button>';
+    echo '    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
+            echo "  <li>
+                <button class='ban-post-button dropdown-item' data-post-id='NULL' data-username='".$target['id']."'>Bannir (Admin)</button>
+            </li>";
+    echo '    </ul>';
+
+    echo '</div>';
+
 }
 
 /**
@@ -325,6 +373,7 @@ function displayProfil($connexion, $username) {
                 echo "</div>";
 
                 echo "<div id='pseudo-follow' class='col'>"; // Affiche le nom d'utilisateur et le nombre de followers et following
+
                 if ($username != $_SESSION['username']) {
                     echo "<div class='follow-sub-href'>"; // Affiche le bouton pour follow ou unfollow l'utilisateur
                     if (isFollowing($connexion, $_SESSION['username'], $username)){ // Si l'utilisateur connecté follow déjà l'autre utilisateur
@@ -338,6 +387,9 @@ function displayProfil($connexion, $username) {
                     echo "<div id='sub'><a href='?displayFollower=true&username=". urlencode($username) ."' >" . $rowFollower["COUNT(follower_id)"] . " Followers</a> </div>";
                     echo "<div id='follow'><a href='?displayFollowing=true&username=". urlencode($username) ."' >". $rowFollowing["COUNT(following_id)"] ." Suivies</a> </div>";
                 echo "</div>";
+
+                displayProfilDropdown($connexion, $username); // Affiche le menu dropdown
+
 
             echo "</div>";
 
@@ -427,9 +479,11 @@ function displayPost($connexion, $username, $sub) {
                         echo "</div>";
 
                         echo "<div class='col post-date'>";
-                        echo $row["date"]; // Affiche la date du post
 
-                        displayDropdown($row["id"]); // Affiche le menu dropdown
+                            echo '<div class="row">';
+                                echo $row["date"]; // Affiche la date du post
+                                displayDropdown($row["id"]); // Affiche le menu dropdown
+                            echo '</div>';
 
                         echo "</div>";
 
@@ -716,7 +770,7 @@ function displayLogs($connexion) {
                 echo "<td>" . $admin['username'] . "</td>"; 
                 echo "<td>" . $target_user['username'] . "</td>"; 
                 if ($row['action_type'] == 'ban') {
-                    echo "<td>" . $row['action_type'] . "<button class='unban-log-button dropdown-item' data-username='".$target_user['id']."'>Unban ?</button></td>";
+                    echo "<td>" . $row['action_type'] . "<button class='unban-log-button dropdown-item' data-user-id='".$target_user['id']."'>Unban ?</button></td>";
                 }else {
                     echo "<td>" . $row['action_type'] . "</td>"; 
                 }
