@@ -64,6 +64,8 @@ function handleFollow($connexion, $username) {
                 echo "<p> Erreur lors de l'ajout du follow : " . mysqli_error($connexion) . "</p>"; // Affiche une erreur
             }
         }
+
+        createNotification($connexion, $username, $followed, 'follow', null); // Crée une notification
     }
 }
 
@@ -146,38 +148,61 @@ function handlePost($connexion) {
         if ($modify) { // Si on peut poster
             try { // On essaye de faire la requête
                 mysqli_query($connexion, $sql);
+
+                $post_id = mysqli_insert_id($connexion); // Récupère l'id du post ajouté
             } catch (Exception $e) { // Si on a une erreur
                 $_SESSION['error_post'] = "<p>Erreur lors de la création de votre post...</p>";
                 echo "<meta http-equiv='refresh' content='0'>";
                 exit();
             }
-        }
 
-        if (isset($images) && count(array_filter($_FILES['images']['name'])) > 0) { // Si on a des images
-            $count = 0; // Compteur pour les images
-            $target_dir = "post_images/"; // Le dossier où on va stocker les images
-            for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
-                $identifiant_unique = uniqid(); // Crée un identifiant unique
-                
-                $file_extension = pathinfo($images['name'][$i], PATHINFO_EXTENSION); // Récupère l'extension du fichier
-
-                $target_file = $target_dir . $identifiant_unique . "." . $file_extension; // Crée le chemin du fichier
-
-                if (!move_uploaded_file($images['tmp_name'][$i], $target_file)) { // Si on ne peut pas déplacer le fichier
-                    $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image. ". count($_FILES['images']['name']) ."";
-                    echo "<meta http-equiv='refresh' content='0'>";
-                    exit();
-                }else {
-                    $sql = "INSERT INTO `post_images`(`post_id`, `image`) VALUES ((SELECT id FROM post WHERE author='$id' ORDER BY id DESC LIMIT 1),'$identifiant_unique.$file_extension')";
-                    try { // On essaye de faire la requête
-                        mysqli_query($connexion, $sql);
-                    } catch (Exception $e) { // Si on a une erreur
-                        $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image.";
+            if (isset($images) && count(array_filter($_FILES['images']['name'])) > 0) { // Si on a des images
+                $count = 0; // Compteur pour les images
+                $target_dir = "post_images/"; // Le dossier où on va stocker les images
+                for ($i = 0; $i < count($_FILES['images']['name']); $i++) { // Itère sur chaque image
+                    $identifiant_unique = uniqid(); // Crée un identifiant unique
+                    
+                    $file_extension = pathinfo($images['name'][$i], PATHINFO_EXTENSION); // Récupère l'extension du fichier
+    
+                    $target_file = $target_dir . $identifiant_unique . "." . $file_extension; // Crée le chemin du fichier
+    
+                    if (!move_uploaded_file($images['tmp_name'][$i], $target_file)) { // Si on ne peut pas déplacer le fichier
+                        $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image. numero ". count($_FILES['images']['name']) ."";
                         echo "<meta http-equiv='refresh' content='0'>";
                         exit();
+                    }else {
+                        $sql = "INSERT INTO `post_images`(`post_id`, `image`) VALUES ((SELECT id FROM post WHERE author='$id' ORDER BY id DESC LIMIT 1),'$identifiant_unique.$file_extension')";
+                        try { // On essaye de faire la requête
+                            mysqli_query($connexion, $sql);
+                        } catch (Exception $e) { // Si on a une erreur
+                            $_SESSION['error_post'] = "Erreur lors de l'ajout de l'image.";
+                            echo "<meta http-equiv='refresh' content='0'>";
+                            exit();
+                        }
                     }
+                    ++$count; // On incrémente le compteur
                 }
-                ++$count; // On incrémente le compteur
+            }
+
+        }
+
+        if (isset($post_id)) { // Si on a un id de post (donc si le post a été ajouté)
+            // Récupère les followers de l'utilisateur ayant poster
+            $sql = "SELECT * FROM followers WHERE following_id='$id'";
+
+            try { // On essaye de faire la requête
+                $follower = mysqli_query($connexion, $sql);
+            } catch (Exception $e) { // Si on a une erreur
+                $_SESSION['error_post'] = "Erreur lors de la récupération de vos followers.";
+                echo "<meta http-equiv='refresh' content='0'>";
+                exit();
+            }
+
+            if ($follower->num_rows > 0) { // Si l'utilisateur a des followers
+                while ($row = mysqli_fetch_assoc($follower)) { // Itère sur chaque follower
+                    $follower_id = $row['follower_id']; // Récupère l'id du follower
+                    createNotification($connexion, $follower_id, $id, 'post', $post_id); // Crée une notification
+                }
             }
         }
 
@@ -280,9 +305,11 @@ function handleComment($connexion) {
             $sql = "INSERT INTO post (author, text, parent_id) VALUES ('$id', '$text', '$post_id')";
         }
 
-        if ($modify) { //
+        if ($modify) { // Si on peut poster
             try { // On essaye de faire la requête
                 mysqli_query($connexion, $sql);
+
+                $post_id = mysqli_insert_id($connexion); // Récupère l'id du post ajouté
             } catch (Exception $e) { // Si on a une erreur
                 $_SESSION['error_post'] = "<p>Erreur lors de la création de votre post...</p>";
                 echo "<meta http-equiv='refresh' content='0'>";
@@ -318,6 +345,25 @@ function handleComment($connexion) {
             }
         }
 
+        if (isset($post_id)) { // Si on a un id de post (donc si le post a été ajouté)
+            // Récupère les followers de l'utilisateur ayant poster
+            $sql = "SELECT * FROM followers WHERE following_id='$id'";
+
+            try { // On essaye de faire la requête
+                $follower = mysqli_query($connexion, $sql);
+            } catch (Exception $e) { // Si on a une erreur
+                $_SESSION['error_post'] = "Erreur lors de la récupération de vos followers.";
+                echo "<meta http-equiv='refresh' content='0'>";
+                exit();
+            }
+
+            if ($follower->num_rows > 0) { // Si l'utilisateur a des followers
+                while ($row = mysqli_fetch_assoc($follower)) { // Itère sur chaque follower
+                    $follower_id = $row['follower_id']; // Récupère l'id du follower
+                    createNotification($connexion, $follower_id, $id, 'post', $post_id); // Crée une notification
+                }
+            }
+        }
 
     }
 }

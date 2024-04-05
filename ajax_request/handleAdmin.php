@@ -49,6 +49,8 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison de la suppression
         addAdminLog($connexion, $adminId, $username, 'delete', $reason); // Ajoute une entrée dans les logs
 
+        createNotification($connexion, $username, $adminId, 'post-delete-admin', $id); // Crée une notification
+
 
     } else if ($action == 'ban' && isAdmin($connexion, $_SESSION['username'])) {
         // ----------------- Vérifie si l'utilisateur est déjà banni ----------------- //
@@ -87,6 +89,8 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du bannissement
         addAdminLog($connexion, $adminId, $username, 'ban', $reason); // Ajoute une entrée dans les logs
 
+        createNotification($connexion, $username, $adminId, 'ban', $ban_date); // Crée une notification
+
     } else if ($action == 'unban' && isAdmin($connexion, $_SESSION['username'])) {
         // ----------------- Vérifie si l'utilisateur est déjà unban ----------------- //
         $sql = "SELECT * FROM profil WHERE id='$username'"; // Crée la requête SQL pour récupérer un utilisateur
@@ -119,12 +123,14 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du débannissement
         addAdminLog($connexion, $adminId, $username, 'unban', $reason); // Ajoute une entrée dans les logs
 
-    }else if ($action == 'warn' && isAdmin($connexion, $_SESSION['username'])) {
+        createNotification($connexion, $username, $adminId, 'unban'); // Crée une notification
 
-        // TODO : Envoie une notification à l'utilisateur
+    }else if ($action == 'warn' && isAdmin($connexion, $_SESSION['username'])) {
 
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du bannissement
         addAdminLog($connexion, $adminId, $username, 'warn', $reason); // Ajoute une entrée dans les logs
+
+        createNotification($connexion, $username, $adminId, 'warn'); // Crée une notification
 
     } else if ($action == 'flag' && isAdmin($connexion, $_SESSION['username'])) {
 
@@ -160,6 +166,8 @@ if (isset($_POST['action'])) { // Vérifie si l'action est définie
 
         $reason = mysqli_real_escape_string($connexion, $_POST['reason']); // Récupère la raison du signalement
         addAdminLog($connexion, $adminId, $username, $type, $reason); // Ajoute une entrée dans les logs
+
+        createNotification($connexion, $username, $adminId, $type); // Crée une notification
 
     }
 

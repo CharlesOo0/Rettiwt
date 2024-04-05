@@ -147,4 +147,23 @@ function addAdminLog($connexion, $username_source, $username_target, $action, $r
 
 }
 
+/**
+ * Crée une notification
+ * 
+ * @param connexion La connexion à la base de données
+ * @param user_notified L'id de l'utilisateur qui est notifié
+ * @param user_notifying L'id de l'utilisateur qui notifie
+ * @param type Le type de notification
+ * @param post_id L'id du post concerné si il y en a un
+ */
+function createNotification($connexion, $user_notified, $user_notifying, $type, $post_id = null) {
+    $sql = "INSERT INTO notifications (user_id, created_by_user_id, type, post_id) VALUES ('$user_notified', '$user_notifying', '$type', '$post_id')"; // Crée la requête SQL pour ajouter une notification
+
+    try { // Essaie d'ajouter une notification
+        mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de l'ajout de la notification.</p>";
+    }
+}
+
 ?>
