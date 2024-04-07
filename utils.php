@@ -50,7 +50,31 @@ function getUserId($connexion) {
             return $result['id']; // Retourne l'id de l'utilisateur
         }
     } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la récupération de l'id de l'utilisateur : " . mysqli_error($connexion) . "</p>";
+        echo "<p> Erreur lors de la récupération de l'id de l'utilisateur</p>";
+    }
+
+    return null; // Si la requête n'a pas retourné de lignes, retourne null
+}
+
+/**
+ * Récupère le profil utilisateur d'un utilisateur avec son nom
+ * 
+ * @param connexion La connexion à la base de données
+ * @param username Le nom d'utilisateur
+ * 
+ * @return array
+ */
+function getUserProfile($connexion, $username) {
+    $sql = "SELECT * FROM profil WHERE username='$username'"; // Crée la requête SQL pour récupérer le profil de l'utilisateur
+
+    try { // Essaie de récupérer le profil de l'utilisateur
+        $result = mysqli_query($connexion, $sql);
+        if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+            $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
+            return $result; // Retourne le profil de l'utilisateur
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération du profil de l'utilisateur</p>";
     }
 
     return null; // Si la requête n'a pas retourné de lignes, retourne null
@@ -157,12 +181,16 @@ function addAdminLog($connexion, $username_source, $username_target, $action, $r
  * @param post_id L'id du post concerné si il y en a un
  */
 function createNotification($connexion, $user_notified, $user_notifying, $type, $post_id = null) {
-    $sql = "INSERT INTO notifications (user_id, created_by_user_id, type, post_id) VALUES ('$user_notified', '$user_notifying', '$type', '$post_id')"; // Crée la requête SQL pour ajouter une notification
+    if ($post_id == null){ // Vérifie si l'id du post est null (si il n'y a pas de post concerné par la notification)
+        $sql = "INSERT INTO notifications (user_id, created_by_user_id, type) VALUES ('$user_notified', '$user_notifying', '$type')"; // Crée la requête SQL pour ajouter une notification
+    }else {// Si il y a un post concerné par la notification
+        $sql = "INSERT INTO notifications (user_id, created_by_user_id, type, post_id) VALUES ('$user_notified', '$user_notifying', '$type', '$post_id')"; // Crée la requête SQL pour ajouter une notification
+    }
 
     try { // Essaie d'ajouter une notification
         mysqli_query($connexion, $sql);
     } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de l'ajout de la notification.</p>";
+        echo "<p> Erreur lors de l'ajout de la notification.</p>". mysqli_error($connexion);
     }
 }
 

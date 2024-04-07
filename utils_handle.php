@@ -65,7 +65,10 @@ function handleFollow($connexion, $username) {
             }
         }
 
-        createNotification($connexion, $username, $followed, 'follow', null); // Crée une notification
+        $user_id = getUserProfile($connexion, $username)['id']; // Récupère l'id de l'utilisateur
+        $follower_id = getUserProfile($connexion, $followed)['id']; // Récupère l'id du follower
+
+        createNotification($connexion, $user_id, $follower_id, 'follow'); // Crée une notification
     }
 }
 
