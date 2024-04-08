@@ -3,6 +3,19 @@
 
 $(document).ready(function() {
 
+    // Gere le bouton pour afficher les posts sensibles
+    const showSensitiveButton = document.querySelectorAll(".show-button"); // Bouton pour afficher les posts sensibles
+
+    showSensitiveButton.forEach((button) => { // Pour chaque bouton
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            var postId = button.value; // On récupère l'id du post
+            var blur = document.getElementById('hide-post-' + postId); // On récupère le post
+
+            blur.classList.remove("hide-post"); // On enlève la classe hide-post pour afficher le post
+            button.style.display = "none"; // On cache le bouton
+        });
+    });
+
     // Popup pour la barre de recherche
     const showSearchButton = document.getElementById("show-search-button"); // Bouton pour afficher le popup
     const searchContainer = document.querySelector('.search-bar-style'); // Conteneur du popup

@@ -466,7 +466,14 @@ function displayPost($connexion, $username, $sub, $search = null) {
         // Affiche les données de chaque ligne
         while ($row = mysqli_fetch_assoc($resultPost)) { // Pour chaque post
 
-            echo "<div id='post-".$row['id']."' class='post'>";
+            if ($row['isFlag'] == 1) {
+                echo "<div id='post-".$row['id']."' class='post'>";
+                echo "<button class='show-hidde-post-button show-button' id='show-button-".$row['id']."' value='".$row['id']."'>Afficher le post</button>";
+                echo "<div class='hide-post' id='hide-post-".$row['id']."'>";
+            }else {
+                echo "<div id='post-".$row['id']."' class='post'>";
+            }
+            
                 // Récupère le nom de l'auteur
                 $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
                 try { // Essaie de récupérer le nom de l'auteur
@@ -588,7 +595,10 @@ function displayPost($connexion, $username, $sub, $search = null) {
 
                 echo "</div>"; // Fin de la div container-fluid
 
-            echo "</div>";
+            if ($row['isFlag'] == 1) {
+                echo "</div>"; // Fin du hide-post
+            }
+            echo "</div>"; // Fin de la div post
 
             if ($comments->num_rows > 0) { // Si le post a des commentaires
                 echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' value='".$identifiant_comment."'>Afficher les commentaires</button>";
