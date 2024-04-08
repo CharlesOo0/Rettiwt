@@ -176,12 +176,17 @@ function displayProfilDropdown($connexion, $username) {
 function displayComments($connexion, $comments) {
     echo "<div class='comments'>";
         foreach ($comments as $comment) { // Pour chaque commentaire
+            
             echo "<div id='post-".$comment['id']."' class='container-fluid row comment-container'>";
                 echo "<div class='comment col-1'>";
                 echo "<div class='comment-line'></div>";
                 echo "</div>";
 
                 echo "<div class='post col'>";
+                    if ($comment['isFlag'] == 1) {
+                        echo "<button class='show-hidde-post-button show-button' id='show-button-".$comment['id']."' value='".$comment['id']."'>Afficher le commentaire</button>";
+                        echo "<div class='hide-post' id='hide-post-".$comment['id']."'>";
+                    }
                     // Récupère le nom de l'auteur
                     $sql = "SELECT * FROM profil WHERE id=" . $comment['author'];
                     try { // Essaie de récupérer le nom de l'auteur
@@ -298,10 +303,14 @@ function displayComments($connexion, $comments) {
                     }
                     echo "</div>";
 
-                echo "</div>";
-            echo "</div>";
+                    if ($comment['isFlag'] == 1) {
+                        echo "</div>";
+                    }
 
-            
+                echo "</div>";
+
+
+            echo "</div>";        
             
             echo "<div style='display: none;' id='comment-".$comment["id"]."'>"; // Crée une div pour afficher les réponses
             // Affiche les réponses
@@ -595,14 +604,16 @@ function displayPost($connexion, $username, $sub, $search = null) {
 
                 echo "</div>"; // Fin de la div container-fluid
 
-            if ($row['isFlag'] == 1) {
-                echo "</div>"; // Fin du hide-post
-            }
-            echo "</div>"; // Fin de la div post
 
             if ($comments->num_rows > 0) { // Si le post a des commentaires
                 echo "<button class='show-hidde-comment-button' id='show-button-".$identifiant_comment."' value='".$identifiant_comment."'>Afficher les commentaires</button>";
             }
+
+            if ($row['isFlag'] == 1) {
+                echo "</div>"; // Fin du hide-post
+            }
+
+            echo "</div>"; // Fin de la div post
 
             echo "<div style='display: none;' id='comment-".$identifiant_comment."'>"; // Crée une div pour afficher les commentaires
                 // Affiche les commentaires
