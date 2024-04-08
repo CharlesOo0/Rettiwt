@@ -13,9 +13,9 @@
 function getComments($connexion, $root, $parentId = NULL) {
 
     if ($parentId === NULL) { // On est a la racine
-        $sql = "SELECT * FROM post WHERE parent_id=$root"; // Crée la requête SQL pour récupérer les commentaires de la racine
+        $sql = "SELECT * FROM post WHERE parent_id=$root AND author NOT IN (SELECT id FROM profil WHERE isBanned=1)"; // Crée la requête SQL pour récupérer les commentaires de la racine
     }else { // On est dans un commentaire
-        $sql = "SELECT * FROM post WHERE parent_id=$parentId"; // Crée la requête SQL pour récupérer les commentaires du 
+        $sql = "SELECT * FROM post WHERE parent_id=$parentId AND author NOT IN (SELECT id FROM profil WHERE isBanned=1)"; // Crée la requête SQL pour récupérer les commentaires du 
     }
     
     try { // Essaie de récupérer les commentaires
@@ -333,7 +333,7 @@ function displayProfil($connexion, $username) {
         }
 
         // Crée la requête SQL pour récupérer le nombre de followers
-        $sql = " SELECT COUNT(follower_id) FROM followers WHERE following_id = (SELECT id FROM profil WHERE username = '$username') ";
+        $sql = " SELECT COUNT(follower_id) FROM followers WHERE following_id = (SELECT id FROM profil WHERE username = '$username') AND follower_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
 
         try { // Essaie de récupérer le nombre de followers
             $resultFollower = mysqli_query($connexion, $sql);
@@ -343,7 +343,7 @@ function displayProfil($connexion, $username) {
         }
 
         // Crée la requête SQL pour récupérer le nombre de following
-        $sql = " SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '$username') ";
+        $sql = " SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '$username') AND following_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
 
         try { // Essaie de récupérer le nombre de following
             $resultFollowing = mysqli_query($connexion, $sql);
@@ -432,14 +432,14 @@ function displayPost($connexion, $username, $sub) {
     
         if ($sub != NULL) { // Si on veut afficher les posts des utilisateurs suivis
             // Crée la requete qui permet de récuperer les posts des utilisateurs suivis
-            $sql = "SELECT * FROM post WHERE author IN (SELECT following_id FROM followers WHERE follower_id='$profilId') ORDER BY date DESC";
+            $sql = "SELECT * FROM post WHERE author IN (SELECT following_id FROM followers WHERE follower_id='$profilId') AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC";
         }else { // Si on veut afficher les posts de l'utilisateur
             // Crée la requête SQL pour récupérer les posts de l'utilisateur
-            $sql = "SELECT * FROM post WHERE author='$profilId' ORDER BY date DESC";
+            $sql = "SELECT * FROM post WHERE author='$profilId' AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC";
         }
 
     }else { // Si on veut afficher les posts de tous les utilisateurs
-        $sql = "SELECT * FROM post WHERE isDeleted=0 AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+        $sql = "SELECT * FROM post WHERE isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
     }
 
     $recuperationPostFailed = false;
@@ -516,7 +516,7 @@ function displayPost($connexion, $username, $sub) {
                     }
                     echo "</div>";
                     // Récupère le nombre de likes
-                    $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'];
+                    $sql = "SELECT COUNT(post_id) FROM likes WHERE post_id=" . $row['id'] . " AND user_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
                     try { // Essaie de récupérer le nombre de likes
                         $likes = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
                     } catch (Exception $e) { // Si ça échoue, affiche une erreur
@@ -533,7 +533,7 @@ function displayPost($connexion, $username, $sub) {
                     }
 
                     // Récupère les commentaires
-                    $sql = "SELECT * FROM post WHERE parent_id=" . $row['id'];
+                    $sql = "SELECT * FROM post WHERE parent_id=" . $row['id'] . " AND author NOT IN (SELECT id FROM profil WHERE isBanned=1)";
 
                     try { // Essaie de récupérer les commentaires
                         $comments = mysqli_query($connexion, $sql);
@@ -604,9 +604,9 @@ function displayFollow($connexion, $username, $mode) {
     // Crée la requête SQL pour récupérer les utilisateurs qui suivent
 
     if ($mode == 0) {// Si on veut afficher les followers
-        $sql = "SELECT * FROM followers WHERE following_id=(SELECT id FROM profil WHERE username = '$username')";
+        $sql = "SELECT * FROM followers WHERE following_id=(SELECT id FROM profil WHERE username = '$username') AND follower_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
     }else { // Si on veut afficher les following
-        $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username')";
+        $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
     }
 
     try { // Essaie de récupérer les utilisateurs qui suivent
