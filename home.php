@@ -49,7 +49,7 @@
             <button id="close-post-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
             <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="posting">
-                <textarea name="text" placeholder="Bonjour tout le monde !"></textarea> <br>
+                <textarea name="text" placeholder="Bonjour tout le monde !" required></textarea> <br>
                 <div id="file-input-post">
                     <label for="images">Ajouter des images (3 maximums) </label><input type="file" name="images[]" multiple> <br>
                 </div>
