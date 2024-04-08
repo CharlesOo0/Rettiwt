@@ -1117,17 +1117,58 @@ function displaySearch($connexion, $search, $searchType) {
 
                 echo "</div>";
             } else { // Si on veut afficher les profils
-                echo "<div class='profil'>";
-                    // Affiche l'avatar et le nom d'utilisateur du profil
-                    echo "<a href='home.php?profil_detail=" . urlencode($row['username']) . "'>"; // Crée un lien vers le profil
-                    if ($row['avatar'] != NULL) { // Si le profil a un avatar
-                        echo "<img src='pfp/" . $row['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar du profil
-                    } else { // Si le profil n'a pas d'avatar
+                echo "<div class='follow row'>";
+
+                echo "<div class='follow-info col'>";
+                    // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
+                    echo "<a href='home.php?profil_detail=" . urlencode($row['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
+                    if ($row['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
+                        echo "<img src='pfp/" . $row['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
+                    } else { // Si l'utilisateur qui suit n'a pas d'avatar
                         echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                     }
-                    echo "@" . $row['username']; // Affiche le nom d'utilisateur du profil
+                    echo "@" . $row['username']; // Affiche le nom d'utilisateur qui suit
                     echo "</a>";
                 echo "</div>";
+
+                echo "<div class='follow-sub-info col'>";
+                    // Affiche le bouton pour follow ou unfollow l'utilisateur qui suit
+                    if ($_SESSION['username'] != $row['username']) { // Si l'utilisateur qui suit n'est pas l'utilisateur connecté
+                        if(isFollowing($connexion, $_SESSION['username'], $row['username'])) {  // Si l'utilisateur connecté follow déjà l'utilisateur qui suit
+                            // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
+                            echo "<div class='follow-sub-href'>"; 
+                                echo "<a href='home.php?follow=" . urlencode($row['username']) . "&profil_detail=". urlencode($row['username']) ."'>Désabonner</a>"; // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
+                            echo "</div>";
+                        } else { // Si l'utilisateur connecté ne follow pas l'utilisateur qui suit
+                            // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
+                            echo "<div class='follow-sub-href'>";
+                                echo "<a href='home.php?follow=" . urlencode($row['username']) . "&profil_detail=". urlencode($row['username']) ."'>S'abonner</a>"; // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
+                            echo "</div>";
+                        }
+                    }
+
+                    // Récupère le nombre de follower et following de l'utilisateur qui suit
+                    $sql = "SELECT COUNT(follower_id) FROM followers WHERE following_id = (SELECT id FROM profil WHERE username = '" . $row['username'] . "')";
+                    try { // Essaie de récupérer le nombre de followers
+                        $follower = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Follower: Error when trying to get the number of followers. <br>";
+                    }
+
+                    // Récupère le nombre de following de l'utilisateur qui suit
+                    $sql = "SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '" . $row['username'] . "')";
+                    try { // Essaie de récupérer le nombre de following
+                        $following = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Follower: Error when trying to get the number of following. <br>";
+                    }
+
+                    // Affiche le nombre de followers et following de l'utilisateur qui suit
+                    echo "<div class='follow-info-text'><a href='?displayFollower=true&username=". urlencode($row['username']) ."' >" . $follower['COUNT(follower_id)'] . " Abonnés</a></div>"; // Affiche le nombre de followers de l'utilisateur qui suit
+                    echo "<div class='follow-info-text'><a href='?displayFollowing=true&username=". urlencode($row['username']) ."' >" . $following['COUNT(following_id)'] . " Suivies</a></div>"; // Affiche le nombre de following de l'utilisateur qui suit
+
+                echo "</div>";
+            echo "</div>";
             }
         }
     } else {
