@@ -185,6 +185,11 @@
                     echo "<h4>Logs admin</h4>";
                     displayLogs($connexion);
 
+                }else if(isset($_GET['search'])){
+                    echo "<h4>Résultat de la recherche</h4>";
+                    displaySearchBar();
+                    displayCommentForm($connexion, $_SESSION['username']);
+                    displaySearch($connexion, $_GET['search'], $_GET['searchType']);
                 }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
                     displaySearchBar();

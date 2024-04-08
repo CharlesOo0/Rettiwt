@@ -745,7 +745,7 @@ function displaySearchBar() {
                 echo "<input type='radio' name='searchType' id='searchPosts' value='posts' checked> Posts";
             echo "</label>";
             echo "<label class='btn btn-secondary'>";
-                echo "<input type='radio' name='searchType' id='searchProfiles' value='profiles'> Profils";
+                echo "<input type='radio' name='searchType' id='searchProfiles' value='profils'> Profils";
             echo "</label>";
         echo "</div>";
 
@@ -1021,6 +1021,117 @@ function displayNotifications($connexion) {
         }
     }else {
         echo "Aucune notification.";
+    }
+}
+
+/**
+ * Affiche la recherhe
+ * 
+ * @param connexion La connexion à la base de données
+ * @param search La recherche
+ * @param searchType Le type de recherche
+ * 
+ * @return void
+ */
+function displaySearch($connexion, $search, $searchType) {
+    if ($searchType == 'posts') { // Si on veut afficher les posts
+        // Crée la requête SQL pour récupérer les posts
+        $sql = "SELECT * FROM post WHERE text LIKE '%$search%' AND isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) ORDER BY date DESC";
+    } else { // Si on veut afficher les profils
+        // Crée la requête SQL pour récupérer les profils
+        $sql = "SELECT * FROM profil WHERE username LIKE '%$search%' AND isBanned=0";
+    }
+
+    try { // Essaie de récupérer les posts ou les profils
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération des posts ou des profils : " . mysqli_error($connexion) . "</p>";
+    }
+
+    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+        // Affiche les données de chaque ligne
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque post ou profil
+            if ($searchType == 'posts') { // Si on veut afficher les posts
+                echo "<div id='post-".$row['id']."' class='post'>";
+                    // Récupère le nom de l'auteur
+                    $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
+                    try { // Essaie de récupérer le nom de l'auteur
+                        $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Author: Error when trying to get the name. <br>";
+                    }
+
+                    echo "<div class='row'>";
+
+                            //  Affiche l'avatar et le nom d'utilisateur de l'auteur
+                            echo "<div class='col post-avatar-username'>";
+                                echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                                if ($profil['avatar'] != NULL) {
+                                    echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                                } else {
+                                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                                }
+
+                                echo "@" . $profil['username'];
+                                echo "</a>";
+                            echo "</div>";
+
+                            echo "<div class='col post-date'>";
+
+                                echo '<div class="row">';
+                                    echo $row["date"]; // Affiche la date du post
+                                echo '</div>';
+
+                            echo "</div>";
+
+                    echo "</div>";
+
+                    echo "<div class='container-fluid'>";
+                        // Affiche le texte du post
+                        echo "<div class='col post-text'>" . $row["text"] . "</div>";
+
+                        // Affiche les images du post
+                        $sql = "SELECT * FROM post_images WHERE post_id=" . $row['id'];
+                        echo "<div class='col post-img'>";
+                        try { // Essaie de récupérer les images du post
+                            $images = mysqli_query($connexion, $sql);
+                            if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                    echo "<img class='post-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                                }
+                            }
+                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                            echo "Images: Error when trying to get the images. <br>";
+                        }
+                        echo "</div>";
+
+                    echo "</div>"; // Fin de la div container-fluid
+
+                echo "</div>";
+            } else { // Si on veut afficher les profils
+                echo "<div class='profil'>";
+                    // Affiche l'avatar et le nom d'utilisateur du profil
+                    echo "<a href='home.php?profil_detail=" . urlencode($row['username']) . "'>"; // Crée un lien vers le profil
+                    if ($row['avatar'] != NULL) { // Si le profil a un avatar
+                        echo "<img src='pfp/" . $row['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar du profil
+                    } else { // Si le profil n'a pas d'avatar
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                    }
+                    echo "@" . $row['username']; // Affiche le nom d'utilisateur du profil
+                    echo "</a>";
+                echo "</div>";
+            }
+        }
+    } else {
+        echo "Aucun résultat trouvé.";
     }
 }
 
