@@ -414,10 +414,11 @@ function displayProfil($connexion, $username) {
  * @param connexion La connexion à la base de données
  * @param username Le nom d'utilisateur qu'on vise pour afficher les posts (NULL pour tous les utilisateurs)
  * @param sub Le sujet des posts à afficher (NULL pour tous les sujets sinon affiche les posts des utilisateurs suivis si username est défini)
+ * @param search La recherche à effectuer (NULL si il n'y en a pas)
  * 
  * @return void
  */
-function displayPost($connexion, $username, $sub) {
+function displayPost($connexion, $username, $sub, $search = null) {
     if ($username != NULL) { // Si on veut afficher les posts d'un utilisateur précis
         $sql = "SELECT * FROM profil WHERE username='$username'";  // Crée la requête SQL pour récupérer l'id de l'utilisateur
 
@@ -447,6 +448,10 @@ function displayPost($connexion, $username, $sub) {
 
     }else { // Si on veut afficher les posts de tous les utilisateurs
         $sql = "SELECT * FROM post WHERE isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+    }
+
+    if ($search != null) {
+        $sql = "SELECT * FROM post WHERE text LIKE '%$search%' AND isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
     }
 
     $recuperationPostFailed = false;
@@ -607,16 +612,21 @@ function displayPost($connexion, $username, $sub) {
  * @param connexion La connexion à la base de données
  * @param username Le nom d'utilisateur qui follow
  * @param mode Le mode d'affichage 0 pour les followers et 1 pour les following
+ * @param search La recherche
  * 
  * @return void
  */
-function displayFollow($connexion, $username, $mode) {
+function displayFollow($connexion, $username, $mode, $search = null) {
     // Crée la requête SQL pour récupérer les utilisateurs qui suivent
 
     if ($mode == 0) {// Si on veut afficher les followers
         $sql = "SELECT * FROM followers WHERE following_id=(SELECT id FROM profil WHERE username = '$username') AND follower_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
     }else { // Si on veut afficher les following
         $sql = "SELECT * FROM followers WHERE follower_id=(SELECT id FROM profil WHERE username = '$username') AND following_id NOT IN (SELECT id FROM profil WHERE isBanned=1)";
+    }
+
+    if ($search != null) {
+        $sql = "SELECT * FROM profil WHERE username LIKE '%$search%' AND isBanned=0";
     }
 
     try { // Essaie de récupérer les utilisateurs qui suivent
@@ -628,17 +638,22 @@ function displayFollow($connexion, $username, $mode) {
     if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
         // Affiche les données de chaque ligne
         while ($row = mysqli_fetch_assoc($result)) { // Pour chaque utilisateur qui suit
-            // Récupère le nom d'utilisateur qui suit
-            if ($mode == 0) { // Si on veut afficher les followers
-                $sql = "SELECT * FROM profil WHERE id=" . $row['follower_id'];
-            } else { // Si on veut afficher les following
-                $sql = "SELECT * FROM profil WHERE id=" . $row['following_id'];
-            }
+    
+            if ($search != null) {
+                $profil = $row;
+            }else {
+                // Récupère le nom d'utilisateur qui suit
+                if ($mode == 0) { // Si on veut afficher les followers
+                    $sql = "SELECT * FROM profil WHERE id=" . $row['follower_id'];
+                } else { // Si on veut afficher les following
+                    $sql = "SELECT * FROM profil WHERE id=" . $row['following_id'];
+                }
 
-            try { // Essaie de récupérer le nom d'utilisateur qui suit
-                $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-            } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                echo "Follower: Error when trying to get the name. <br>";
+                try { // Essaie de récupérer le nom d'utilisateur qui suit
+                    $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Follower: Error when trying to get the name. <br>";
+                }
             }
 
             // Récupère le nombre de follower et following de l'utilisateur qui suit
@@ -1035,145 +1050,12 @@ function displayNotifications($connexion) {
  */
 function displaySearch($connexion, $search, $searchType) {
     if ($searchType == 'posts') { // Si on veut afficher les posts
-        // Crée la requête SQL pour récupérer les posts
-        $sql = "SELECT * FROM post WHERE text LIKE '%$search%' AND isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) ORDER BY date DESC";
-    } else { // Si on veut afficher les profils
-        // Crée la requête SQL pour récupérer les profils
-        $sql = "SELECT * FROM profil WHERE username LIKE '%$search%' AND isBanned=0";
-    }
-
-    try { // Essaie de récupérer les posts ou les profils
-        $result = mysqli_query($connexion, $sql);
-    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-        echo "<p> Erreur lors de la récupération des posts ou des profils : " . mysqli_error($connexion) . "</p>";
-    }
-
-    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
-        // Affiche les données de chaque ligne
-        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque post ou profil
-            if ($searchType == 'posts') { // Si on veut afficher les posts
-                echo "<div id='post-".$row['id']."' class='post'>";
-                    // Récupère le nom de l'auteur
-                    $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
-                    try { // Essaie de récupérer le nom de l'auteur
-                        $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "Author: Error when trying to get the name. <br>";
-                    }
-
-                    echo "<div class='row'>";
-
-                            //  Affiche l'avatar et le nom d'utilisateur de l'auteur
-                            echo "<div class='col post-avatar-username'>";
-                                echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
-                                if ($profil['avatar'] != NULL) {
-                                    echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
-                                } else {
-                                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                                }
-
-                                echo "@" . $profil['username'];
-                                echo "</a>";
-                            echo "</div>";
-
-                            echo "<div class='col post-date'>";
-
-                                echo '<div class="row">';
-                                    echo $row["date"]; // Affiche la date du post
-                                echo '</div>';
-
-                            echo "</div>";
-
-                    echo "</div>";
-
-                    echo "<div class='container-fluid'>";
-                        // Affiche le texte du post
-                        echo "<div class='col post-text'>" . $row["text"] . "</div>";
-
-                        // Affiche les images du post
-                        $sql = "SELECT * FROM post_images WHERE post_id=" . $row['id'];
-                        echo "<div class='col post-img'>";
-                        try { // Essaie de récupérer les images du post
-                            $images = mysqli_query($connexion, $sql);
-                            if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
-                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                    echo "<img class='post-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                                }
-                            }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
-                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                    echo "<img class='post-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                                }
-                            }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
-                                while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
-                                    echo "<img class='post-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
-                                }
-                            }
-                        } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                            echo "Images: Error when trying to get the images. <br>";
-                        }
-                        echo "</div>";
-
-                    echo "</div>"; // Fin de la div container-fluid
-
-                echo "</div>";
-            } else { // Si on veut afficher les profils
-                echo "<div class='follow row'>";
-
-                echo "<div class='follow-info col'>";
-                    // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
-                    echo "<a href='home.php?profil_detail=" . urlencode($row['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
-                    if ($row['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
-                        echo "<img src='pfp/" . $row['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
-                    } else { // Si l'utilisateur qui suit n'a pas d'avatar
-                        echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
-                    }
-                    echo "@" . $row['username']; // Affiche le nom d'utilisateur qui suit
-                    echo "</a>";
-                echo "</div>";
-
-                echo "<div class='follow-sub-info col'>";
-                    // Affiche le bouton pour follow ou unfollow l'utilisateur qui suit
-                    if ($_SESSION['username'] != $row['username']) { // Si l'utilisateur qui suit n'est pas l'utilisateur connecté
-                        if(isFollowing($connexion, $_SESSION['username'], $row['username'])) {  // Si l'utilisateur connecté follow déjà l'utilisateur qui suit
-                            // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
-                            echo "<div class='follow-sub-href'>"; 
-                                echo "<a href='home.php?follow=" . urlencode($row['username']) . "&profil_detail=". urlencode($row['username']) ."'>Désabonner</a>"; // Affiche un lien pour donner l'option de pouvoir unfollow l'utilisateur qui suit
-                            echo "</div>";
-                        } else { // Si l'utilisateur connecté ne follow pas l'utilisateur qui suit
-                            // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
-                            echo "<div class='follow-sub-href'>";
-                                echo "<a href='home.php?follow=" . urlencode($row['username']) . "&profil_detail=". urlencode($row['username']) ."'>S'abonner</a>"; // Affiche un lien pour donner l'option de pouvoir follow l'utilisateur qui suit
-                            echo "</div>";
-                        }
-                    }
-
-                    // Récupère le nombre de follower et following de l'utilisateur qui suit
-                    $sql = "SELECT COUNT(follower_id) FROM followers WHERE following_id = (SELECT id FROM profil WHERE username = '" . $row['username'] . "')";
-                    try { // Essaie de récupérer le nombre de followers
-                        $follower = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "Follower: Error when trying to get the number of followers. <br>";
-                    }
-
-                    // Récupère le nombre de following de l'utilisateur qui suit
-                    $sql = "SELECT COUNT(following_id) FROM followers WHERE follower_id = (SELECT id FROM profil WHERE username = '" . $row['username'] . "')";
-                    try { // Essaie de récupérer le nombre de following
-                        $following = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
-                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
-                        echo "Follower: Error when trying to get the number of following. <br>";
-                    }
-
-                    // Affiche le nombre de followers et following de l'utilisateur qui suit
-                    echo "<div class='follow-info-text'><a href='?displayFollower=true&username=". urlencode($row['username']) ."' >" . $follower['COUNT(follower_id)'] . " Abonnés</a></div>"; // Affiche le nombre de followers de l'utilisateur qui suit
-                    echo "<div class='follow-info-text'><a href='?displayFollowing=true&username=". urlencode($row['username']) ."' >" . $following['COUNT(following_id)'] . " Suivies</a></div>"; // Affiche le nombre de following de l'utilisateur qui suit
-
-                echo "</div>";
-            echo "</div>";
-            }
-        }
-    } else {
-        echo "Aucun résultat trouvé.";
+        displayPost($connexion, null, null, $search); // Affiche le post
+    }else { // Si on veut afficher les profils
+        displayFollow($connexion, $_SESSION['username'], 1, $search); // Affiche les following
     }
 }
+    
+
 
 ?>
