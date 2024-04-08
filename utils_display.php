@@ -908,142 +908,79 @@ function displayNotifications($connexion) {
                 echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
             }
 
+            if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                echo "<div id='notification-". $row['id'] ."' class='notification-information unread'>";
+            } else { // Si la notification a été lue
+                echo "<div id='notification-". $row['id'] ."' class='notification-information'>";
+            }
+
             switch ($row['type']) { // Selon le type de notification
                 case 'follow': // Si c'est une notification de follow
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commencer a vous suivre.</p>";
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commencer a vous suivre. <button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
-
-                    echo "</div>";
                     break;
-                case 'like': // Si c'est une notification de like
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a aimé votre post.</p>";
+                case 'like': // Si c'est une notification de like   
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a aimé votre post.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
                     
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
-                case 'flag': // Si c'est une notification de flag
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un de vos post sous status sensible.</p>";
+                case 'flag': // Si c'est une notification de flag             
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un de vos post sous status sensible.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
-                case 'unflag': // Si c'est une notification de unflag
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a enlevé le status sensible d'un de vos post.</p>";
+                case 'unflag': // Si c'est une notification de unflag    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a enlevé le status sensible d'un de vos post.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
                 case 'warn': // Si c'est une notification de warn
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a averti.</p>";
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a averti.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
-                case 'unban': // Si c'est une notification de unban
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a débanni.</p>";
+                case 'unban': // Si c'est une notification de unban 
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a débanni.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
-                    echo "</div>";
                     break;
-                case 'ban': // Si c'est une notification de ban
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a banni.</p>";
+                case 'ban': // Si c'est une notification de ban       
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a banni.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
-                    echo "</div>";
                     break;
                 case 'post': // Si c'est une notification de post
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un nouveau post !</p>";
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un nouveau post !<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
                 case 'comment': // Si c'est une notification de comment
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commenté votre post.</p>";
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commenté votre post.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
                     displaySpecificPost($connexion, $row['post_id']);
 
-                    echo "</div>";
                     break;
                 case 'post-delete-admin': // Si c'est une notification de post-delete-admin
-                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
-                        echo "<div class='notification-information unread'>";
-                    } else { // Si la notification a été lue
-                        echo "<div class='notification-information'>";
-                    }
-                    
-                    echo "<p> Un admin a supprimé un de vos post.</p>";
+                    echo "<p> Un admin a supprimé un de vos post.<button class='delete-notification-button' data-notification-id='".$row['id']."'><img src='img/trash.png' width='30px' height='auto'></button></p>";
                     echo "<p> Le " . $row['date'] . "</p>";
 
-                    echo "</div>";
                     break;
                 default: // Si c'est une notification inconnue
                     break;
                 }
+
+            echo "</div>";
 
         }
     }else {

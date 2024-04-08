@@ -60,18 +60,44 @@ $(document).ready(function() { // Quand le document est prêt
                 }
             }
         });
+    });
 
-        // ------------------------ Handle l'unban d'un utilisateur
-        $(".unban-log-button").click(function() { // Quand le bouton est cliqué
-            e.preventDefault(); // Empêcher le comportement par défaut du formulaire
-            var userId = $(this).attr('data-user-id'); // Récupérer l'id de l'utilisateur
-            var form = $("#admin-form"); // Récupérer le formulaire
-            form.find('input[name="user_id"]').val(userId); // Mettre l'id de l'utilisateur dans le formulaire
-            form.find('input[name="post_id"]').val(NULL); // Mettre l'action unban dans le formulaire
-            form.find('input[name="action"]').val("unban"); // Mettre l'action unban dans le formulaire
-            form.submit(); // Soumettre le formulaire
+    // ------------------------ Handle l'unban d'un utilisateur
+    $(".unban-log-button").click(function() { // Quand le bouton est cliqué
+        e.preventDefault(); // Empêcher le comportement par défaut du formulaire
+        var userId = $(this).attr('data-user-id'); // Récupérer l'id de l'utilisateur
+        var form = $("#admin-form"); // Récupérer le formulaire
+        form.find('input[name="user_id"]').val(userId); // Mettre l'id de l'utilisateur dans le formulaire
+        form.find('input[name="post_id"]').val(NULL); // Mettre l'action unban dans le formulaire
+        form.find('input[name="action"]').val("unban"); // Mettre l'action unban dans le formulaire
+        form.submit(); // Soumettre le formulaire
+    });
+
+    // ------------------------ Handle le fait de supprimer une notification
+    $(".delete-notification-button").click(function() { // Quand le bouton est cliqué
+        var notificationId = $(this).attr('data-notification-id'); // Récupérer l'id de la notification
+        $.ajax({ // Fait une requête AJAX
+            type: "POST",  
+            url: "ajax_request/handleDeleteNotification.php",
+            data: {notification_id: notificationId},
+            success: function(data) { // Quand la requête est terminée
+                if (data == 1) { // Si la requête a réussi
+                    $('#notification-' + notificationId).hide(); // On cache la notification
+                }
+            }
         });
     });
+
+    $("#show-notification-button").click(function() { // Quand le bouton est cliqué
+        $.ajax({ // Fait une requête AJAX pour mettre les notifications de l'utilisateur comme lu
+            type: "POST",
+            url: "ajax_request/handleReadNotification.php",
+            data: {},
+            success: function(data) { // Quand la requête est terminée
+            }
+        });
+    });
+
 
     // $(".comment-form").submit(function(e) { PROTOTYPE AJOUT COMMENTAIRE AVEC AJAX
     //     e.preventDefault();
