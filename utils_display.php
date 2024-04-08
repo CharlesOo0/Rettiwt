@@ -309,15 +309,16 @@ function displayComments($connexion, $comments) {
 
                 echo "</div>";
 
+                echo "<div style='display: none;' id='comment-".$comment["id"]."'>"; // Crée une div pour afficher les réponses
+                // Affiche les réponses
+                if (isset($comment['replies'])) { // Si le commentaire a des réponses
+                    displayComments($connexion, $comment['replies']); // Affiche les réponses
+                }
+                echo "</div>";
+
 
             echo "</div>";        
             
-            echo "<div style='display: none;' id='comment-".$comment["id"]."'>"; // Crée une div pour afficher les réponses
-            // Affiche les réponses
-            if (isset($comment['replies'])) { // Si le commentaire a des réponses
-                displayComments($connexion, $comment['replies']); // Affiche les réponses
-            }
-            echo "</div>";
         }
 
     echo "</div>";
@@ -613,14 +614,15 @@ function displayPost($connexion, $username, $sub, $search = null) {
                 echo "</div>"; // Fin du hide-post
             }
 
-            echo "</div>"; // Fin de la div post
-
             echo "<div style='display: none;' id='comment-".$identifiant_comment."'>"; // Crée une div pour afficher les commentaires
                 // Affiche les commentaires
                 $connexion_mysqli = connexion_mysqli(); // Connexion à la base de données
                 $comments = getComments($connexion_mysqli, $row['id'], NULL); // Récupère les commentaires
                 displayComments($connexion_mysqli, $comments); // Affiche les commentaires
             echo "</div>";
+
+            echo "</div>"; // Fin de la div post
+
         }
     } else {
         echo "Aucun résultat trouvé.";
