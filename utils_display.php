@@ -787,4 +787,268 @@ function displayLogs($connexion) {
 
 }
 
+/** 
+ * Affiche un post spécifique
+ * 
+ * @param connexion La connexion à la base de données
+ * @param post_id L'id du post à afficher
+ * 
+ * @return void
+ */
+function displaySpecificPost($connexion, $post_id) {
+    // Crée la requête SQL pour récupérer le post
+    $sql = "SELECT * FROM post WHERE id='$post_id'";
+
+    try { // Essaie de récupérer le post
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération du post : " . mysqli_error($connexion) . "</p>";
+    }
+
+    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+        // Affiche les données de chaque ligne
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque post
+
+            echo "<div id='post-".$row['id']."' class='post post-notification'>";
+                // Récupère le nom de l'auteur
+                $sql = "SELECT * FROM profil WHERE id=" . $row['author'];
+                try { // Essaie de récupérer le nom de l'auteur
+                    $profil = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+                } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                    echo "Author: Error when trying to get the name. <br>";
+                }
+
+                echo "<div class='row'>";
+
+                        //  Affiche l'avatar et le nom d'utilisateur de l'auteur
+                        echo "<div class='col post-avatar-username'>";
+                            echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
+                            if ($profil['avatar'] != NULL) {
+                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                            } else {
+                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                            }
+                            
+                            echo "@" . $profil['username'];
+                            echo "</a>";
+                        echo "</div>";
+
+                        echo "<div class='col post-date'>";
+
+                            echo '<div class="row">';
+                                echo $row["date"]; // Affiche la date du post
+                            echo '</div>';
+
+                        echo "</div>";
+
+                echo "</div>";
+
+                echo "<div class='container-fluid'>";
+                    // Affiche le texte du post
+                    echo "<div class='col post-text'>" . $row["text"] . "</div>";
+
+                    // Affiche les images du post
+                    $sql = "SELECT * FROM post_images WHERE post_id=" . $row['id'];
+                    echo "<div class='col post-img'>";
+                    try { // Essaie de récupérer les images du post
+                        $images = mysqli_query($connexion, $sql);
+                        if (mysqli_num_rows($images) > 2) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='post-img-3' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 1) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='post-img-2' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }else if (mysqli_num_rows($images) > 0) { // Vérifie si la requête a retourné des lignes
+                            while ($image = mysqli_fetch_assoc($images)) { // Pour chaque image
+                                echo "<img class='post-img-1' src='post_images/" . $image['image'] . "' alt='image'>"; // Affiche l'image
+                            }
+                        }
+                    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                        echo "Images: Error when trying to get the images. <br>";
+                    }
+                    echo "</div>";
+
+                echo "</div>"; // Fin de la div container-fluid
+
+            echo "</div>";
+
+        }
+    }
+}
+
+/**
+ * Affiche les notifications de l'utilisateur connecter
+ * 
+ * @param connexion La connexion à la base de données
+ * 
+ * @return void
+ */
+function displayNotifications($connexion) {
+    // Crée la requête SQL pour récupérer les notifications
+    $sql = "SELECT * FROM notifications WHERE user_id=(SELECT id FROM profil WHERE username = '" . $_SESSION['username'] . "') ORDER BY date DESC";
+
+    try { // Essaie de récupérer les notifications
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        echo "<p> Erreur lors de la récupération des notifications : " . mysqli_error($connexion) . "</p>";
+    }
+
+    if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
+        // Affiche les données de chaque ligne
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque notification
+            // Récupère le profil de l'utilisateur qui a créé la notification
+            $sql = "SELECT * FROM profil WHERE id=" . $row['created_by_user_id'];
+
+            try { // Essaie de récupérer le profil de l'utilisateur qui a créé la notification
+                $created_by = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+            } catch (Exception $e) { // Si ça échoue, affiche une erreur
+                $_SESSION['error_post'] = "Erreur lors de la récupération du profil de l'utilisateur qui a créé la notification";
+                echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+            }
+
+            switch ($row['type']) { // Selon le type de notification
+                case 'follow': // Si c'est une notification de follow
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commencer a vous suivre.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    echo "</div>";
+                    break;
+                case 'like': // Si c'est une notification de like
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a aimé votre post.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+                    
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'flag': // Si c'est une notification de flag
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un de vos post sous status sensible.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'unflag': // Si c'est une notification de unflag
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a enlevé le status sensible d'un de vos post.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'warn': // Si c'est une notification de warn
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a averti.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'unban': // Si c'est une notification de unban
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a débanni.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    echo "</div>";
+                    break;
+                case 'ban': // Si c'est une notification de ban
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> vous a banni.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    echo "</div>";
+                    break;
+                case 'post': // Si c'est une notification de post
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a mis un nouveau post !</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'comment': // Si c'est une notification de comment
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p><a href='?profil_detail=".$created_by['username']."'>@" . $created_by['username'] . "</a> a commenté votre post.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    displaySpecificPost($connexion, $row['post_id']);
+
+                    echo "</div>";
+                    break;
+                case 'post-delete-admin': // Si c'est une notification de post-delete-admin
+                    if ($row['read'] == 0) { // Si la notification n'a pas été lue
+                        echo "<div class='notification-information unread'>";
+                    } else { // Si la notification a été lue
+                        echo "<div class='notification-information'>";
+                    }
+                    
+                    echo "<p> Un admin a supprimé un de vos post.</p>";
+                    echo "<p> Le " . $row['date'] . "</p>";
+
+                    echo "</div>";
+                    break;
+                default: // Si c'est une notification inconnue
+                    break;
+                }
+
+        }
+    }else {
+        echo "Aucune notification.";
+    }
+}
+
 ?>

@@ -50,6 +50,11 @@ function handleFollow($connexion, $username) {
 
         try { // Essaie d'ajouter un follow
             mysqli_query($connexion, $sql);
+
+            $user_id = getUserProfile($connexion, $username)['id']; // Récupère l'id de l'utilisateur
+            $follower_id = getUserProfile($connexion, $followed)['id']; // Récupère l'id du follower
+
+            createNotification($connexion, $follower_id, $user_id, 'follow'); // Crée une notification
         } catch (Exception $e) { // Si ça échoue, affiche une erreur
             $error = mysqli_error($connexion);
             if (strpos($error, 'Duplicate entry') !== false) { // Si l'erreur est un doublon
@@ -65,10 +70,6 @@ function handleFollow($connexion, $username) {
             }
         }
 
-        $user_id = getUserProfile($connexion, $username)['id']; // Récupère l'id de l'utilisateur
-        $follower_id = getUserProfile($connexion, $followed)['id']; // Récupère l'id du follower
-
-        createNotification($connexion, $user_id, $follower_id, 'follow'); // Crée une notification
     }
 }
 
@@ -312,7 +313,7 @@ function handleComment($connexion) {
             try { // On essaye de faire la requête
                 mysqli_query($connexion, $sql);
 
-                $post_id = mysqli_insert_id($connexion); // Récupère l'id du post ajouté
+                $post_created_id = mysqli_insert_id($connexion); // Récupère l'id du post ajouté
             } catch (Exception $e) { // Si on a une erreur
                 $_SESSION['error_post'] = "<p>Erreur lors de la création de votre post...</p>";
                 echo "<meta http-equiv='refresh' content='0'>";
@@ -348,22 +349,22 @@ function handleComment($connexion) {
             }
         }
 
-        if (isset($post_id)) { // Si on a un id de post (donc si le post a été ajouté)
-            // Récupère les followers de l'utilisateur ayant poster
-            $sql = "SELECT * FROM followers WHERE following_id='$id'";
+        if (isset($post_created_id)) { // Si on a un id de post (donc si le post a été ajouté)
+            // Récupère l'id de la personne ayant poster le post parent
+            $sql = "SELECT * FROM post WHERE id='$post_id'";
 
             try { // On essaye de faire la requête
-                $follower = mysqli_query($connexion, $sql);
+                $result = mysqli_query($connexion, $sql);
             } catch (Exception $e) { // Si on a une erreur
-                $_SESSION['error_post'] = "Erreur lors de la récupération de vos followers.";
+                $_SESSION['error_post'] = "Erreur lors de la récupération de l'auteur du post.";
                 echo "<meta http-equiv='refresh' content='0'>";
                 exit();
             }
 
-            if ($follower->num_rows > 0) { // Si l'utilisateur a des followers
-                while ($row = mysqli_fetch_assoc($follower)) { // Itère sur chaque follower
-                    $follower_id = $row['follower_id']; // Récupère l'id du follower
-                    createNotification($connexion, $follower_id, $id, 'post', $post_id); // Crée une notification
+            if ($result->num_rows == 1) { // Si on a un auteur
+                $result = mysqli_fetch_assoc($result); // On récupère les informations de l'auteur
+                if ($result && $result['author'] != $id) { // Si l'utilisateur n'est pas l'auteur du post
+                    createNotification($connexion, $result['author'], $id, 'comment', $post_id); // Crée une notification
                 }
             }
         }

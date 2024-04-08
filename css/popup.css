@@ -190,6 +190,9 @@ body.active {
 
     /* Affiche la notification en tête */
     z-index: 1000;
+
+    overflow: auto;
+
 }
 
 /* Active le container de notification */
@@ -202,13 +205,14 @@ body.active {
 
     /* Transition */
     transition: .4s ease;
+    
 }
 
 /* Style de la notification */
 .notification-container .notification {
     /* Taille et position */
     width: 40%;
-    height: 200px;
+    height: 500px;
     padding: 30px;
 
     /* Fond et bordure */
@@ -218,6 +222,7 @@ body.active {
     
     /* Animation */
     transform: scale(0);
+    
 }
 
 /* Active la notification */
@@ -258,6 +263,41 @@ body.active {
     /* Texte centré */
     text-align: center;
 }
+
+/* Style du conteneur des notifications */
+.notification-content {
+    /* Overflow */
+    overflow: auto;
+
+    /* Taille et position */
+    width: 100%; 
+    height: 80%; 
+    padding-bottom: 5%;
+    text-align: center;
+
+}
+
+/* Style de la notification */
+.notification-information {
+    /* Taille et position */
+    width: 90%;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Fond et bordure */
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    margin-top: 5%;
+
+}
+
+/* Style de la notification lorsqu'elle est n'est pas lue */
+.unread {
+    background: #f5f5f5;
+}
+
 
 /*-------------- ADMIN POPUP --------------*/
 

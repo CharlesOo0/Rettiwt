@@ -45,8 +45,9 @@ try { // Essaie de récupérer l'auteur du post
     header('Location: ../home.php');
 }
 if ($author_id != $liker_id) { // Si l'auteur du post n'est pas l'utilisateur qui a liké
-    $type = $like ? 'like' : 'dislike';
-    createNotification($connexion, $author_id, $liker_id, $type, $id); // Crée une notification
+    if ($like) {
+        createNotification($connexion, $author_id, $liker_id, 'like', $id); // Crée une notification
+    }
 }
 
 echo $like;

@@ -266,6 +266,11 @@ td, th {
     padding: 8px;
 }
 
+.post-notification {
+    border: 1px solid rgb(201, 201, 201);
+    background-color: #9597f8;
+}
+
 /* Ajoute un effet responsive pour les icones de gauches */
 @media screen and (max-width: 1380px){
     .pl-span {

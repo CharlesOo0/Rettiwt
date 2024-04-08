@@ -65,8 +65,9 @@
             <button id="close-notification-button"><img src="img/quit.png" alt="close" width='20px' height='auto'></button>
             <h3>Notifications</h3>
             <div class="notification-content">
-                <?php // TODO: Rajouter les notifications ?>
-                <p>Vous n'avez pas de notifications.</p>
+                <?php
+                displayNotifications($connexion);
+                ?>
             </div>
         </div>
     </div>
