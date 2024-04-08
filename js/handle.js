@@ -94,6 +94,7 @@ $(document).ready(function() { // Quand le document est prêt
             url: "ajax_request/handleReadNotification.php",
             data: {},
             success: function(data) { // Quand la requête est terminée
+                $("#pellet").hide(); // On cache le pellet
             }
         });
     });

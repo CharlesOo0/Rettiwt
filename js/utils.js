@@ -63,9 +63,8 @@ closeCommentButton.addEventListener("click", function(event) { // Quand on cliqu
 $(document).ready(function() {
     var notificationPellet = document.getElementById("pellet"); // On récupère le pellet de notification
 
-    var notifications = document.querySelectorAll(".notification-information"); // On récupère les notifications
+    var notifications = document.querySelectorAll(".unread"); // On récupère les notifications
 
-    console.log(notifications.length);
     if (notifications.length > 0) { // Si il y a des notifications
         notificationPellet.style.display = "block"; // On affiche le pellet
         notificationPellet.innerHTML = notifications.length; // On affiche le nombre de notifications
