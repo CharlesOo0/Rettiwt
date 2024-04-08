@@ -266,13 +266,47 @@ td, th {
     padding: 8px;
 }
 
+/* Style des post dans les notifications */
 .post-notification {
+    /* Bordure */
     border: 1px solid rgb(201, 201, 201);
+    
+    /* Fond */
     background-color: #9597f8;
 }
 
+/* Style du badge admin */
 .admin-badge {
+    /* Couleur */
     color: red;
+}
+
+/* Style du conteneur de la barre de recherche */
+.search-bar-style {
+    /* Positionnement */
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 3%;
+
+    /* Bordure */
+    border-bottom: solid 2px rgb(201, 201, 201);
+    
+    /* Fond */
+    background-color:white;
+
+    /* Affichage */
+    display: none;
+}
+
+/* Style des radios buttons de la barre de recherche */
+.search-radio-button {
+    /* Taille */
+    width: 100%;
+
+    /* Positionnement */
+    margin-top: 5%;
 }
 
 /* Ajoute un effet responsive pour les icones de gauches */

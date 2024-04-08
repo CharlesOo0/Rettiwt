@@ -3,6 +3,22 @@
 
 $(document).ready(function() {
 
+    // Popup pour la barre de recherche
+    const showSearchButton = document.getElementById("show-search-button"); // Bouton pour afficher le popup
+    const searchContainer = document.querySelector('.search-bar-style'); // Conteneur du popup
+
+    // De base, on cache le popup
+    searchContainer.style.display = "none"; // On cache le popup
+
+    showSearchButton.addEventListener('click', () => { // Quand on clique sur le bouton
+        
+        if (searchContainer.style.display == "none") { // Si le popup est caché
+            searchContainer.style.display = "block"; // On l'affiche
+        } else { // Sinon
+            searchContainer.style.display = "none"; // On le cache
+        }
+    } );
+
     // Popup pour login
 
     const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup

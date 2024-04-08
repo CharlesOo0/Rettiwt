@@ -160,18 +160,22 @@
                 echo "<div id='posts' class='col-md-5 col-12'>";
                 if (isset($_GET['displayFollower']) && isset($_GET['username']) && $_GET['username'] != '') { // Si on veut afficher les abonnés
                     echo "<h4>Abonnés</h4>";
+                    displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayFollow($connexion, $_GET['username'], 0);
                 } else if (isset($_GET['displayFollowing']) && isset($_GET['username']) && $_GET['username'] != ''){ // Si on veut afficher les suivis
                     echo "<h4>Suivis</h4>";
+                    displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayFollow($connexion, $_GET['username'], 1);
                 }else if (isset($_GET['forYou'])) { // Si on veut afficher les posts pour l'utilisateur
                     echo "<h4>Pour vous</h4>";
+                    displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayPost($connexion, $_SESSION['username'], 1); 
                 }else if(isset($_GET['profil_detail'])) {
                     echo "<h4>Profil</h4>";
+                    displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     $username = $_GET['profil_detail'];  // On récupère le username de l'autre utilisateur
                     displayProfil($connexion, $username); // On affiche le profil de l'autre utilisateur
@@ -183,6 +187,7 @@
 
                 }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
+                    displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayPost($connexion, NULL, NULL);
                 }

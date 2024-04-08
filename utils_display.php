@@ -727,6 +727,32 @@ function displayCommentForm($connexion, $username) {
 }
 
 /**
+ * Affiche la barre de recherche
+ * 
+ * @return void
+ */
+function displaySearchBar() {
+    echo "<form class='search-bar search-bar-style form-inline my-2 my-lg-0' method='get' action='home.php'>";
+        echo "<div class='input-group'>";
+            echo "<input class='form-control mr-sm-2' type='text' name='search' placeholder='Rechercher' aria-label='Search'>";
+            echo "<div class='input-group-append'>";
+                echo "<button class='btn btn-outline-success my-2 my-sm-0' type='submit'>Rechercher</button>";
+            echo "</div>";
+        echo "</div>";
+
+        echo "<div class='btn-group btn-group-toggle search-radio-button' data-toggle='buttons'>";
+            echo "<label class='btn btn-secondary'>";
+                echo "<input type='radio' name='searchType' id='searchPosts' value='posts' checked> Posts";
+            echo "</label>";
+            echo "<label class='btn btn-secondary'>";
+                echo "<input type='radio' name='searchType' id='searchProfiles' value='profiles'> Profils";
+            echo "</label>";
+        echo "</div>";
+
+    echo "</form>";
+}
+
+/**
  * Affiche les logs admins
  * 
  * @param connexion La connexion à la base de données
