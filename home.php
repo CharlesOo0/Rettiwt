@@ -114,7 +114,7 @@
                             <img src="img/favorite.png" alt="Pour vous"><span class="pl-span"> Pour vous</span>
                         </a> <br>
 
-                        <button id="show-notification-button" class="left-band-img profil-link-i"><img src="img/notification.png" alt="Notification"><span class="pl-span"> Notifications</span></button><br>
+                        <button id="show-notification-button" class="left-band-img profil-link-i"><img src="img/notification.png" alt="Notification"><span class="pl-span"> Notifications</span><span id='pellet' class='pellet'></span></button><br>
                         
                         <a href="home.php"  class="left-band-img profil-link-i">
                             <img src="img/stat.png" alt="Statistique"><span class="pl-span"> Statistique</span>

@@ -53,7 +53,7 @@
     background-color: rgb(180, 180, 180);
 
     /* Transition */
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 /* Style des liens du bandeau de gauche */
@@ -72,6 +72,7 @@
     /* Enleve les styles par défaut */
     background: none;
     border: none;
+    position: relative;
 }
 
 /* Style du bouton pour afficher les notifications au survol */
@@ -81,5 +82,31 @@
     color: rgb(0, 140, 255);
     
     /* Transition */
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+/* Style du point pour les notifications */
+.pellet {
+    /* Positionnement */
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Taille */
+    width: 30px;
+    height: 30px;
+
+    /* Affichage */
+    display: none;
+
+    /* Fond et bordure */
+    background: #FF4754;
+    border: 2px solid #121212;
+    border-radius: 50%;
+
+    /* Texte */
+    color: white;
 }
