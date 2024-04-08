@@ -271,6 +271,10 @@ td, th {
     background-color: #9597f8;
 }
 
+.admin-badge {
+    color: red;
+}
+
 /* Ajoute un effet responsive pour les icones de gauches */
 @media screen and (max-width: 1380px){
     .pl-span {

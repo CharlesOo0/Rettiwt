@@ -201,7 +201,10 @@ function displayComments($connexion, $comments) {
                                     echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                                 }
                                 
-                                echo "@" . $profil['username']; 
+                                echo "@" . $profil['username'];
+                                if ($profil['isAdmin']) {
+                                    echo "<span class='admin-badge'> (Admin) </span>";
+                                }
                                 echo "</a>";
                             echo "</div>";
                             
@@ -383,7 +386,11 @@ function displayProfil($connexion, $username) {
                     }
                     echo "</div>";
                 }
-                    echo "<div id='pseudo'><a href='home.php?profil_detail=" . urlencode($username) . "'>@" . $rowProfil["username"] . "</a></div>";
+                    echo "<div id='pseudo'><a href='home.php?profil_detail=" . urlencode($username) . "'>@" . $rowProfil["username"] . "</a>";
+                    if ($rowProfil['isAdmin']) {
+                        echo "<span class='admin-badge'> (Admin) </span>";
+                    }
+                    echo "</div>";
                     echo "<div id='sub'><a href='?displayFollower=true&username=". urlencode($username) ."' >" . $rowFollower["COUNT(follower_id)"] . " Followers</a> </div>";
                     echo "<div id='follow'><a href='?displayFollowing=true&username=". urlencode($username) ."' >". $rowFollowing["COUNT(following_id)"] ." Suivies</a> </div>";
                 echo "</div>";
@@ -476,6 +483,9 @@ function displayPost($connexion, $username, $sub) {
                             
                             echo "@" . $profil['username']; 
                             echo "</a>";
+                            if ($profil['isAdmin']) {
+                                echo "<span class='admin-badge'> (Admin) </span>";
+                            }
                         echo "</div>";
 
                         echo "<div class='col post-date'>";
