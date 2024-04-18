@@ -28,37 +28,37 @@
 
         if (empty($name) || empty($email) || empty($password)) { // Vérifie si les champs sont vides
             $_SESSION['error'] = "Tous les champs sont requis.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
         if (strlen($name) > 60) { // Vérifie si le username est trop long
             $_SESSION['error'] = "Le nom d'utilisateur est trop long 60 charactères maximum.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
         if (strlen($email) > 256) { // Vérifie si l'email est trop long
             $_SESSION['error'] = "L'email est trop long 256 charactères maximum.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
         if ($password != $password_confirmation) { // Vérifie si les mots de passe correspondent
             $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
         if (strlen($password) > 256) { // Vérifie si le mot de passe est trop long
             $_SESSION['error'] = "Le mot de passe est trop long 256 charactères maximum.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
         if (strlen($password) < 8) { // Vérifie si le mot de passe est trop court
             $_SESSION['error'] = "Le mot de passe est trop court 8 charactères minimum.";
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
 
@@ -86,7 +86,7 @@
                 $_SESSION['error'] = "Erreur lors de la création du compte";
             }
 
-            header('Location: register.php');
+            echo "<meta http-equiv='refresh' content='0;url=register.php'>"; // Redirige l'utilisateur vers la page d'inscription après 0 secondes
             exit();
         }
         
@@ -96,7 +96,7 @@
             echo "Compte crée avec succés redirection en cour ...";
             echo "</div>";
             $_SESSION['username'] = $name; // Stocke le nom d'utilisateur dans la session
-            header("Location: home.php"); // Redirige l'utilisateur vers la page d'accueil
+            echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige l'utilisateur vers la page d'accueil après 2 secondes
         } else { // Si le compte n'est pas crée
             echo "<div id='login-error'>"; // Affiche un message d'erreur
             echo "<p> Erreur en tentant de crée votre compte ... </p>";

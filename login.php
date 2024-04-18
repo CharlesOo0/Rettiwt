@@ -33,8 +33,8 @@
         try {
             $result = $stmt->execute();
         } catch (Exception $e) { // Gère les erreurs
-            $_SESSION['error'] = "Erreur lors de la connexion : " . mysqli_error($connexion);
-            header('Location: login.php');
+            $_SESSION['error'] = "Erreur lors de la connexion";
+            echo "<meta http-equiv='refresh' content='0;url=login.php'>"; // Redirige l'utilisateur vers la page de connexion après 0 secondes
             exit();
         }
 
@@ -45,7 +45,7 @@
             echo "<p> Login réussi redirection en cour ... </p>";
             echo "</div>";
             $_SESSION['username'] = $name;  // Stocke le nom d'utilisateur dans la session
-            header("Location: home.php");  // Redirige l'utilisateur vers la page d'accueil
+            echo "<meta http-equiv='refresh' content='2;url=home.php'>"; // Redirige l'utilisateur vers la page d'accueil après 2 secondes
         } else {  // Si le profil n'existe pas
             echo "<div id='login-error'>"; // Affiche un message d'erreur
             echo "Mauvais pseudo ou mot de passe !";

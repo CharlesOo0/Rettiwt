@@ -85,7 +85,7 @@ function handlePost($connexion) {
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['text']) && isset($_POST['action']) && $_POST['action'] == "posting"){ // Si on post sur cette page
         if (!isset($_SESSION['username'])) { // Si l'utilisateur n'est pas connecté
             $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
-            header('Location: logout.php');
+            echo "<meta http-equiv='refresh' content='0;url=logout.php'>"; // Redirige vers la page de connexion
             exit();
         }
 
@@ -226,7 +226,7 @@ function handleComment($connexion) {
 
         if (!isset($_SESSION['username'])) { // Si l'utilisateur n'est pas connecté
             $_SESSION['error'] = "Vous avez besoin d'être connecter pour poster un message.";
-            header('Location: logout.php');
+            echo "<meta http-equiv='refresh' content='0;url=logout.php'>"; // Redirige vers la page de connexion
             exit();
         }
 
@@ -295,7 +295,7 @@ function handleComment($connexion) {
 
         if ($result->num_rows != 1) { // Si l'utilisateur n'existe pas
             $_SESSION['error'] = "Erreur lors de la récupération de votre profil, vous avez besoin d'être connecter pour poster un message.";
-            header('Location: logout.php');
+            echo "<meta http-equiv='refresh' content='0;url=logout.php'>";
             exit();
         } 
 

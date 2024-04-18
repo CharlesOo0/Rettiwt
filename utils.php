@@ -8,7 +8,7 @@
 function checkCreds($connexion) {
     if (!isset($_SESSION['username'])) { // Vérifie si l'utilisateur est connecté a travers le cookie qui devrait être set
         $_SESSION['error'] = "Vous devez être connecter pour accéder a cette page."; // Stocke un message d'erreur
-        header('Location: logout.php'); // Redirige vers la page de déconnexion
+        echo "<meta http-equiv='refresh' content='0;url=login.php'>"; // Redirige vers la page de connexion
         exit();
     }
 
@@ -20,7 +20,7 @@ function checkCreds($connexion) {
             if (mysqli_num_rows($result) > 0) { // Vérifie si la requête a retourné des lignes
                 $result = mysqli_fetch_assoc($result); // Récupère les données de l'utilisateur
                 $_SESSION['error'] = "Vous êtes bannis jusqu'au " . $result['ban_date'] . "."; // Stocke un message d'erreur
-                header('Location: logout.php'); // Redirige vers la page de déconnexion
+                echo "<meta http-equiv='refresh' content='0;url=logout.php'>"; // Redirige vers la page de déconnexion
                 exit();
             }
         } catch (Exception $e) { // Si ça échoue, affiche une erreur
@@ -28,7 +28,7 @@ function checkCreds($connexion) {
         }
 
         $_SESSION['error'] = "Vous êtes bannis jusqu'au ".$result['ban_date']."."; // Stocke un message d'erreur
-        header('Location: logout.php'); // Redirige vers la page de déconnexion
+        echo "<meta http-equiv='refresh' content='0;url=logout.php'>"; // Redirige vers la page de déconnexion
         exit();
     }
 }

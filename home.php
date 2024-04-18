@@ -13,7 +13,7 @@
 
     if (isset($_GET['adminLogs']) && !isAdmin($connexion, $_SESSION['username'])) { // Si on veut afficher les logs admin
         $_SESSION['error_post'] = "Vous n'avez pas les droits pour accéder a cette page."; // Stocke un message d'erreur
-        header('Location: home.php'); // Redirige vers la page d'accueil
+        echo "<meta http-equiv='refresh' content='0'>"; // Rafraichit la page
         exit();
     }
 
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="css/left-band.css"> <!-- Style de la bande de gauche -->
     <link rel="stylesheet" type="text/css" href="css/post.css"> <!-- Style des posts --> 
     <link rel="stylesheet" type="text/css" href="css/right-band.css"> <!-- Style de la bande de droite -->
+    <link rel="stylesheet" type="text/css" href="css/stats.css"> <!-- Style de la page de stat -->
 
     <link rel="stylesheet" type="text/css" href="css/popup.css"> <!-- Style des popups -->
     
@@ -116,7 +117,7 @@
 
                         <button id="show-notification-button" class="left-band-img profil-link-i"><img src="img/notification.png" alt="Notification"><span class="pl-span"> Notifications</span><span id='pellet' class='pellet'></span></button><br>
                         
-                        <a href="home.php"  class="left-band-img profil-link-i">
+                        <a href="?stat=true"  class="left-band-img profil-link-i">
                             <img src="img/stat.png" alt="Statistique"><span class="pl-span"> Statistique</span>
                         </a><br>
 
@@ -190,6 +191,11 @@
                     displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displaySearch($connexion, $_GET['search'], $_GET['searchType']);
+                }else if(isset($_GET['stat'])) {
+                    echo "<h4>Statistique</h4>";
+                    displaySearchBar();
+                    displayCommentForm($connexion, $_SESSION['username']);
+                    displayStats($connexion);
                 }else { // Sinon on affiche les posts normaux
                     echo "<h4>Actualités</h4>";
                     displaySearchBar();
@@ -228,13 +234,14 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="js/popup.js"></script>
     <script src="js/handle.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/stat.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-
 </body>
 
 </html>

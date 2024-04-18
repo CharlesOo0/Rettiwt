@@ -1,0 +1,25 @@
+/* Style des graphiques de stats */
+canvas {
+    /* Postionnement */
+    margin : 3%;
+
+    /* Bordure */
+    border: solid 1px rgb(201, 201, 201);
+}
+
+/* Style des stats nombre totales */
+.stat {
+    /* Postionnement */
+    margin : 3%;
+
+    /* Bordure */
+    border: solid 1px rgb(201, 201, 201);
+
+    /* Fond */
+    background: rgb(0, 140, 255);
+
+    /* Police */
+    text-align: center;
+    color: white;
+    font-size: large;
+}

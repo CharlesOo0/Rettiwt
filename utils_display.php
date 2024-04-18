@@ -40,6 +40,24 @@ function getComments($connexion, $root, $parentId = NULL) {
 }
 
 /**
+ * Envoie une query GET à la base de données
+ * 
+ * @param connexion La connexion à la base de données
+ * @param sql La requête SQL à envoyer
+ *
+ * @return array Les résultats de la requête
+ */
+function sendQuery($connexion, $sql) {
+    try { // Essaie d'envoyer la requête
+        $result = mysqli_query($connexion, $sql);
+    } catch (Exception $e) { // Si ça échoue
+        $_SESSION['error_post'] = "Erreur en tentant d'envoyer la requête."; // Stocke un message d'erreur
+    }
+
+    return mysqli_fetch_all($result, MYSQLI_ASSOC); // Retourne les résultats de la requête
+}
+
+/**
  * Fonction qui permet d'afficher le menu dropdown
  * 
  * @param postId L'id du post pour lequel on affiche le menu dropdown
@@ -1079,6 +1097,285 @@ function displaySearch($connexion, $search, $searchType) {
     }
 }
     
+/**
+ * Affiche la page de statistiques
+ * 
+ * @param connexion La connexion à la base de données
+ * 
+ * @return void
+ */
+function displayStats($connexion) {
 
+    $username = $_SESSION['username'];
+    $user_id = getUserId($connexion, $username);
 
+    //--------------------------- POSTS --------------------------- //
+    // Récupère le nombre de posts total
+    $sql = "SELECT COUNT(id) FROM post WHERE author=$user_id";
+    try { // Essaie de récupérer le nombre de posts
+        $posts = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de posts";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de post par semaine
+    $sql = "SELECT COUNT(id), WEEK(date) FROM post WHERE author=$user_id GROUP BY WEEK(date)";
+    try { // Essaie de récupérer le nombre de post par semaine
+        $result = mysqli_query($connexion, $sql);
+        $post_per_week = array(); // Crée un tableau pour stocker le nombre de post par semaine
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque post
+            $post_per_week[] = [ // Ajoute le nombre de post par semaine dans le tableau
+                'count' => $row['COUNT(id)'],
+                'date' => $row['WEEK(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de posts par semaine";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de post par mois
+    $sql = "SELECT COUNT(id), MONTH(date) FROM post WHERE author=$user_id GROUP BY MONTH(date)";
+    try { // Essaie de récupérer le nombre de post par mois
+        $result = mysqli_query($connexion, $sql);
+        $post_per_month = array(); // Crée un tableau pour stocker le nombre de post par mois
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque post
+            $post_per_month[] = [ // Ajoute le nombre de post par mois dans le tableau
+                'count' => $row['COUNT(id)'],
+                'date' => $row['MONTH(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de posts par mois";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    //--------------------------- POSTS --------------------------- //
+
+    //--------------------------- LIKE (mit) --------------------------- //
+    // Récupère le nombre de likes total
+    $sql = "SELECT COUNT(post_id) FROM likes WHERE user_id=$user_id";
+    try { // Essaie de récupérer le nombre de likes
+        $like = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de like par semaine
+    $sql = "SELECT COUNT(post_id), WEEK(date) FROM likes WHERE user_id=$user_id GROUP BY WEEK(date)";
+    try { // Essaie de récupérer le nombre de like par semaine
+        $result = mysqli_query($connexion, $sql);
+        $like_per_week = array(); // Crée un tableau pour stocker le nombre de like par semaine
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque like
+            $like_per_week[] = [ // Ajoute le nombre de like par semaine dans le tableau
+                'count' => $row['COUNT(post_id)'],
+                'date' => $row['WEEK(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes par semaine";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de like par mois
+    $sql = "SELECT COUNT(post_id), MONTH(date) FROM likes WHERE user_id=$user_id GROUP BY MONTH(date)";
+    try { // Essaie de récupérer le nombre de like par mois
+        $result = mysqli_query($connexion, $sql);
+        $like_per_month = array(); // Crée un tableau pour stocker le nombre de like par mois
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque like
+            $like_per_month[] = [ // Ajoute le nombre de like par mois dans le tableau
+                'count' => $row['COUNT(post_id)'],
+                'date' => $row['MONTH(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes par mois";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+    //--------------------------- LIKE (mit) --------------------------- //
+
+    //--------------------------- LIKE (reçut) --------------------------- //
+    // Récupère le nombre de likes total
+    $sql = "SELECT COUNT(l.post_id) 
+            FROM likes l 
+            JOIN post p ON l.post_id = p.id 
+            WHERE p.author = $user_id";
+    try { // Essaie de récupérer le nombre de likes
+        $like_received = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de like par semaine
+    $sql = "SELECT COUNT(l.post_id), WEEK(l.date) 
+            FROM likes l 
+            JOIN post p ON l.post_id = p.id 
+            WHERE p.author = $user_id 
+            GROUP BY WEEK(l.date)";
+    try { // Essaie de récupérer le nombre de like par semaine
+        $result = mysqli_query($connexion, $sql);
+        $like_received_per_week = array(); // Crée un tableau pour stocker le nombre de like par semaine
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque like
+            $like_received_per_week[] = [ // Ajoute le nombre de like par semaine dans le tableau
+                'count' => $row['COUNT(l.post_id)'],
+                'date' => $row['WEEK(l.date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes par semaine";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de like par mois
+    $sql = "SELECT COUNT(l.post_id), MONTH(l.date) 
+            FROM likes l 
+            JOIN post p ON l.post_id = p.id 
+            WHERE p.author = $user_id 
+            GROUP BY MONTH(l.date)";
+    try { // Essaie de récupérer le nombre de like par mois
+        $result = mysqli_query($connexion, $sql);
+        $like_received_per_month = array(); // Crée un tableau pour stocker le nombre de like par mois
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque like
+            $like_received_per_month[] = [ // Ajoute le nombre de like par mois dans le tableau
+                'count' => $row['COUNT(l.post_id)'],
+                'date' => $row['MONTH(l.date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de likes par mois";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+    //--------------------------- LIKE (reçut) --------------------------- //
+    
+    //--------------------------- FOLLOW --------------------------- //
+    // Récupère le nombre de follow total
+    $sql = "SELECT COUNT(follower_id) FROM followers WHERE following_id=$user_id";
+    try { // Essaie de récupérer le nombre de follow
+        $follow = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follow";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de follow par semaine
+    $sql = "SELECT COUNT(follower_id), WEEK(date) FROM followers WHERE following_id=$user_id GROUP BY WEEK(date)";
+    try { // Essaie de récupérer le nombre de follow par semaine
+        $result = mysqli_query($connexion, $sql);
+        $follow_per_week = array(); // Crée un tableau pour stocker le nombre de follow par semaine
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque follow
+            $follow_per_week[] = [ // Ajoute le nombre de follow par semaine dans le tableau
+                'count' => $row['COUNT(follower_id)'],
+                'date' => $row['WEEK(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follow par semaine";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de follow par mois
+    $sql = "SELECT COUNT(follower_id), MONTH(date) FROM followers WHERE following_id=$user_id GROUP BY MONTH(date)";
+    try { // Essaie de récupérer le nombre de follow par mois
+        $result = mysqli_query($connexion, $sql);
+        $follow_per_month = array(); // Crée un tableau pour stocker le nombre de follow par mois
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque follow
+            $follow_per_month[] = [ // Ajoute le nombre de follow par mois dans le tableau
+                'count' => $row['COUNT(follower_id)'],
+                'date' => $row['MONTH(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follow par mois";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+    //--------------------------- FOLLOW --------------------------- //
+
+    //--------------------------- FOLLOWER --------------------------- //
+    // Récupère le nombre de follower total
+    $sql = "SELECT COUNT(following_id) FROM followers WHERE follower_id=$user_id";
+    try { // Essaie de récupérer le nombre de follower
+        $follower = mysqli_fetch_assoc(mysqli_query($connexion, $sql));
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follower";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de follower par semaine
+    $sql = "SELECT COUNT(following_id), WEEK(date) FROM followers WHERE follower_id=$user_id GROUP BY WEEK(date)";
+    try { // Essaie de récupérer le nombre de follower par semaine
+        $result = mysqli_query($connexion, $sql);
+        $follower_per_week = array(); // Crée un tableau pour stocker le nombre de follower par semaine
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque follower
+            $follower_per_week[] = [ // Ajoute le nombre de follower par semaine dans le tableau
+                'count' => $row['COUNT(following_id)'],
+                'date' => $row['WEEK(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follower par semaine";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+
+    // Récupère le nombre de follower par mois
+    $sql = "SELECT COUNT(following_id), MONTH(date) FROM followers WHERE follower_id=$user_id GROUP BY MONTH(date)";
+    try { // Essaie de récupérer le nombre de follower par mois
+        $result = mysqli_query($connexion, $sql);
+        $follower_per_month = array(); // Crée un tableau pour stocker le nombre de follower par mois
+        while ($row = mysqli_fetch_assoc($result)) { // Pour chaque follower
+            $follower_per_month[] = [ // Ajoute le nombre de follower par mois dans le tableau
+                'count' => $row['COUNT(following_id)'],
+                'date' => $row['MONTH(date)']
+            ];
+        }
+    } catch (Exception $e) { // Si ça échoue, affiche une erreur
+        $_SESSION['error_post'] = "Erreur lors de la récupération du nombre de follower par mois";
+        echo "<meta http-equiv='refresh' content='0;url=home.php'>"; // Redirige vers la page d'accueil
+    }
+    //--------------------------- FOLLOWER --------------------------- //
+
+    // Affiche les données dans une div cachée pour les récupérer en JS
+    echo "<div id='statData' 
+        data-posts_per_week='".json_encode($post_per_week)."'
+        data-posts_per_month='".json_encode($post_per_month)."'
+
+        data-like_per_week='".json_encode($like_per_week)."'
+        data-like_per_month='".json_encode($like_per_month)."'
+
+        data-like_received_per_week='".json_encode($like_received_per_week)."'
+        data-like_received_per_month='".json_encode($like_received_per_month)."'
+
+        data-follow_per_week='".json_encode($follow_per_week)."'
+        data-follow_per_month='".json_encode($follow_per_month)."'
+
+        data-follower_per_week='".json_encode($follower_per_week)."'
+        data-follower_per_month='".json_encode($follower_per_month)."'
+
+    style='display:none'></div>";
+
+    // Affiche les statistiques
+    echo "<div class='stat'>Nombre de posts : " . $posts['COUNT(id)'] . "</div>";
+    echo "<canvas id='postWeekChart'></canvas>";
+    echo "<canvas id='postMonthChart'></canvas>";
+
+    echo "<div class='stat'>Nombre de likes : " . $like['COUNT(post_id)'] . "</div>";
+    echo "<canvas id='likeWeekChart'></canvas>";
+    echo "<canvas id='likeMonthChart'></canvas>";
+
+    echo "<div class='stat'>Nombre de likes reçus : " . $like_received['COUNT(l.post_id)'] . "</div>";
+    echo "<canvas id='likeReceivedWeekChart'></canvas>";
+    echo "<canvas id='likeReceivedMonthChart'></canvas>";
+
+    echo "<div class='stat'>Nombre de follow : " . $follow['COUNT(follower_id)'] . "</div>";
+    echo "<canvas id='followWeekChart'></canvas>";
+    echo "<canvas id='followMonthChart'></canvas>";
+
+    echo "<div class='stat'>Nombre de follower : " . $follower['COUNT(following_id)'] . "</div>";
+    echo "<canvas id='followerWeekChart'></canvas>";
+    echo "<canvas id='followerMonthChart'></canvas>";
+
+}
 ?>
+
