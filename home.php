@@ -24,6 +24,8 @@
 <head>
     <title>Rettiwt</title>
 
+    <link rel="icon" href="img/Rettiwt.png">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

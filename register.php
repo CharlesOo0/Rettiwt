@@ -11,6 +11,7 @@
 
 <head>
     <title>Rettiwt</title>
+    <link rel="icon" href="img/Rettiwt.png">
     <link rel="stylesheet" type="text/css" href="css/register.css">
 </head>
 

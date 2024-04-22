@@ -9,7 +9,7 @@ function connexion() {
     if (session_status() == PHP_SESSION_NONE) { // Vérifie si la session est démarrée
         session_start();
     }
-    $serveur = "localhost"; // Adresse du serveur MySQL (généralement localhost)
+    $serveur = "localhost"; // Adresse du serveur MySQL
     $utilisateur = "root"; // Nom d'utilisateur MySQL
     $motdepasse = ""; // Mot de passe MySQL
     $basededonnees = "rettiwt"; // Nom de la base de données
