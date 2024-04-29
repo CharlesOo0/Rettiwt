@@ -355,7 +355,18 @@ td, th {
     transition: background 0.3s ease-in-out; /* Add this line */
 }
 
+/* Style du bouton pour charger plus de posts */
+#load-more-button {
+    /* Taille */
+    width: 100%;
+}
 
+/* Style de l'indicateur pas plus de post a charger */
+#no-more-post {
+    /* Positionnement */
+    text-align: center;
+    padding: 2%;
+}
 
 /* Ajoute un effet responsive pour les icones de gauches */
 @media screen and (max-width: 1380px){

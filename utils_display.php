@@ -443,10 +443,13 @@ function displayProfil($connexion, $username) {
  * @param username Le nom d'utilisateur qu'on vise pour afficher les posts (NULL pour tous les utilisateurs)
  * @param sub Le sujet des posts à afficher (NULL pour tous les sujets sinon affiche les posts des utilisateurs suivis si username est défini)
  * @param search La recherche à effectuer (NULL si il n'y en a pas)
+ * @param depth La profondeur dans les posts
  * 
  * @return void
  */
-function displayPost($connexion, $username, $sub, $search = null) {
+function displayPost($connexion, $username, $sub, $search = null, $depth = 0) {
+    $postPerPage = 5; // Nombre de posts par page
+
     if ($username != NULL) { // Si on veut afficher les posts d'un utilisateur précis
         $sql = "SELECT * FROM profil WHERE username='$username'";  // Crée la requête SQL pour récupérer l'id de l'utilisateur
 
@@ -468,18 +471,18 @@ function displayPost($connexion, $username, $sub, $search = null) {
     
         if ($sub != NULL) { // Si on veut afficher les posts des utilisateurs suivis
             // Crée la requete qui permet de récuperer les posts des utilisateurs suivis
-            $sql = "SELECT * FROM post WHERE author IN (SELECT following_id FROM followers WHERE follower_id='$profilId') AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC";
+            $sql = "SELECT * FROM post WHERE author IN (SELECT following_id FROM followers WHERE follower_id='$profilId') AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC LIMIT " . ($depth * $postPerPage) . ", " . $postPerPage;
         }else { // Si on veut afficher les posts de l'utilisateur
             // Crée la requête SQL pour récupérer les posts de l'utilisateur
-            $sql = "SELECT * FROM post WHERE author='$profilId' AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC";
+            $sql = "SELECT * FROM post WHERE author='$profilId' AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND isDeleted=0 ORDER BY date DESC LIMIT " . ($depth * $postPerPage) . ", " . $postPerPage;
         }
 
     }else { // Si on veut afficher les posts de tous les utilisateurs
-        $sql = "SELECT * FROM post WHERE isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+        $sql = "SELECT * FROM post WHERE isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC LIMIT " . ($depth * $postPerPage) . ", " . $postPerPage; // Crée la requête SQL pour récupérer les posts
     }
 
-    if ($search != null) {
-        $sql = "SELECT * FROM post WHERE text LIKE '%$search%' AND isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC"; // Crée la requête SQL pour récupérer tous les posts
+    if ($search != null) {  // Si on veut effectuer une recherche
+        $sql = "SELECT * FROM post WHERE text LIKE '%$search%' AND isDeleted=0 AND author NOT IN (SELECT id FROM profil WHERE isBanned=1) AND parent_id IS NULL ORDER BY date DESC LIMIT " . ($depth * $postPerPage) . ", " . $postPerPage; // Crée la requête SQL pour récupérer les posts
     }
 
     $recuperationPostFailed = false;
@@ -487,6 +490,7 @@ function displayPost($connexion, $username, $sub, $search = null) {
         $resultPost = mysqli_query($connexion, $sql);
     } catch (Exception $e) { // Si ça échoue, affiche une erreur
         echo "<p> Erreur lors de la récupération des posts : " . mysqli_error($connexion) . "</p>";
+        $error = mysqli_error($connexion);
         $recuperationPostFailed = true;
     }
 
@@ -642,8 +646,9 @@ function displayPost($connexion, $username, $sub, $search = null) {
             echo "</div>"; // Fin de la div post
 
         }
+
     } else {
-        echo "Aucun résultat trouvé.";
+        echo "<p id='no-more-post'> Aucun résultat trouvé. </p>";
     }
 }
 
@@ -1092,6 +1097,7 @@ function displayNotifications($connexion) {
 function displaySearch($connexion, $search, $searchType) {
     if ($searchType == 'posts') { // Si on veut afficher les posts
         displayPost($connexion, null, null, $search); // Affiche le post
+        displayLoadMoreButton(null, null, $search); // Affiche le bouton pour charger plus de posts
     }else { // Si on veut afficher les profils
         displayFollow($connexion, $_SESSION['username'], 1, $search); // Affiche les following
     }
@@ -1376,6 +1382,22 @@ function displayStats($connexion) {
     echo "<canvas id='followerWeekChart'></canvas>";
     echo "<canvas id='followerMonthChart'></canvas>";
 
+}
+
+/**
+ * Affiche un bouton qui permet de charger plus de posts
+ * 
+ * @param username Le nom d'utilisateur
+ * @param sub Les abonnements
+ * @param search La recherche
+ * 
+ */
+function displayLoadMoreButton($username, $sub, $search) {
+    echo "<button id='load-more-button' class='btn btn-primary' data-username='".$username."' 
+    data-sub='".$sub."' 
+    data-search='".$search."'>
+    
+    Charger plus</button>";
 }
 ?>
 

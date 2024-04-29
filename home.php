@@ -176,6 +176,7 @@
                     displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayPost($connexion, $_SESSION['username'], 1); 
+                    displayLoadMoreButton($_SESSION['username'], 1, NULL); // On affiche le bouton pour charger plus de posts
                 }else if(isset($_GET['profil_detail'])) {
                     echo "<h4>Profil</h4>";
                     displaySearchBar();
@@ -184,10 +185,10 @@
                     displayProfil($connexion, $username); // On affiche le profil de l'autre utilisateur
                     echo "<div class='style-display-profil'>Post du profil</div>";
                     displayPost($connexion, $username, NULL); // On affiche les posts de l'autre utilisateur
+                    displayLoadMoreButton($username, NULL, NULL); // On affiche le bouton pour charger plus de posts
                 }else if(isset($_GET['adminLogs'])) { // Si on veut afficher les logs admin
                     echo "<h4>Logs admin</h4>";
                     displayLogs($connexion);
-
                 }else if(isset($_GET['search'])){
                     echo "<h4>Résultat de la recherche</h4>";
                     displaySearchBar();
@@ -203,6 +204,7 @@
                     displaySearchBar();
                     displayCommentForm($connexion, $_SESSION['username']);
                     displayPost($connexion, NULL, NULL);
+                    displayLoadMoreButton(NULL, NULL, NULL);
                 }
                 echo "</div>";
             ?>

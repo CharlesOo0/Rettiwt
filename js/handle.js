@@ -1,4 +1,6 @@
 $(document).ready(function() { // Quand le document est prêt
+    sessionStorage.setItem('depth', '1'); // Initialisation de la profondeur a 0
+
     
     // ------------------------ Handle le like
     $(".like-form").submit(function(e) { // Quand le formulaire est soumis
@@ -94,6 +96,31 @@ $(document).ready(function() { // Quand le document est prêt
             data: {},
             success: function(data) { // Quand la requête est terminée
                 $("#pellet").hide(); // On cache le pellet
+            }
+        });
+    });
+
+    // ------------------------ Handle le bouton de chargement de plus de post
+    $("#load-more-button").click(function() { // Quand le bouton est cliqué
+        if (sessionStorage.getItem('depth') == null) { // Si la profondeur n'est pas défini
+            sessionStorage.setItem('depth', '1'); // On l'initialise
+            var depth = 1; // On initialise la profondeur
+        }else {
+            var depth = parseInt(sessionStorage.getItem('depth')); // On récupère la profondeur
+        }
+        
+        var username = $(this).attr('data-username'); // Récupérer le nom d'utilisateur
+        var sub = $(this).attr('data-sub'); // Récupérer le nom du sub
+        var search = $(this).attr('data-search'); // Récupérer le nom de la recherche
+
+        $.ajax({ // Fait une requête AJAX
+            type: "POST",
+            url: "ajax_request/HandleLoadingPost.php",
+            data: {depth: depth, username: username, sub: sub, search: search},
+            success: function(data) { // Quand la requête est terminée
+                $('#no-more-post').remove(); // On enlève le message "Pas plus de post"
+                sessionStorage.setItem('depth', parseInt(depth) + 1); // On incrémente l'offset                
+                $(data).insertBefore('#load-more-button'); // On ajoute les posts après le bouton
             }
         });
     });
