@@ -168,7 +168,7 @@
 
                         $avatar = $_FILES['avatar']['tmp_name']; // Récupère le fichier
 
-                        if ($_FILES['avatar']['size'] > 64 * 1024 * 1000) { // 64 KB = 64 * 1024 bytes
+                        if ($_FILES['avatar']['size'] > 64 * 1024) { // 64 KB = 64 * 1024 bytes
                             header("Location: edit.php?error_modify=L'image ne peut pas dépasser 64 KB");
                             exit();
                         } else {
