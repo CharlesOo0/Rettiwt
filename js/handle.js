@@ -1,30 +1,56 @@
-$(document).ready(function() { // Quand le document est prêt
-    sessionStorage.setItem('depth', '1'); // Initialisation de la profondeur a 0
+import { initialisePopup } from './popup.js';
 
-    
+/**
+ * Fonction qui affiche ou cache les commentaires
+ * 
+ * @param commentId L'id du commentaire à afficher ou cacher
+ * 
+ * @return void
+ */
+function showComment(commentId) {
+    var commentElement = document.querySelector('#comment-' + commentId); // Récupère l'élément du commentaire
+    var showButton = document.querySelector('#show-button-' + commentId); // Récupère le bouton pour afficher ou cacher les commentaires
+    if (commentElement.style.display === "none") { // Si les commentaires sont cachés
+        commentElement.style.display = "block";  // Affiche les commentaires
+        showButton.innerHTML = "Cacher les commentaires"; // Change le texte du bouton
+    } else { // Si les commentaires sont affichés
+        commentElement.style.display = "none"; // Cache les commentaires
+        showButton.innerHTML = "Afficher les commentaires"; // Change le texte du bouton
+    }
+}
+
+
+function initialise() {
+    console.log("Initialisation des fonctions");
     // ------------------------ Handle le like
     $(".like-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
 
-        $.ajax({ // Fait une requête AJAX
-            type: "POST",  
-            url: "ajax_request/handleLike.php",
-            data: form.serialize(),
-            success: function(data) { // Quand la requête est terminée
-                if (data == 1) { // Si la requête a réussi
-                    var likeCount = form.find(".like-count"); 
-                    var newCount = parseInt(likeCount.text()) + 1; // Ajoute 1 au texte de l'élément 
-                    likeCount.text(newCount); // Met à jour le texte de l'élément
-                    form.find(".like-button").attr("src", "img/like_filled.png")
-                } else { // Si la requête a échoué
-                    var likeCount = form.find(".like-count");
-                    var newCount = parseInt(likeCount.text()) - 1; // Enlève 1 au texte de l'élément
-                    likeCount.text(newCount); // Met à jour le texte de l'élément
-                    form.find(".like-button").attr("src", "img/like_empty.png")
+        if (!form.data().hasOwnProperty('eventBound')) { // Si l'évènement n'est pas bind
+            form.data('eventBound', true); // On bind l'évènement
+
+            $.ajax({ // Fait une requête AJAX
+                type: "POST",  
+                url: "ajax_request/handleLike.php",
+                data: form.serialize(),
+                success: function(data) { // Quand la requête est terminée
+                    if (data == 1) { // Si la requête a réussi
+                        var likeCount = form.find(".like-count"); 
+                        var newCount = parseInt(likeCount.text()) + 1; // Ajoute 1 au texte de l'élément 
+                        likeCount.text(newCount); // Met à jour le texte de l'élément
+                        form.find(".like-button").attr("src", "img/like_filled.png")
+                    } else { // Si la requête a échoué
+                        var likeCount = form.find(".like-count");
+                        var newCount = parseInt(likeCount.text()) - 1; // Enlève 1 au texte de l'élément
+                        likeCount.text(newCount); // Met à jour le texte de l'élément
+                        form.find(".like-button").attr("src", "img/like_empty.png")
+                    }
+
+                    form.removeData('eventBound');
                 }
-            }
-        });
+            });
+        }
     });
 
     // ------------------------ Handle le signalement
@@ -33,46 +59,107 @@ $(document).ready(function() { // Quand le document est prêt
     $("#admin-form").submit(function(e) { // Quand le formulaire est soumis
         e.preventDefault(); // Empêcher le comportement par défaut du formulaire
         var form = $(this);  // Récupérer le formulaire
-        var action = form.find('input[name="action"]').val(); // Récupérer la valeur de l'action
 
-        $.ajax({ // Fait une requête AJAX
-            type: "POST",  
-            url: "ajax_request/handleAdmin.php",
-            data: form.serialize(),
-            success: function(data) { // Quand la requête est terminée
-                if (data == 1) { // Si la requête a réussi
-                    popupAdminContainer.classList.remove('active'); // On enlève la classe active pour cacher le popup
-                    document.body.classList.remove('active'); // On enlève la classe active pour débloquer le scroll
+        if (!form.data().hasOwnProperty('eventBound')) { // Si l'évènement n'est pas bind
+            form.data('eventBound', true); // On bind l'évènement
+        
+            var action = form.find('input[name="action"]').val(); // Récupérer la valeur de l'action
 
-                    if (action == "flag") { // Si l'action est de flagger un post
-                        var warnButton = document.getElementById('warn-' + form.find('input[name="post_id"]').val()); // On cache le post
+            $.ajax({ // Fait une requête AJAX
+                type: "POST",  
+                url: "ajax_request/handleAdmin.php",
+                data: form.serialize(),
+                success: function(data) { // Quand la requête est terminée
+                    if (data == 1) { // Si la requête a réussi
+                        popupAdminContainer.classList.remove('active'); // On enlève la classe active pour cacher le popup
+                        document.body.classList.remove('active'); // On enlève la classe active pour débloquer le scroll
 
-                        if (warnButton.innerHTML == "Flag") { // Si le bouton est "Flag"
-                            warnButton.innerHTML = "Unflag"; // On change le texte du bouton
-                        } else { // Si le bouton est "Unflag"
-                            warnButton.innerHTML = "Flag"; // On change le texte du bouton
+                        if (action == "flag") { // Si l'action est de flagger un post
+                            var warnButton = document.getElementById('warn-' + form.find('input[name="post_id"]').val()); // On cache le post
+
+                            if (warnButton.innerHTML == "Flag") { // Si le bouton est "Flag"
+                                warnButton.innerHTML = "Unflag"; // On change le texte du bouton
+                            } else { // Si le bouton est "Unflag"
+                                warnButton.innerHTML = "Flag"; // On change le texte du bouton
+                            }
                         }
+
+
+                        if (action == "delete-admin") { // Si l'action est de supprimer un post
+                            $('#post-' + form.find('input[name="post_id"]').val()).hide(); // On cache le post
+                        }
+
                     }
-
-
-                    if (action == "delete-admin") { // Si l'action est de supprimer un post
-                        $('#post-' + form.find('input[name="post_id"]').val()).hide(); // On cache le post
-                    }
-
                 }
-            }
-        });
+            });
+        }
+        
     });
+
+    //--------- Fonction pour gerer le bouton d'affichage des commentaires
+
+    var showButtons = document.querySelectorAll(".show-hidde-comment-button"); // On récupère tous les boutons d'affichage des commentaires
+
+    for (var i = 0; i < showButtons.length; i++) { // Pour chaque bouton d'affichage des commentaires
+        if (!showButtons[i].hasAttribute("data-eventBound")) { // Si l'évènement n'est pas bind
+            showButtons[i].setAttribute("data-eventBound", true); // On bind l'évènement
+
+            showButtons[i].addEventListener("click", function(event) { // Quand on clique dessus
+                var comment_id = this.value; // On récupère l'id du commentaire
+                showComment(comment_id); // On appelle la fonction showComment
+            });
+        }
+    }
+
+    //--------- Fonction pour gerer le click d'un bouton commentaire
+
+    var commentButtons = document.getElementsByClassName("comment-button"); // On récupère tous les boutons commentaire
+
+    for (var i = 0; i < commentButtons.length; i++) { // Pour chaque bouton commentaire
+        if (!commentButtons[i].hasAttribute("data-eventBound")) { // Si l'évènement n'est pas bind
+            commentButtons[i].setAttribute("data-eventBound", true); // On bind l'évènement
+
+            commentButtons[i].addEventListener("click", function(event) { // Quand on clique dessus
+                var post_id = this.dataset.postId; // On récupère l'id du post
+                var parent_id = this.dataset.parentId; // On récupère l'id du commentaire parent
+                var identifier_id = this.dataset.identifierId; // On récupère l'id de l'élément qui a été cliqué
+
+                document.getElementById("comment-post-id").value = post_id; // On met cet id dans le champ caché du formulaire
+                document.getElementById("comment-parent-id").value = parent_id; // On met cet id dans le champ caché du formulaire
+                document.getElementById("identifier-id").value = identifier_id; // On met cet id dans le champ caché du formulaire
+                    
+                const comment_form = document.getElementsByClassName("comment-form"); // On affiche le formulaire
+
+                if (comment_form[0].style.display == "block") { // Si le formulaire est déjà affiché
+                    comment_form[0].style.display = "none"; // On le cache
+                } else {
+                    comment_form[0].style.display = "block"; // Sinon on l'affiche
+                }
+                
+            });
+        }
+    }
+
+}
+
+$(document).ready(function() { // Quand le document est prêt
+    sessionStorage.setItem('depth', '1'); // Initialisation de la profondeur a 0
+
+    initialise(); // Initialisation des fonctions
+
 
     // ------------------------ Handle l'unban d'un utilisateur
     $(".unban-log-button").click(function() { // Quand le bouton est cliqué
+
         var userId = $(this).attr('data-user-id'); // Récupérer l'id de l'utilisateur
         var form = $("#admin-form"); // Récupérer le formulaire
         form.find('input[name="user_id"]').val(userId); // Mettre l'id de l'utilisateur dans le formulaire
         form.find('input[name="post_id"]').val(null); // Mettre l'action unban dans le formulaire
         form.find('input[name="action"]').val("unban"); // Mettre l'action unban dans le formulaire
+            
         form.submit(); // Soumettre le formulaire
     });
+
 
     // ------------------------ Handle le fait de supprimer une notification
     $(".delete-notification-button").click(function() { // Quand le bouton est cliqué
@@ -87,9 +174,10 @@ $(document).ready(function() { // Quand le document est prêt
                 }
             }
         });
+        
     });
 
-    $("#show-notification-button").click(function() { // Quand le bouton est cliqué
+    $("#show-notification-button").click(function() { // Quand le bouton est cliqué   
         $.ajax({ // Fait une requête AJAX pour mettre les notifications de l'utilisateur comme lu
             type: "POST",
             url: "ajax_request/handleReadNotification.php",
@@ -121,6 +209,9 @@ $(document).ready(function() { // Quand le document est prêt
                 $('#no-more-post').remove(); // On enlève le message "Pas plus de post"
                 sessionStorage.setItem('depth', parseInt(depth) + 1); // On incrémente l'offset                
                 $(data).insertBefore('#load-more-button'); // On ajoute les posts après le bouton
+
+                initialise(); // On réinitialise les fonctions
+                initialisePopup(); // On réinitialise les popups
             }
         });
     });

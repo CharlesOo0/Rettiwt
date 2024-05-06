@@ -1,69 +1,7 @@
 // CREDIT : https://codehalweb.com/popup-modal-in-html-css-javascript/
 // Tutoriel utiliser pour la structure principale des popups
 
-$(document).ready(function() {
-
-    // Gere le bouton pour afficher les posts sensibles
-    const showSensitiveButton = document.querySelectorAll(".show-button"); // Bouton pour afficher les posts sensibles
-
-    showSensitiveButton.forEach((button) => { // Pour chaque bouton
-        button.addEventListener('click', () => { // Quand on clique sur le bouton
-            var postId = button.value; // On récupère l'id du post
-            var blur = document.getElementById('hide-post-' + postId); // On récupère le post
-
-            blur.classList.remove("hide-post"); // On enlève la classe hide-post pour afficher le post
-            button.style.display = "none"; // On cache le bouton
-        });
-    });
-
-    // Popup pour la barre de recherche
-    const showSearchButton = document.getElementById("show-search-button"); // Bouton pour afficher le popup
-    const searchContainer = document.querySelector('.search-bar-style'); // Conteneur du popup
-
-    // De base, on cache le popup
-    searchContainer.style.display = "none"; // On cache le popup
-
-    showSearchButton.addEventListener('click', () => { // Quand on clique sur le bouton
-        
-        if (searchContainer.style.display == "none") { // Si le popup est caché
-            searchContainer.style.display = "block"; // On l'affiche
-        } else { // Sinon
-            searchContainer.style.display = "none"; // On le cache
-        }
-    } );
-
-    // Popup pour login
-
-    const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup
-    const popupPostContainer = document.querySelector('.post-form-container'); // Conteneur du popup
-    const closePostBtn = document.getElementById('close-post-button'); // Bouton pour fermer le popup
-    
-    showPostPopup.addEventListener('click', () => { // Quand on clique sur le bouton
-        popupPostContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
-        document.body.classList.add('active'); // On ajoute la classe active au body pour bloquer le scroll
-    });
-
-    closePostBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
-        popupPostContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
-        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
-    });
-
-    // Popup pour notification
-
-    const showNotificationPopup = document.getElementById("show-notification-button"); // Bouton pour afficher le popup
-    const popupNotificationContainer = document.querySelector('.notification-container');  // Conteneur du popup
-    const closeNotificationBtn = document.getElementById('close-notification-button');  // Bouton pour fermer le popup
-
-    showNotificationPopup.addEventListener('click', () => { // Quand on clique sur le bouton
-        popupNotificationContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
-        document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
-    });
-
-    closeNotificationBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
-        popupNotificationContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
-        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
-    });
-
+export function initialisePopup() {
     // Popup pour les bans, warns, et suppression de post
 
     const showBanPopup = document.querySelectorAll(".ban-post-button"); // Bouton pour afficher le popup
@@ -173,6 +111,73 @@ $(document).ready(function() {
         popupAdminContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
         document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
     });
+
+    // Gere le bouton pour afficher les posts sensibles
+    const showSensitiveButton = document.querySelectorAll(".show-button"); // Bouton pour afficher les posts sensibles
+
+    showSensitiveButton.forEach((button) => { // Pour chaque bouton
+        button.addEventListener('click', () => { // Quand on clique sur le bouton
+            var postId = button.value; // On récupère l'id du post
+            var blur = document.getElementById('hide-post-' + postId); // On récupère le post
+
+            blur.classList.remove("hide-post"); // On enlève la classe hide-post pour afficher le post
+            button.style.display = "none"; // On cache le bouton
+        });
+    });
+}
+
+$(document).ready(function() {
+
+    initialisePopup();
+
+    // Popup pour la barre de recherche
+    const showSearchButton = document.getElementById("show-search-button"); // Bouton pour afficher le popup
+    const searchContainer = document.querySelector('.search-bar-style'); // Conteneur du popup
+
+    // De base, on cache le popup
+    searchContainer.style.display = "none"; // On cache le popup
+
+    showSearchButton.addEventListener('click', () => { // Quand on clique sur le bouton
+        
+        if (searchContainer.style.display == "none") { // Si le popup est caché
+            searchContainer.style.display = "block"; // On l'affiche
+        } else { // Sinon
+            searchContainer.style.display = "none"; // On le cache
+        }
+    } );
+
+    // Popup pour login
+
+    const showPostPopup = document.getElementById("show-post-button"); // Bouton pour afficher le popup
+    const popupPostContainer = document.querySelector('.post-form-container'); // Conteneur du popup
+    const closePostBtn = document.getElementById('close-post-button'); // Bouton pour fermer le popup
+    
+    showPostPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+        popupPostContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+        document.body.classList.add('active'); // On ajoute la classe active au body pour bloquer le scroll
+    });
+
+    closePostBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+        popupPostContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    });
+
+    // Popup pour notification
+
+    const showNotificationPopup = document.getElementById("show-notification-button"); // Bouton pour afficher le popup
+    const popupNotificationContainer = document.querySelector('.notification-container');  // Conteneur du popup
+    const closeNotificationBtn = document.getElementById('close-notification-button');  // Bouton pour fermer le popup
+
+    showNotificationPopup.addEventListener('click', () => { // Quand on clique sur le bouton
+        popupNotificationContainer.classList.add('active'); // On ajoute la classe active au popup pour l'afficher
+        document.body.classList.add('active');  // On ajoute la classe active au body pour bloquer le scroll
+    });
+
+    closeNotificationBtn.addEventListener('click', () => { // Quand on clique sur le bouton pour fermer le popup
+        popupNotificationContainer.classList.remove('active'); // On retire la classe active pour cacher le popup
+        document.body.classList.remove('active'); // On retire la classe active pour débloquer le scroll
+    });
+
 
     // Gere les bouttons d'unban / ban pour les admins dans les logs
 

@@ -241,7 +241,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="js/popup.js"></script>
-    <script src="js/handle.js"></script>
+    <script type="module" src="js/handle.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/stat.js"></script>
 

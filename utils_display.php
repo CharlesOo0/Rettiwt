@@ -219,9 +219,9 @@ function displayComments($connexion, $comments) {
                             echo "<div class='col post-avatar-username'>";
                                 echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                                 if ($profil['avatar'] != NULL) {
-                                    echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                                    echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
                                 } else {
-                                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                                    echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                                 }
                                 
                                 echo "@" . $profil['username'];
@@ -520,9 +520,9 @@ function displayPost($connexion, $username, $sub, $search = null, $depth = 0) {
                         echo "<div class='col post-avatar-username'>";
                             echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'auteur
                             if ($profil['avatar'] != NULL) {
-                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
+                                echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'auteur
                             } else {
-                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                                echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                             }
                             
                             echo "@" . $profil['username']; 
