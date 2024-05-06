@@ -725,9 +725,9 @@ function displayFollow($connexion, $username, $mode, $search = null) {
                     // Affiche l'avatar et le nom d'utilisateur de l'utilisateur qui suit
                     echo "<a href='home.php?profil_detail=" . urlencode($profil['username']) . "'>"; // Crée un lien vers le profil de l'utilisateur qui suit
                     if ($profil['avatar'] != NULL) { // Si l'utilisateur qui suit a un avatar
-                        echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
+                        echo "<img src='pfp/" . $profil['avatar'] . "' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar de l'utilisateur qui suit
                     } else { // Si l'utilisateur qui suit n'a pas d'avatar
-                        echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='auto' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
+                        echo "<img src='img/default_pfp.png' alt='avatar' width='50' height='50' style='border-radius: 50%;border: solid 1px black;'>"; // Affiche l'avatar par défaut
                     }
                     echo "@" . $profil['username']; // Affiche le nom d'utilisateur qui suit
                     echo "</a>";
